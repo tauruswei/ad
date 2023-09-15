@@ -1,0 +1,156 @@
+{
+   "10001": {
+        "id":1,
+        "zh_name":"阿斯特里德",
+        "en_name":"Astrid",
+        "card_name":"N-001-BG.mp4-animation.gif",
+        "type":"N_001"
+    },
+    "10002": {
+        "id":2,
+        "zh_name":"伊莉娜",
+        "en_name":"Irina",
+        "card_name":"N-002-BG.mp4-animation.gif",
+        "type":"N_002"
+    },
+    "10003": {
+        "id":3,
+        "zh_name":"黛丝黛蒙娜",
+        "en_name":"Desdemona",
+        "card_name":"N-003-BG.mp4-animation.gif",
+        "type":"N_003"
+    },
+    "10004": {
+        "id":4,
+        "zh_name":"以斯拉",
+        "en_name":"Ezra",
+        "card_name":"N-004-BG.mp4-animation.gif",
+        "type":"N_004"
+    },
+    "10005": {
+        "id":5,
+        "zh_name":"达米安",
+        "en_name":"Damien",
+        "card_name":"N-005-BG.mp4-animation.gif",
+        "type":"N_005"
+    },
+    "10006": {
+        "id":6,
+        "zh_name":"托鲁斯",
+        "en_name":"Torus",
+        "card_name":"N-006-BG.mp4-animation.gif",
+        "type":"N_006"
+    },
+    "10007": {
+        "id":7,
+        "zh_name":"博瓦尔",
+        "en_name":"Bovar",
+        "card_name":"N-007-BG.mp4-animation.gif",
+        "type":"N_007"
+    },
+    "10008": {
+        "id":8,
+        "zh_name":"霍努斯",
+        "en_name":"Hornus",
+        "card_name":"N-008-BG.mp4-animation.gif",
+        "type":"N_008"
+    },
+    "10009": {
+        "id":9,
+        "zh_name":"莫瓦西娅",
+        "en_name":"Morvathia",
+        "card_name":"N-009-BG.mp4-animation.gif",
+        "type":"N_009"
+    },
+    "20001": {
+        "id":10,
+        "zh_name":"赛里莎",
+        "en_name":"Zyrisa",
+        "card_name":"N-010-BG.mp4-animation.gif",
+        "type":"N_010"
+    },
+    "20002": {
+        "id":11,
+        "zh_name":"塞菲娅",
+        "en_name":"Sephia",
+        "card_name":"R-001-BG.mp4-animation.gif",
+        "type":"R_001"
+    },
+    "20003": {
+        "id":12,
+        "zh_name":"灰烬",
+        "en_name":"Ember",
+        "card_name":"R-002-BG.mp4-animation.gif",
+        "type":"R_002"
+    },
+    "20004": {
+        "id":13,
+        "zh_name":"马拉基",
+        "en_name":"Malachi",
+        "card_name":"R-003-BG.mp4-animation.gif",
+        "type":"R_003"
+    },
+    "20005": {
+        "id":14,
+        "zh_name":"莱拉",
+        "en_name":"Leila",
+        "card_name":"R-004-BG.mp4-animation.gif",
+        "type":"R_004"
+    },
+    "20006": {
+        "id":15,
+        "zh_name":"戈里姆",
+        "en_name":"Gorim",
+        "card_name":"R-005-BG.mp4-animation.gif",
+        "type":"R_005"
+    },
+    "30001": {
+        "id":16,
+        "zh_name":"塞娜",
+        "en_name":"Xena",
+        "card_name":"SR-001-BG.mp4-animation.gif",
+        "type":"SR_001"
+    },
+    "30002": {
+        "id":17,
+        "zh_name":"德克兰",
+        "en_name":"Declan",
+        "card_name":"SR-002-BG.mp4-animation.gif",
+        "type":"SR_002"
+    },
+    "30003": {
+        "id":18,
+        "zh_name":"多尔格林",
+        "en_name":"Dolgrin",
+        "card_name":"SR-003-BG.mp4-animation.gif",
+        "type":"SR_003"
+    },
+    "30004": {
+        "id":19,
+        "zh_name":"莫蒂斯",
+        "en_name":"Mortis",
+        "card_name":"SR-004-BG.mp4-animation.gif",
+        "type":"SR_004"
+    },
+    "40001": {
+        "id":20,
+        "zh_name":"弗拉基米尔",
+        "en_name":"Vladimir",
+        "card_name":"SSR-001-BG.mp4-animation.gif",
+        "type":"SSR_001"
+    },
+    "40002": {
+        "id":21,
+        "zh_name":"塞拉菲娜",
+        "en_name":"Serafina",
+        "card_name":"SSR-002-BG.mp4-animation.gif",
+        "type":"SSR_002"
+    },
+    "40003": {
+        "id":22,
+        "zh_name":"麦雅",
+        "en_name":"Maiya",
+        "card_name":"SSR-003-BG.mp4-animation.gif",
+        "type":"SSR_003"
+    }
+}
