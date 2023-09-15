@@ -34,7 +34,7 @@
       </van-tabs>
     </div>
     <!--Staking && UnStaking-->
-    <van-popup v-model:show="visible" position="bottom" :style="{height: '50%'}" closeable close-icon="close" round :close-on-click-overlay="false">
+    <van-popup v-model:show="visible" position="bottom" :style="{height: '420px'}" closeable close-icon="close" round :close-on-click-overlay="false">
       <div style="padding:10px 15px 20px;font-size:17px">
         <h3>AAC</h3>
         <van-cell-group inset style="margin-bottom:15px;">
