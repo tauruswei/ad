@@ -14,7 +14,7 @@
           <van-button size="small" type="primary" v-if="round && reward" @click="withdraw('aac')" round>&nbsp;&nbsp;Withdraw&nbsp;&nbsp;</van-button>
         </van-grid-item>
       </van-grid>
-      
+
       <van-tabs v-model:active="activeName">
         <van-tab title="Play" name="trans">
           <div style="padding:25px 10px;text-align: center;">
@@ -183,7 +183,7 @@ function withdraw(key) {
     funcName: "withdraw"
   }
   loadingHelper.show();
-  metaMask.sendTransactionByContractOrigin(data).then((res) => {
+  metaMask.sendTransaction(data).then((res) => {
     loadingHelper.hide()
     refresh()
   }).catch(err => {
