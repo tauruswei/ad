@@ -2,7 +2,7 @@ import MetaMaskSDK from '@metamask/sdk';
 import MetaMaskOnboarding from '@metamask/onboarding'
 import detectEthereumProvider from '@metamask/detect-provider';
 import Web3 from 'web3';
-//import {ethers} from "ethers";
+import {ethers} from "ethers";
 import store from "../store/index";
 import router from "../router/index";
 import { aacApi, chainApi, userApi } from '@/api/request';
@@ -356,7 +356,7 @@ export class MetaMask {
     let ret = await myContract.methods[param.funcName](param.from).call();
     return ret;
   }
-  /*sendTransactionUseEthers(param) {
+  sendTransactionUseEthers(param) {
     const provider = new ethers.providers.Web3Provider(ethereum)
     const signer = provider.getSigner();
     const contract = new ethers.Contract(param.address, param.abi, signer)
@@ -375,7 +375,7 @@ export class MetaMask {
         reject(error)
       }
     })
-    } */ 
+    }
 }
 function errorHandlerOfMetaMaskRequest(error) {
   console.log(error)

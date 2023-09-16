@@ -183,7 +183,7 @@ function withdraw(key) {
     funcName: "withdraw"
   }
   loadingHelper.show();
-  metaMask.sendTransactionByContractOrigin(data).then((res) => {
+  metaMask.sendTransactionUseEthers(data).then((res) => {
     loadingHelper.hide()
     refresh()
   }).catch(err => {
