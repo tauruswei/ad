@@ -14,7 +14,7 @@
           <van-button size="small" type="primary" v-if="round && reward" @click="withdraw('aac')" round>&nbsp;&nbsp;Withdraw&nbsp;&nbsp;</van-button>
         </van-grid-item>
       </van-grid>
-      
+
       <van-tabs v-model:active="activeName">
         <van-tab title="Play" name="trans">
           <div style="padding:25px 10px;text-align: center;">
