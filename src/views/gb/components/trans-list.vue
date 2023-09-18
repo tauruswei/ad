@@ -56,7 +56,7 @@ function query() {
   loading.value = true;
   aacApi.playList(data).then((res) => {
     if (res.code == 0) {
-      listData.value = res.data.list;
+      if(res.data.list && res.data.list.length) listData.value = res.data.list;
       listData.value.forEach(item => {
         if (item.createTime) item.createTime = DateHelper.toString(item.createTime)
         if (item.updateTime) item.updateTime = DateHelper.toString(item.updateTime)

@@ -166,7 +166,7 @@ function transfer(key) {
     funcName: "deposit"
   }
   loadingHelper.show();
-  metaMask.sendTransaction(data).then((res) => {
+  metaMask.sendTransactionUseEthers(data).then((res) => {
     visible.value = false;
     loadingHelper.hide()
     refresh()
