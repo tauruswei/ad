@@ -4,14 +4,14 @@
       <van-list :finished="finished" finished-text="no more ..." @load="query">
         <van-row v-for="item in listData" :key="item" :title="item.id" style="margin-bottom:10px;margin-top:10px">
           <van-col :span="6">
-            <div style="padding:8px 0;border-radius:12px 0 0 12px;text-align: center;background-color: rgb(235, 235, 255);">
+            <div style="height:100%;box-sizing:border-box;padding:8px 0;border-radius:12px 0 0 12px;text-align: center;background-color: rgb(235, 235, 255);">
               <h3><small>{{ item.roundIndex }}</small></h3>
               Round
               <h3><small>{{ item.totalPlayers }}</small></h3>
               Players
             </div>
           </van-col>
-          <van-col :span="18" style="border:1px solid rgb(235, 235, 255);padding-left:10px">
+          <van-col :span="18" style="height:100%;border:1px solid rgb(235, 235, 255);padding-left:10px">
             <p>Date: {{ item.updateTime }}</p>
             <div style="padding:7px 0 3px;">
               <van-tag type="primary">1</van-tag>
