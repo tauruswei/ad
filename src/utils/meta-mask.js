@@ -301,9 +301,12 @@ export class MetaMask {
       .catch((error) => console.error(error));
   }
   async getBalance(account) {
-    if (!web3) return
-    let balance = await web3.eth.getBalance(account);
-    return Number(balance) / Math.pow(10, 18);
+    let balance;
+    await ethereum.request({method:'eth_getBalance',params:[account,"latest"]}).then(res=>{
+      balance = ethers.utils.formatEther(res)
+      console.log(balance)
+      })
+    return balance;
   }
   getContract(abi, address) {
     if (!web3) return false;
@@ -351,12 +354,14 @@ export class MetaMask {
     })
   }
   async queryTransactionByContract(param) {
+    console.log("query")
     const myContract = this.getContract(param.abi, param.address);
     if (!myContract) return;
     let ret = await myContract.methods[param.funcName](param.from).call();
     return ret;
   }
   sendTransactionUseEthers(param) {
+    console.log("888")
     const provider = new ethers.providers.Web3Provider(ethereum)
     const signer = provider.getSigner();
     const contract = new ethers.Contract(param.address, param.abi, signer)
