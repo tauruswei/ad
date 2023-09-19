@@ -14,6 +14,18 @@ app.use(Tab).use(Tabs).use(NavBar).use(Button).use(Col).use(Row)
 app.config.globalProperties.metaMask = new MetaMask();
 app.use(store).use(router).mount("#app");
 
+//手机端调试
+import VConsole from 'vconsole'; 
+const vConsole = new VConsole({ // 配置选项 
+    defaultPlugins: ['system', 'network', 'element'], 
+    // 默认开启的插件 
+    onReady() { 
+ 
+        console.log('vConsole is ready!'); 
+ 
+    }, 
+});
+
 app.config.errorHandler = (err, vm, info) => {
     console.log(err,vm,info)
 }
