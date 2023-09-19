@@ -357,7 +357,7 @@ export class MetaMask {
     console.log("query")
     const myContract = this.getContract(param.abi, param.address);
     if (!myContract) return;
-    let ret = await myContract.methods[param.funcName](param.from).call();
+    let ret = await myContract.methods[param.funcName](param.from).call()
     return ret;
   }
   sendTransactionUseEthers(param) {
