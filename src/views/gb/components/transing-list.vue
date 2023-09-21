@@ -9,7 +9,7 @@
           <p style="font-size:15px;margin-top:2px;margin-bottom:8px;"><b>{{ item }}</b><small>&nbsp;&nbsp;Round</small></p>
           <a style="font-size:12px;margin:8px 0;color:#666;word-break: break-all;" :href="$store.state.abi ?`${$store.state.abi?.explorer}/address/${$store.state.abi.contract.aacFundPool.address}`:'#' "><van-text-ellipsis :content="$store.state.abi?.contract.aacFundPool.address" /></a>
           <div>
-            <p>Players: <span>{{ players[item+'i']?.player||"0" }}</span>&nbsp;&nbsp;Earned:{{ players[item+'i']?.fund||"0" }}</p>
+            <p>Total Players: <span>{{ players[item+'i']?.player||"0" }}</span>&nbsp;&nbsp;Total Fund:{{ players[item+'i']?.fund||"0" }}</p>
             <van-button size="small" type="warning" @click="getCurrentPlayers(item)" round>
               refresh
             </van-button>
