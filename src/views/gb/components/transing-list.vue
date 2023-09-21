@@ -62,13 +62,14 @@ function getCurrentPlayers(round){
     address: store.state.abi?.contract.aacFundPool.address,
     abi: JSON.parse(base64.decode(store.state.abi?.contract.aacFundPool.abi)),
     funcName: "rounds",
-    amount:round
+    amount:round,
+    useOrigin:true
   }
   loadingHelper.show();
-  metaMask.queryTransactionByContract(data).then((res) => {
+  metaMask.queryRoundByContract(data).then((res) => {
     loadingHelper.hide()
     players.value[round+"i"] = {
-      fund: Number(res.totalFund),
+      fund: Number(res.totalFund)/Math.pow(10,18),
       player: Number(res.totalPlayers)
     }
     refresh()

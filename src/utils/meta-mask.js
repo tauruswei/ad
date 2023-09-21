@@ -359,6 +359,12 @@ export class MetaMask {
     let ret = await myContract.methods[param.funcName](param.from).call()
     return ret;
   }
+  async queryRoundByContract(param) {
+    const myContract = this.getContract(param.abi, param.address);
+    if (!myContract) return;
+    let ret = await myContract.methods[param.funcName](param.amount).call()
+    return ret;
+  }
   sendTransactionUseEthers(param) {
     console.log("888")
     const provider = new ethers.providers.Web3Provider(ethereum)
