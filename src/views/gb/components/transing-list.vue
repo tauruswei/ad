@@ -7,11 +7,11 @@
         </van-col>
         <van-col :span="18">
           <p style="font-size:15px;margin-top:2px;margin-bottom:8px;"><b>{{ item }}</b><small>&nbsp;&nbsp;Round</small></p>
-          <a style="font-size:12px;margin:8px 0;color:#666;word-break: break-all;" :href="$store.state.abi ?`${$store.state.abi?.explorer}address/${$store.state.abi.contract.aacFundPool.address}`:'#' "><van-text-ellipsis :content="$store.state.abi?.contract.aacFundPool.address" /></a>
+          <a style="font-size:12px;margin:8px 0;color:#666;word-break: break-all;" :href="$store.state.abi ?`${$store.state.abi?.explorer}/address/${$store.state.abi.contract.aacFundPool.address}`:'#' "><van-text-ellipsis :content="$store.state.abi?.contract.aacFundPool.address" /></a>
           <div>
-            <p>Players: <span>{{ players[item+'']?.player||"0" }}</span>&nbsp;&nbsp;Earned:{{ players[item+'']?.fund||"0" }}</p>
+            <p>Players: <span>{{ players[item+'i']?.player||"0" }}</span>&nbsp;&nbsp;Earned:{{ players[item+'i']?.fund||"0" }}</p>
             <van-button size="small" type="warning" @click="getCurrentPlayers(item)" round>
-              {{players[item+''] ? "Refresh": "Detail"}}
+              refresh
             </van-button>
           </div>
       </van-col>
@@ -69,8 +69,10 @@ function getCurrentPlayers(round){
   loadingHelper.show();
   metaMask.queryTransactionByContract(data).then((res) => {
     loadingHelper.hide()
-    players.value[round]['fund'] = Number(res.totalFund)
-    players.value[round]['player'] = Number(res.totalPlayers)
+    players.value[round+"i"] = {
+      fund: Number(res.totalFund),
+      player: Number(res.totalPlayers)
+    }
     refresh()
   }).catch(err => {
     loadingHelper.hide();
