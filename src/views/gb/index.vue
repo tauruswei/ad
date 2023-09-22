@@ -68,8 +68,6 @@ const action = ref({
 });
 const amount = ref("")
 getABI();
-let CONTRACTS = store.state.abi?.contract;
-const contracts = ref(CONTRACTS);
 const abis = ref({aac:""})
 const visible = ref(false)
 const show = ref(true)
@@ -77,7 +75,7 @@ const { proxy } = getCurrentInstance();
 const metaMask = proxy.metaMask;
 const buttonText = ref('Play')
 const activeName = ref("trans")
-const isrefresh = ref(false)
+const hasConfig = ref(false)
 const errorMsg = ref("")
 
 console.log("store.state.abi", store.state.abi);
@@ -88,8 +86,9 @@ function getABI() {
   }
   userApi.abi(data).then(res=>{
     if(res.code == 0){
+      hasConfig.value = true;
       store.commit("setABI",res.data);
-      abis.value = { aac: JSON.parse(base64.decode(CONTRACTS?.aacFundPool.abi)) }
+      abis.value = { aac: JSON.parse(base64.decode(store.state.abi?.contract.aacFundPool.abi)) }
       if (metaMask.isAvailable()) {
         refresh()
       }
@@ -103,9 +102,10 @@ function getBalance(key) {
   });
 }
 function getReward(key){
+  if(!hasConfig.value) return;
   let data = {
     abi: abis.value[key],
-    address: CONTRACTS?.aacFundPool.address,
+    address: store.state.abi?.contract.aacFundPool.address,
     from: store.state.metaMask?.account,
     funcName:"rewards"
   }
@@ -114,9 +114,10 @@ function getReward(key){
   });
 }
 function getRound(key){
+  if(!hasConfig.value) return;
   let data = {
     abi: abis.value[key],
-    address: CONTRACTS?.aacFundPool.address,
+    address: store.state.abi?.contract.aacFundPool.address,
     from: store.state.metaMask?.account,
     funcName:"roundsCount"
   }
@@ -153,11 +154,12 @@ function isEmpty() {
   return !!action.value.amount;
 }
 function transfer(key) {
+  if(!hasConfig.value) return;
   if (!metaMask.isAvailable()) return;
   if(!isEmpty()) return;
   let data = {
     from: store.state.metaMask?.account,
-    address: CONTRACTS?.aacFundPool.address,
+    address: store.state.abi?.contract.aacFundPool.address,
     amount: action.value.amount,
     abi: abis.value[key],
     funcName: "deposit"
@@ -172,10 +174,11 @@ function transfer(key) {
   })
 }
 function withdraw(key) {
+  if(!hasConfig.value) return;
   if (!metaMask.isAvailable()) return;
   let data = {
     from: store.state.metaMask?.account,
-    address: CONTRACTS?.aacFundPool.address,
+    address: store.state.abi?.contract.aacFundPool.address,
     abi: abis.value[key],
     funcName: "withdraw"
   }
@@ -188,6 +191,7 @@ function withdraw(key) {
   })
 }
 function refresh() {
+  if(!hasConfig.value) return;
   getBalance('aac')
   getReward("aac")
   getRound("aac")
