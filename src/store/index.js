@@ -9,7 +9,8 @@ const store = createStore({
             role: null,
             roles: [{ id: 0, name: "admin" }, { id: 1, name: "user" }],
             metaMask: null,
-            balance: { aac:0 },
+            balance: 0,
+            fund:0,
             time: null,
             abi: null,
             cancelTokenArr: []
@@ -43,6 +44,9 @@ const store = createStore({
         },
         setBalance(state, balance) {
             state.balance = balance;
+        },
+        setFund(state, fund) {
+            state.fund = fund;
         },
         setABI(state, abi) {
             state.abi = abi;

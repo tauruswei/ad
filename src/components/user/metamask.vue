@@ -54,15 +54,14 @@ if (provider) {
   })
   provider.on('accountsChanged', (accounts) => {
     console.log('accountsChanged', accounts);
-    if (!store.state.user) return;
     if (!accounts.length) {
       metaMask.disconnect();
     } else {
       if (store.state.metaMask) {
         metaMask.account = accounts[0]
         store.commit("setMetaMask", { chainID: store.state.metaMask?.chainID, url: store.state.metaMask?.url, account: accounts[0] });
-        //metaMask.isCurrentAccount()
         isAccountExist()
+        Bus.$emit('refresh', true);
       }
     }
   })
@@ -74,7 +73,6 @@ if (provider) {
     metaMask.disconnect();
   })
   provider.on('chainChanged', (chainId) => {
-    if (!store.state.user) return;
     if (store.state.metaMask) {
       showSuccessToast("You have changed the chain!")
     }

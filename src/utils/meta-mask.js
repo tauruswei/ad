@@ -41,6 +41,7 @@ export class MetaMask {
     this.chainId = null;
     this.url = null;
     store.commit("setMetaMask", null)
+    store.commit("balance", null)
   }
   async connectMetaMask() {
     if (!this.isMetaMaskInstalled()) {

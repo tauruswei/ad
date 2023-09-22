@@ -5,13 +5,13 @@
       <metamask-connect></metamask-connect>
       <van-grid :column-num="2" style="margin:10px 0;">
         <van-grid-item>
-          <h3>{{ balance.aac }}</h3>
+          <h3>{{ $store.state.balance }}</h3>
           Balance
         </van-grid-item>
         <van-grid-item>
-          <h3>{{ reward }}</h3>
+          <h3>{{ $store.state.fund }}</h3>
           Earned
-          <van-button size="small" type="primary" v-if="round && reward" @click="withdraw('aac')" round>&nbsp;&nbsp;Withdraw&nbsp;&nbsp;</van-button>
+          <van-button size="small" type="primary" v-if="round && $store.state.fund" @click="withdraw('aac')" round>&nbsp;&nbsp;Withdraw&nbsp;&nbsp;</van-button>
         </van-grid-item>
       </van-grid>
 
@@ -61,8 +61,6 @@ import BuyingList from "./components/transing-list.vue";
 import MetamaskConnect from "@/components/user/metamask.vue";
 import Bus from "@/utils/event-bus";
 const store = useStore();
-const balance = ref({aac: 0});
-const reward = ref(0)
 const round = ref(1)
 const action = ref({
   amount: "0.01",
@@ -101,7 +99,7 @@ function getABI() {
 
 function getBalance(key) {
   metaMask.getBalance(store.state.metaMask?.account).then(res => {
-    balance.value[key] = Math.round((res) * 1000) / 1000;
+    store.commit("setBalance", Math.round((res) * 1000) / 1000);
   });
 }
 function getReward(key){
@@ -112,8 +110,7 @@ function getReward(key){
     funcName:"rewards"
   }
   metaMask.queryTransactionByContract(data).then(res => {
-    reward.value = Number(res)/ Math.pow(10, 18)
-    //reward.value = Math.round((res) * 1000) / 1000;
+    store.commit("setFund", Number(res)/ Math.pow(10, 18));
   });
 }
 function getRound(key){
