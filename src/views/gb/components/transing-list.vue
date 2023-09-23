@@ -1,6 +1,6 @@
 <template>
   <div style="height:calc(100vh - 300px);overflow-y: auto;">
-    <van-list v-model:loading="loading" :finished="finished" finished-text="" @load="query">
+    <van-list v-model:loading="loading" :finished="finished" finished-text="" loading-text="loading..." @load="query">
       <van-row :gutter="8" v-for="item in listData" :key="item" :title="item.id" style="margin-top:10px;margin-bottom:10px">
         <van-col :span="4">
           <van-image width="26px" height="26px" fill="contain" style="padding:15px;background-color: rgb(226, 226, 254);" :src="require('@/assets/img/game.png')" round></van-image>
