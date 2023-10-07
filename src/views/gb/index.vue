@@ -1,6 +1,10 @@
 <template>
   <div>
-    <van-nav-bar title="CHESS OF STARS" safe-area-inset-top />
+    <van-nav-bar safe-area-inset-top>
+      <template #title>
+        <img :src="require('../../assets/logo.png')" style="height:28px"/>
+      </template>
+    </van-nav-bar>
     <div class="content-container">
       <metamask-connect></metamask-connect>
       <van-grid :column-num="2" style="margin:10px 0;">
@@ -11,18 +15,18 @@
         <van-grid-item>
           <h3>{{ $store.state.fund }}</h3>
           Earned
-          <van-button size="small" type="primary" v-if="round && $store.state.fund" @click="withdraw('aac')" round>&nbsp;&nbsp;Withdraw&nbsp;&nbsp;</van-button>
+          <van-button size="small" type="primary" v-if="round && $store.state.fund" @click="withdraw('aac')">&nbsp;&nbsp;Withdraw&nbsp;&nbsp;</van-button>
         </van-grid-item>
       </van-grid>
 
       <van-tabs v-model:active="activeName">
         <van-tab title="Play" name="trans">
-          <div style="padding:25px 10px;text-align: center;">
-            <van-image width="64px" height="64px" fill="contain" style="padding:15px;background-color: rgb(226, 226, 254);" :src="require('@/assets/img/game.png')" round></van-image>
-            <h3 style="margin:10px 0 15px;color: rgb(188, 0, 0);">1000 AAC</h3>
-            <div style="font-weight: bold;color:rgb(66, 66, 66);font-size: 15px;">Spend 1000 AAC for a 8-players game</div>
-            <p style="color:#666;margin-bottom:15px;">You will get paid if you win the game.</p>
-            <van-button size="small" type="primary" @click="open('aacstaking')" round>&nbsp;&nbsp;LET'S GO !&nbsp;&nbsp;</van-button>
+          <div style="padding:0 10px 25px;text-align: center;">
+            <van-image width="280px" height="280px" fill="contain" :src="require('@/assets/img/game.gif')" round></van-image>
+            <h3 style="margin:-30px 0 15px;color: var(--van-danger-color);">1000 AAC</h3>
+            <div style="font-weight: bold;color:var(--van-gray-8);font-size: 15px;">Spend 1000 AAC for a 8-players game</div>
+            <p style="color:var(--van-gray-5);margin-bottom:15px;">You will get paid if you win the game.</p>
+            <van-button class="action-btn" size="small" type="primary" @click="open('aacstaking')"></van-button>
           </div>
         </van-tab>
         <van-tab title="Playing" name="playing">
@@ -40,7 +44,7 @@
         <van-cell-group inset style="margin-bottom:15px;">
           <van-field v-model="action.amount" label="AMOUNT:" type="number" required :error-message="errorMsg" placeholder="amount" clickable />
         </van-cell-group>
-        <van-button type="success" @click="handleTransferOperate()" style="width:100%" round>
+        <van-button type="success" @click="handleTransferOperate()" style="width:100%">
           {{buttonText}}
         </van-button>
         <van-number-keyboard :show="show" v-model="action.amount" theme="custom" extra-key="." safe-area-inset-bottom/>

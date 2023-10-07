@@ -3,11 +3,11 @@
     <van-list v-model:loading="loading" :finished="finished" finished-text="" loading-text="loading..." @load="query">
       <van-row :gutter="8" v-for="item in listData" :key="item" :title="item.id" style="margin-top:10px;margin-bottom:10px">
         <van-col :span="4">
-          <van-image width="26px" height="26px" fill="contain" style="padding:15px;background-color: rgb(226, 226, 254);" :src="require('@/assets/img/game.png')" round></van-image>
+          <van-image width="56px" height="56px" fill="contain" style="border:.5px solid var(--van-primary-color)" :src="require('@/assets/game1.gif')" round></van-image>
         </van-col>
         <van-col :span="18">
           <p style="font-size:15px;margin-top:2px;margin-bottom:8px;"><b>{{ item }}</b><small>&nbsp;&nbsp;Round</small></p>
-          <a style="font-size:12px;margin:8px 0;color:#666;word-break: break-all;" :href="$store.state.abi ?`${$store.state.abi?.explorer}/address/${$store.state.abi.contract.aacFundPool.address}`:'#' "><van-text-ellipsis :content="$store.state.abi?.contract.aacFundPool.address" /></a>
+          <a style="font-size:12px;margin:8px 0;color:var(--van-gray-6);word-break: break-all;" :href="$store.state.abi ?`${$store.state.abi?.explorer}/address/${$store.state.abi.contract.aacFundPool.address}`:'#' "><van-text-ellipsis :content="$store.state.abi?.contract.aacFundPool.address" /></a>
           <div>
             <p>Total Players: <span>{{ players[item+'i']?.player||"0" }}</span>&nbsp;&nbsp;Total Fund:{{ players[item+'i']?.fund||"0" }}&nbsp;&nbsp;&nbsp;<van-icon name="replay"  @click="getCurrentPlayers(item)"/></p>
             

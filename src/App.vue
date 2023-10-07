@@ -38,7 +38,6 @@ export default {
     Helvetica, "Microsoft YaHei", "微软雅黑", Arial;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #111;
 }
 </style>
 

@@ -2,17 +2,17 @@
   <div>
     <van-row style="color:#393634;padding:15px;background-color:rgb(253, 230, 211);border-radius:16px 16px 0 0;">
       <van-col :span="4">
-        <van-image width="48px" height="48px" :src="require('@/assets/metamask-fox.svg')" fit="contain" round></van-image>
+        <van-image style="width:48px;height:48px;padding:8px;box-sizing:border-box;background-color: rgba(255,255,255,.05);" :src="require('@/assets/metamask-fox.svg')" round></van-image>
       </van-col>
       <van-col :span="12">
-        <van-button v-if="!isConnected" size="small" type="primary" @click="connectWallet" round>Connect Wallet</van-button>
+        <van-button v-if="!isConnected" size="small" type="primary" @click="connectWallet">Connect Wallet</van-button>
         <div v-if="isConnected">
           <p style="margin:0 0 10px;">{{ $store.state.metaMask?.account.substr(0,12)+"..." }} <van-icon name="records" @click="copy($store.state.metaMask?.account)" /></p>
           <van-tag type="success" round>Connected</van-tag>
         </div>
       </van-col>
       <van-col :span="8">
-        <span style="display:block;text-align: right;color:#f09424;" :title="$store.state.abi?.networkName"><small>{{$store.state.abi?.networkName ||""}}</small></span>
+        <span style="display:block;text-align: right;color:#f09424" :title="$store.state.abi?.networkName"><small>{{$store.state.abi?.networkName ||""}}</small></span>
       </van-col>
     </van-row>
     <van-popup v-model:show="visible" position="bottom" :style="{height: '420px'}" closeable close-icon="close" round :close-on-click-overlay="false">
@@ -21,7 +21,7 @@
         <van-cell-group inset style="margin-bottom:15px;">
           <van-field v-model="code" label="code:" type="text" required :error-message="errorMsg" placeholder="code" clickable />
         </van-cell-group>
-        <van-button type="success" @click="update(true)" style="width:100%" round>sure</van-button>
+        <van-button type="success" @click="update(true)" style="width:100%">sure</van-button>
       </div>
     </van-popup>
   </div>
