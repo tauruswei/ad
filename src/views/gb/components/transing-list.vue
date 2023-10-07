@@ -3,7 +3,7 @@
     <van-list v-model:loading="loading" :finished="finished" finished-text="" loading-text="loading..." @load="query">
       <van-row :gutter="8" v-for="item in listData" :key="item" :title="item.id" style="margin-top:10px;margin-bottom:10px">
         <van-col :span="4">
-          <van-image width="56px" height="56px" fill="contain" style="border:.5px solid var(--van-primary-color)" :src="require('@/assets/game1.gif')" round></van-image>
+          <van-image width="56px" height="56px" fill="cover" style="border:.5px solid var(--van-primary-color);background-color: #fff;" :src="require('@/assets/img/game.gif')" round></van-image>
         </van-col>
         <van-col :span="18">
           <p style="font-size:15px;margin-top:2px;margin-bottom:8px;"><b>{{ item }}</b><small>&nbsp;&nbsp;Round</small></p>

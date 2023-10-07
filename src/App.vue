@@ -38,6 +38,11 @@ export default {
     Helvetica, "Microsoft YaHei", "微软雅黑", Arial;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: #fff;
+  background-color: var(--van-gray-8)
+}
+body{
+  background-color: var(--van-gray-8)
 }
 </style>
 

@@ -1,27 +1,46 @@
-:root:root{
+:root:root {
+  --van-gray-8: #130f12;
   --van-blue: #0068fe;
   --van-primary-color: rgb(208, 166, 84);
   --van-button-radius: 0;
+  --van-background: var(--van-gray-8);
+  --van-background-2: var(--van-gray-8);
+  --van-background-3: var(--van-gray-8);
+  --van-text-color: var(--van-gray-1);
+  --van-background-color: var(--van-gray-8);
+  --van-border-color: var(--van-gray-7);
+  --van-number-keyboard-background: var(--van-gray-7);
 }
-h3{
-  margin:0;
-  font-size:24px;
+h3 {
+  margin: 0;
+  font-size: 24px;
 }
-.content-container{
-  padding:10px 10px;
+.content-container {
+  padding: 10px 10px;
   box-sizing: border-box;
   overflow-y: auto;
 }
 
-.van-tabs__line{
+.van-tabs__line {
   border-radius: 0 !important;
 }
-.action-btn.van-button{
+.action-btn.van-button {
   width: 120px;
-  height:50px;
+  height: 50px;
   background-image: url("@/assets/btn.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-color: transparent;
-  border:none;
+  border: none;
+}
+.action-btn.van-button:hover {
+  background-image: url("@/assets/btn_active.png");
+}
+
+.wallet {
+  padding-top: 90px;
+  background-image: url("@/assets/img/topbg.png");
+  background-repeat: no-repeat;
+  background-size: 95% auto;
+  background-position: center top;
 }

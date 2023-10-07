@@ -5,9 +5,9 @@
         <img :src="require('../../assets/logo.png')" style="height:28px"/>
       </template>
     </van-nav-bar>
-    <div class="content-container">
+    <div class="content-container" style="padding-top:0">
       <metamask-connect></metamask-connect>
-      <van-grid :column-num="2" style="margin:10px 0;">
+      <van-grid :column-num="2">
         <van-grid-item>
           <h3>{{ $store.state.balance }}</h3>
           Balance
@@ -21,10 +21,10 @@
 
       <van-tabs v-model:active="activeName">
         <van-tab title="Play" name="trans">
-          <div style="padding:0 10px 25px;text-align: center;">
-            <van-image width="280px" height="280px" fill="contain" :src="require('@/assets/img/game.gif')" round></van-image>
+          <div style="padding:15px 10px 25px;text-align: center;">
+            <van-image width="280px" height="280px" fill="contain" :src="require('@/assets/hero_attack.gif')"></van-image>
             <h3 style="margin:-30px 0 15px;color: var(--van-danger-color);">1000 AAC</h3>
-            <div style="font-weight: bold;color:var(--van-gray-8);font-size: 15px;">Spend 1000 AAC for a 8-players game</div>
+            <div style="font-weight: bold;font-size: 15px;">Spend 1000 AAC for a 8-players game</div>
             <p style="color:var(--van-gray-5);margin-bottom:15px;">You will get paid if you win the game.</p>
             <van-button class="action-btn" size="small" type="primary" @click="open('aacstaking')"></van-button>
           </div>
@@ -44,7 +44,7 @@
         <van-cell-group inset style="margin-bottom:15px;">
           <van-field v-model="action.amount" label="AMOUNT:" type="number" required :error-message="errorMsg" placeholder="amount" clickable />
         </van-cell-group>
-        <van-button type="success" @click="handleTransferOperate()" style="width:100%">
+        <van-button type="primary" @click="handleTransferOperate()" style="width:100%">
           {{buttonText}}
         </van-button>
         <van-number-keyboard :show="show" v-model="action.amount" theme="custom" extra-key="." safe-area-inset-bottom/>
