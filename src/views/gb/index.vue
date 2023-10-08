@@ -1,41 +1,48 @@
 <template>
   <div>
-    <van-nav-bar safe-area-inset-top>
+    <!--<van-nav-bar safe-area-inset-top>
       <template #title>
         <img :src="require('../../assets/logo.png')" style="height:28px"/>
       </template>
-    </van-nav-bar>
-    <div class="content-container" style="padding-top:0">
-      <metamask-connect></metamask-connect>
-      <van-grid :column-num="2">
-        <van-grid-item>
-          <h3>{{ $store.state.balance }}</h3>
-          Balance
-        </van-grid-item>
-        <van-grid-item>
-          <h3>{{ $store.state.fund }}</h3>
-          Earned
-          <van-button size="small" type="primary" v-if="round && $store.state.fund" @click="withdraw('aac')">&nbsp;&nbsp;Withdraw&nbsp;&nbsp;</van-button>
-        </van-grid-item>
-      </van-grid>
-
-      <van-tabs v-model:active="activeName">
-        <van-tab title="Play" name="trans">
-          <div style="padding:15px 10px 25px;text-align: center;">
-            <van-image width="280px" height="280px" fill="contain" :src="require('@/assets/hero_attack.gif')"></van-image>
-            <h3 style="margin:-30px 0 15px;color: var(--van-danger-color);">1000 AAC</h3>
-            <div style="font-weight: bold;font-size: 15px;">Spend 1000 AAC for a 8-players game</div>
-            <p style="color:var(--van-gray-5);margin-bottom:15px;">You will get paid if you win the game.</p>
-            <van-button class="action-btn" size="small" type="primary" @click="open('aacstaking')"></van-button>
-          </div>
-        </van-tab>
-        <van-tab title="Playing" name="playing">
-            <buying-list v-if="activeName =='playing'"></buying-list>
-        </van-tab>
-        <van-tab title="History" name="history">
-          <buy-list v-if="activeName =='history'"></buy-list>
-        </van-tab>
-      </van-tabs>
+    </van-nav-bar>-->
+    <div class="content-container">
+      <div class="border-bg">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <div class="wallet"></div>
+      <div class="bg">
+        <metamask-connect></metamask-connect>
+        <van-grid :column-num="2">
+          <van-grid-item>
+            <h3>{{ $store.state.balance }}</h3>
+            Balance
+          </van-grid-item>
+          <van-grid-item>
+            <h3>{{ $store.state.fund }}</h3>
+            Earned
+            <van-button size="small" type="primary" v-if="round && $store.state.fund" @click="withdraw('aac')">&nbsp;&nbsp;Withdraw&nbsp;&nbsp;</van-button>
+          </van-grid-item>
+        </van-grid>
+        <van-tabs v-model:active="activeName">
+          <van-tab title="Play" name="trans">
+            <div style="padding:15px 10px 25px;text-align: center;">
+              <van-image width="240px" height="180px" fill="contain" :src="require('@/assets/hero_attack.gif')"></van-image>
+              <h3 style="margin:-30px 0 15px;color: var(--van-danger-color);">1000 AAC</h3>
+              <div style="font-weight: bold;font-size: 15px;">Spend 1000 AAC for a 8-players game</div>
+              <p style="color:var(--van-gray-5);margin-bottom:15px;">You will get paid if you win the game.</p>
+              <van-button class="action-btn" size="small" type="primary" @click="open('aacstaking')"></van-button>
+            </div>
+          </van-tab>
+          <van-tab title="Playing" name="playing">
+              <buying-list v-if="activeName =='playing'"></buying-list>
+          </van-tab>
+          <van-tab title="History" name="history">
+            <buy-list v-if="activeName =='history'"></buy-list>
+          </van-tab>
+        </van-tabs>
+      </div>
     </div>
     <!--Staking && UnStaking-->
     <van-popup v-model:show="visible" position="bottom" :style="{height: '420px'}" closeable close-icon="close" round :close-on-click-overlay="false">
