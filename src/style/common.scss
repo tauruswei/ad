@@ -10,6 +10,7 @@
   --van-background-color: var(--van-gray-8);
   --van-border-color: var(--van-gray-7);
   --van-number-keyboard-background: var(--van-gray-7);
+  --van-tab-active-text-color:var(--van-primary-color)
 }
 h3 {
   margin: 0;
@@ -43,4 +44,10 @@ h3 {
   background-repeat: no-repeat;
   background-size: 95% auto;
   background-position: center top;
+}
+.van-tabs .van-tabs__line{
+  width:72px;
+  height: 7px;
+  background:transparent url("@/assets/tab_line.webp") no-repeat center bottom;
+  background-size: cover;
 }
