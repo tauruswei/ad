@@ -11,6 +11,7 @@
         <div></div>
         <div></div>
       </div>
+      <div class="ui-content">
       <div class="wallet"></div>
       <div class="bg">
         <metamask-connect></metamask-connect>
@@ -43,6 +44,7 @@
           </van-tab>
         </van-tabs>
       </div>
+    </div>
     </div>
     <!--Staking && UnStaking-->
     <van-popup v-model:show="visible" position="bottom" :style="{height: '420px'}" closeable close-icon="close" round :close-on-click-overlay="false">

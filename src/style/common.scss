@@ -48,10 +48,14 @@ h3 {
   background:transparent url("@/assets/images/bg_border1_03.png") no-repeat center top;
   background-size: 100% 100%;
 }
-.bg{
+.ui-content{
   height: 84vh;
   box-sizing: border-box;
-  overflow-y: auto; 
+  overflow-y: auto;
+}
+.bg{
+  margin-bottom: 10px;
+  height:calc(84vh - 100px);
   background: url("@/assets/bg.png") no-repeat center bottom;
   background-size: 100% 100%;
 }
