@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-row style="color:#393634;padding:10px 12px;background-color:rgb(253, 230, 211);border-radius:16px 16px 0 0;">
+    <van-row style="color:#fff;padding:10px 12px;background-color:#4c4741;border-radius:16px 16px 0 0;">
       <van-col :span="4">
         <van-image style="width:48px;height:48px;padding:8px;box-sizing:border-box;background-color: rgba(255,255,255,.05);" :src="require('@/assets/metamask-fox.svg')" round></van-image>
       </van-col>
@@ -48,6 +48,8 @@ let isConnected = computed(() => {
   return store.state.metaMask ? true : false
 })
 if (provider) {
+  metaMask.setValue();
+  store.commit("setMetaMask", { chainID: provider.chainId, url: store.state.metaMask?.url, account: provider.selectedAddress });
   provider.on('connect', (account) => {
     console.log('connect', account)
     if (!store.state.metaMask) metaMask.connectMetaMask()

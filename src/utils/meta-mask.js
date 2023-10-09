@@ -27,6 +27,11 @@ export class MetaMask {
     this.chainId = null;
     this.url = null;
   }
+  setValue(){
+    this.provider = ethereum;
+    this.account = ethereum.selectedAddress;
+    this.chainId = ethereum.chainId
+  }
   async getProvider() {
     try {
       let provider = await detectEthereumProvider()
@@ -159,12 +164,11 @@ export class MetaMask {
       return false
     }
   }
-  async isCurrentChain(id) {
+  isCurrentChain(id) {
     const CHAINID = toHex(store.state.abi?.chainId)
     if (id != CHAINID) {
-      let res = await this.checkNetwork();
-      console.log("isbsc", res)
-      return res;
+      showFailToast('Please connect to the right chain (Double-A Chain, ChainID=' + parseInt(CHAINID) + '[' + this.chainId + ']).');
+      return false;
     } else {
       return true
     }
@@ -224,7 +228,8 @@ export class MetaMask {
     } else {
       ret = true;
     }
-    if (!this.isCurrentChain(store.state.metaMask?.chainID)) return false;
+    ret = this.isCurrentChain(store.state.metaMask?.chainID)
+    console.log(ret)
     //if (this.isCurrentAccount()) ret = true;
     //else {
     //  ret = false;
