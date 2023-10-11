@@ -5,8 +5,9 @@ import Web3 from 'web3';
 import {ethers} from "ethers";
 import store from "../store/index";
 import router from "../router/index";
+import {globals} from '../main.js'
 import { aacApi, chainApi, userApi } from '@/api/request';
-import { showToast, showSuccessToast, showFailToast, showConfirmDialog } from 'vant';
+import { showToast, showSuccessToast, showFailToast, showConfirmDialog,showDialog } from 'vant';
 let option = {
   injectProvider: false,
   communicationLayerPreference: 'webrtc',
@@ -27,10 +28,10 @@ export class MetaMask {
     this.chainId = null;
     this.url = null;
   }
-  setValue(){
+  setValue(chainId,account){
     this.provider = ethereum;
-    this.account = ethereum.selectedAddress;
-    this.chainId = ethereum.chainId
+    this.account = account;
+    this.chainId = chainId;
   }
   async getProvider() {
     try {
@@ -50,7 +51,9 @@ export class MetaMask {
   }
   async connectMetaMask() {
     if (!this.isMetaMaskInstalled()) {
-      showFailToast(`Please install Metamask Wallet at <a href="https://metamask.io/">metamask.io</a>.`);
+      showDialog({
+        message: `${globals.t('message.wallet.install')} <a href="https://metamask.io/">metamask.io</a>`,
+      })
       // 判断是否安装MetaMask扩展工具
       const forwarderOrigin = window.location.origin
       const onboarding = new MetaMaskOnboarding({
@@ -217,13 +220,14 @@ export class MetaMask {
     let ret = false;
     //if(!this.isCheckedToken()) return false;
     if (!this.isMetaMaskInstalled()) {
-      showFailToast(`Please install Metamask Wallet at <a href="https://metamask.io/">metamask.io</a>.`)
+      showDialog({
+        message: `${globals.t('message.wallet.install')} <a href="https://metamask.io/">metamask.io</a>`,
+      })
       store.commit("setMetaMask", null)
       return false;
     }
     if (!store.state.metaMask) {
-      showFailToast("please connect wallet")
-      //console.log("please connect wallet");
+      showFailToast(globals.t("message.wallet.connect"))
       return false;
     } else {
       ret = true;
@@ -301,7 +305,7 @@ export class MetaMask {
           console.log(success)
           console.log(param.symbol + ' successfully added to wallet!');
         } else {
-          throw new Error('Something went wrong.');
+          throw new Error(globals.t('error.wentWrong'));
         }
       })
       .catch((error) => console.error(error));
@@ -396,16 +400,16 @@ export class MetaMask {
 function errorHandlerOfMetaMaskRequest(error) {
   console.log(error)
   if (error.code == 4001) {
-    showFailToast("You have rejected this operation.")
+    showFailToast(globals.t('error.reject'))
   } else if (error.code == 4100) {
-    showFailToast("The requested account and/or method has not been authorized.")
+    showFailToast(globals.t('error.authorized'))
   } else if (error.code == -32603) {
-    showFailToast("It seems that something wrong happens in your wallet, please check and solve it first.")
+    showFailToast(globals.t('error.wrong'))
   } else if (error.code == -32002) {
-    showFailToast("The wallet is processing your request, please finish the operation in the wallet.")
+    showFailToast(globals.t('error.wait'))
   } else {
     //error?.message
-    showFailToast("failed!")
+    showFailToast(globals.t('error.failed'))
   }
 }
 const checkToken = async () => {

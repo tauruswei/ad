@@ -1,18 +1,18 @@
 <template>
   <div style="height:calc(100vh - 300px);overflow-y: auto;">
-    <van-pull-refresh v-model="loading" @refresh="onRefresh" loosing-text="pull to refresh..." loading-text="loading..." pulling-text="refresh after release">
-      <van-list :finished="finished" finished-text="no more ..." @load="query">
+    <van-pull-refresh v-model="loading" @refresh="onRefresh" :loosing-text="$t('text.loosingText')" :loading-text="$t('text.loadingText')" :pulling-text="$t('text.pullingText')">
+      <van-list :finished="finished" :finished-text="$t('text.finishedText')" @load="query">
         <van-row v-for="item in listData" :key="item" :title="item.id" style="margin-bottom:10px;margin-top:10px">
           <van-col :span="6">
             <div style="height:100%;box-sizing:border-box;padding:8px 0;border-radius:12px 0 0 12px;text-align: center;">
               <h3><small>{{ item.roundIndex }}</small></h3>
-              Round
+              {{$t('text.round')}}
               <h3><small>{{ item.totalPlayers }}</small></h3>
-              Players
+              {{$t('text.players')}}
             </div>
           </van-col>
           <van-col :span="18" style="height:100%;padding-left:10px">
-            <p>Date: {{ item.updateTime }}</p>
+            <p>{{$t('text.date')}}: {{ item.updateTime }}</p>
             <div style="padding:7px 0 3px;">
               <van-tag type="primary">1</van-tag>
               <small :title="item.firstWinner">&nbsp;&nbsp;{{ item.firstWinner?.substr(12)+"..." }}</small>

@@ -5,10 +5,10 @@
         <van-image style="width:48px;height:48px;padding:8px;box-sizing:border-box;background-color: rgba(255,255,255,.05);" :src="require('@/assets/metamask-fox.svg')" round></van-image>
       </van-col>
       <van-col :span="12">
-        <van-button v-if="!isConnected" size="small" type="primary" @click="connectWallet">Connect Wallet</van-button>
-        <div v-if="isConnected">
+        <van-button v-if="!$store.state.metaMask" size="small" type="primary" @click="connectWallet">{{$t('btn.connect')}}</van-button>
+        <div v-if="$store.state.metaMask">
           <p style="margin:0 0 10px;">{{ $store.state.metaMask?.account.substr(0,12)+"..." }} <van-icon name="records" @click="copy($store.state.metaMask?.account)" /></p>
-          <van-tag type="success" round>Connected</van-tag>
+          <van-tag type="success" round>{{$t('text.connected')}}</van-tag>
         </div>
       </van-col>
       <van-col :span="8">
@@ -29,7 +29,7 @@
 <script setup>
 import { ref, getCurrentInstance, computed } from "vue";
 import { useStore } from "vuex"
-import { chainApi,aacApi } from "@/api/request";
+import { chainApi, aacApi } from "@/api/request";
 import { base64 } from "@/utils/base64";
 import { copyClick } from '@/utils/copy';
 import Bus from "@/utils/event-bus";
@@ -42,17 +42,30 @@ const metaMask = proxy.metaMask;
 const provider = window.ethereum;
 const chains = ref({ '0x1': "ethereum", '0x61': 'bsc test', '0x0200': 'Double-A Chain' })
 let visible = ref(false)
-let code =ref("")
+let code = ref("")
 const errorMsg = ref("")
 let isConnected = computed(() => {
   return store.state.metaMask ? true : false
 })
 if (provider) {
-  metaMask.setValue();
-  store.commit("setMetaMask", { chainID: provider.chainId, url: store.state.metaMask?.url, account: provider.selectedAddress });
-  provider.on('connect', (account) => {
-    console.log('connect', account)
-    if (!store.state.metaMask) metaMask.connectMetaMask()
+  //手机钱包切换
+  if (store.state.metaMask) {
+    let account;
+    ethereum.request({ method: 'eth_requestAccounts' }).then(async(accounts) => {
+      console.log(accounts);
+      let chainId = await ethereum.request({ method: 'eth_chainId' })
+      if (accounts && accounts.length) account = accounts[0];
+      metaMask.setValue(chainId,account);
+      if (account != store.state.metaMask.account) {
+        store.commit("setMetaMask", { chainID: chainId, url: store.state.metaMask?.url, account: account });
+      }
+      isAccountExist()
+      Bus.$emit('refresh', true);
+    });
+  }
+  provider.on('connect', async (info) => {
+    console.log('connect', info)
+    if (!store.state.metaMask) metaMask.connectMetaMask();
   })
   provider.on('accountsChanged', (accounts) => {
     console.log('accountsChanged', accounts);
@@ -98,15 +111,15 @@ function isAccountExist() {
   })
 }
 function update(hascode) {
-  if(hascode){
-    if(!code.value){
+  if (hascode) {
+    if (!code.value) {
       errorMsg.value = "code is required!"
       return
     }
   }
   let data = {
     walletAddress: store.state.metaMask?.account,
-    code: code.value?code.value:null
+    code: code.value ? code.value : null
   }
   aacApi.updateAccount(data).then(res => {
     if (res.code == 0) {

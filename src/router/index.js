@@ -24,6 +24,15 @@ const routes = [
       route: "/gb",
     },
   },
+  {
+    path: "/invite",
+    name: "invite",
+    component: () => import("@/views/invite.vue"),
+    meta: {
+      title: "Invite",
+      route: "/invite",
+    },
+  },
 ];
 
 const router = createRouter({
