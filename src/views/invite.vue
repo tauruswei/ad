@@ -28,6 +28,7 @@ onMounted(() => {
   if(invideCode.value){
     store.commit("setInviteCode",invideCode.value);
     store.commit("setMetaMask",null);
+    store.commit("setMyCode",null);
     router.push({ path: "/" });
   } 
 })
