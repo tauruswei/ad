@@ -80,7 +80,8 @@ h3 {
 }
 
 .wallet {
-  padding-top: 90px;
+  height:90px;
+  box-sizing: border-box;
   background-image: url("@/assets/img/topbg.png");
   background-repeat: no-repeat;
   background-size: 95% auto;

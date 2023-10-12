@@ -4,7 +4,8 @@ import Notfound from "@/components/page/404.vue";
 const routes = [
   {
     path: "/",
-    redirect: "/gb",
+    name: "gb",
+    component: () => import("@/views/gb/index.vue"),
   },
   {
     path: "/404",
@@ -14,15 +15,6 @@ const routes = [
       title: "no found",
       route: "/404",
     }
-  },
-  {
-    path: "/gb",
-    name: "gb",
-    component: () => import("@/views/gb/index.vue"),
-    meta: {
-      title: "Game Home",
-      route: "/gb",
-    },
   },
   {
     path: "/invite",

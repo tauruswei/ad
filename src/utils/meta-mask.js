@@ -41,6 +41,11 @@ export class MetaMask {
       console.log(error)
     }
   }
+  async getAccount(){
+    const accounts = await ethereum.request({ method: 'eth_requestAccounts' })
+    if (accounts && accounts.length) this.account = accounts[0];
+    return this.account;
+  }
   disconnect() {
     this.enabled = false;
     this.account = null;
@@ -52,7 +57,7 @@ export class MetaMask {
   async connectMetaMask() {
     if (!this.isMetaMaskInstalled()) {
       showDialog({
-        message: `${globals.t('message.wallet.install')} <a href="https://metamask.io/">metamask.io</a>`,
+        message: `${globals.$t('message.wallet.install')} <a href="https://metamask.io/">metamask.io</a>`,
       })
       // 判断是否安装MetaMask扩展工具
       const forwarderOrigin = window.location.origin
@@ -221,13 +226,13 @@ export class MetaMask {
     //if(!this.isCheckedToken()) return false;
     if (!this.isMetaMaskInstalled()) {
       showDialog({
-        message: `${globals.t('message.wallet.install')} <a href="https://metamask.io/">metamask.io</a>`,
+        message: `${globals.$t('message.wallet.install')} <a href="https://metamask.io/">metamask.io</a>`,
       })
       store.commit("setMetaMask", null)
       return false;
     }
     if (!store.state.metaMask) {
-      showFailToast(globals.t("message.wallet.connect"))
+      showFailToast(`${globals.$t("message.wallet.connect")}`)
       return false;
     } else {
       ret = true;
@@ -305,7 +310,7 @@ export class MetaMask {
           console.log(success)
           console.log(param.symbol + ' successfully added to wallet!');
         } else {
-          throw new Error(globals.t('error.wentWrong'));
+          throw new Error(`${globals.$t('error.wentWrong')}`);
         }
       })
       .catch((error) => console.error(error));
@@ -400,16 +405,16 @@ export class MetaMask {
 function errorHandlerOfMetaMaskRequest(error) {
   console.log(error)
   if (error.code == 4001) {
-    showFailToast(globals.t('error.reject'))
+    showFailToast(`${globals.$t('error.reject')}`)
   } else if (error.code == 4100) {
-    showFailToast(globals.t('error.authorized'))
+    showFailToast(`${globals.$t('error.authorized')}`)
   } else if (error.code == -32603) {
-    showFailToast(globals.t('error.wrong'))
+    showFailToast(`${globals.$t('error.wrong')}`)
   } else if (error.code == -32002) {
-    showFailToast(globals.t('error.wait'))
+    showFailToast(`${globals.$t('error.wait')}`)
   } else {
     //error?.message
-    showFailToast(globals.t('error.failed'))
+    showFailToast(`${globals.$t('error.failed')}`)
   }
 }
 const checkToken = async () => {

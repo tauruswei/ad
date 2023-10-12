@@ -15,11 +15,11 @@
         <span style="display:block;text-align: right;color:#f09424" :title="$store.state.abi?.networkName"><small>{{$store.state.abi?.networkName ||""}}</small></span>
       </van-col>
     </van-row>
-    <van-popup v-model:show="visible" position="bottom" :style="{height: '420px'}" closeable close-icon="close" round :close-on-click-overlay="false">
+    <van-popup v-model:show="visible" position="bottom" :style="{height: '420px'}" round :close-on-click-overlay="false">
       <div style="padding:10px 15px 20px;font-size:17px">
         <h3>AAC</h3>
         <van-cell-group inset style="margin-bottom:15px;">
-          <van-field v-model="code" label="code:" type="text" required :error-message="errorMsg" placeholder="code" clickable />
+          <van-field v-model="code" :label="`${$t('text.inviteLabel')}:`" type="text" required :error-message="errorMsg" placeholder="code" clickable />
         </van-cell-group>
         <van-button type="success" @click="update(true)" style="width:100%">sure</van-button>
       </div>
@@ -29,7 +29,7 @@
 <script setup>
 import { ref, getCurrentInstance, computed } from "vue";
 import { useStore } from "vuex"
-import { chainApi, aacApi } from "@/api/request";
+import { chainApi, aacApi,userApi } from "@/api/request";
 import { base64 } from "@/utils/base64";
 import { copyClick } from '@/utils/copy';
 import Bus from "@/utils/event-bus";
@@ -42,7 +42,7 @@ const metaMask = proxy.metaMask;
 const provider = window.ethereum;
 const chains = ref({ '0x1': "ethereum", '0x61': 'bsc test', '0x0200': 'Double-A Chain' })
 let visible = ref(false)
-let code = ref("")
+let code = ref(store.state.inviteCode)
 const errorMsg = ref("")
 let isConnected = computed(() => {
   return store.state.metaMask ? true : false
@@ -100,31 +100,46 @@ function isAccountExist() {
   }
   aacApi.checkAccount(data).then(res => {
     if (!res.data) {
-      showConfirmDialog({ message: 'Would you like to enter your invite code?' })
-        .then(() => {
-          visible.value = true;
-        })
-        .catch(() => {
-          update()
-        });
+      if(!code.value){
+        visible.value = true;
+      }else{
+        update()
+      }
+    }else{
+      getInviteCode()
     }
+  }).catch((err)=>{
+    console.log(err)
+    metaMask.disconnect();
   })
 }
 function update(hascode) {
   if (hascode) {
     if (!code.value) {
-      errorMsg.value = "code is required!"
+      errorMsg.value = `${proxy.$t('message.invite.required')}`
       return
     }
   }
   let data = {
     walletAddress: store.state.metaMask?.account,
-    code: code.value ? code.value : null
+    inviterId: code.value ? code.value : null
   }
   aacApi.updateAccount(data).then(res => {
     if (res.code == 0) {
-      showSuccessToast("success!")
+      showSuccessToast(proxy.$t('message.invite.success'))
       visible.value = false;
+      getInviteCode()
+    }
+  }).catch((err)=>{
+    console.log(err)
+    metaMask.disconnect();
+  })
+}
+function getInviteCode(){
+  let data = {walletAddress:store.state.metaMask?.account};
+  userApi.channelLeader(data).then(res=>{
+    if(res && res.code == 0){
+      store.commit("setMyCode",res.data)
     }
   })
 }

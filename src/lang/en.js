@@ -20,7 +20,8 @@ export default {
         loosingText:"pull to refresh...",
         loadingText:"loading...",
         pullingText:"refresh after release",
-        finishedText:"no more ..."
+        finishedText:"no more ...",
+        inviteLabel:"invite code"
     },
     message:{
         play:{
@@ -31,6 +32,11 @@ export default {
             install:"Please install Metamask Wallet at",
             connect:"please connect wallet"
         },
+        invite:{
+            tip:"Would you like to enter your invite code?",
+            success:"success",
+            required:"invite code is required!"
+        }
     },
     error:{
         required:"amount is required!",

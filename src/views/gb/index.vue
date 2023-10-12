@@ -12,12 +12,12 @@
         <div></div>
       </div>
       <div class="ui-content">
-      <div class="wallet"></div>
-      <div class="bg">
-        <div style="text-align:right">
-        <van-button type="primary" size="small" @click="copy('http://xxx?invite=xxx')">{{$t('btn.invite')}}</van-button>
-        <language-com style="width:120px;display:inline-block;"></language-com>
+      <div class="wallet"><div style="display:flex;justify-content: space-between;">
+        <van-button v-if="$store.state.metaMask" type="primary" size="small" @click="copy(`${inviteUrl}?inviteCode=${encodeURIComponent($store.state.mycode)}`)" round>{{$t('btn.invite')}}</van-button>
+        <language-com style="display:inline-block;"></language-com>
         </div>
+      </div>
+      <div class="bg">
         <metamask-connect></metamask-connect>
         <van-grid :column-num="2">
           <van-grid-item>
@@ -80,7 +80,8 @@ import MetamaskConnect from "@/components/user/metamask.vue";
 import LanguageCom from "@/components/common/lang.vue"
 import Bus from "@/utils/event-bus";
 const store = useStore();
-const round = ref(1)
+const round = ref(1);
+let inviteUrl = ref('');
 const action = ref({
   amount: "0.01",
   command: ''
@@ -95,14 +96,15 @@ const metaMask = proxy.metaMask;
 const activeName = ref("trans")
 const hasConfig = ref(false)
 const errorMsg = ref("")
-
+onMounted(()=>{
+  inviteUrl.value = `${window.location.protocol}${window.location.host}/invite`; 
+})
 console.log("store.state.abi", store.state.abi);
-
 function getABI() {
   let data = {
     network:"aac"
   }
-  let res = {
+  /*let res = {
     "code": 0,
     "msg": "success",
     "data": {
@@ -133,9 +135,9 @@ setTimeout(()=>{
       if (metaMask.isAvailable()) {
         refresh()
       }
-},100)
+},100)*/
 
-  /*userApi.abi(data).then(res=>{
+  userApi.abi(data).then(res=>{
     if(res.code == 0){
       hasConfig.value = true;
       store.commit("setABI",res.data);
@@ -144,7 +146,7 @@ setTimeout(()=>{
         refresh()
       }
     }
-  })*/
+  })
 }
 
 function getBalance(key) {
@@ -199,7 +201,7 @@ function handleTransferOperate() {
 }
 function isEmpty() {
   if (!action.value.amount) {
-    errorMsg.value = t("error.required")
+    errorMsg.value = proxy.$t("error.required")
   }
   return !!action.value.amount;
 }
@@ -241,13 +243,14 @@ function withdraw(key) {
   })
 }
 function copy(val) {
+  if(!store.state.mycode) return;
   copyClick(val)
 }
 function refresh() {
   if(!hasConfig.value) return;
   getBalance('aac')
   getReward("aac")
-  getRound("aac")
+  getRound("aac");
 }
 Bus.$on('refresh', (isRefresh) => {
   if (isRefresh) refresh();

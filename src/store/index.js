@@ -13,6 +13,8 @@ const store = createStore({
             fund:0,
             time: null,
             abi: null,
+            inviteCode:"",
+            mycode:"",
             cancelTokenArr: []
         }
     },
@@ -50,6 +52,12 @@ const store = createStore({
         },
         setABI(state, abi) {
             state.abi = abi;
+        },
+        setInviteCode(state, code){
+            state.inviteCode = code;
+        },
+        setMyCode(state, code){
+            state.mycode = code;
         },
         pushRequestToken(state, payload) {
             state.cancelTokenArr.push(payload.cancelToken)

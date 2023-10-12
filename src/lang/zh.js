@@ -2,7 +2,7 @@ export default {
     btn: {
       connect:"鏈接錢包",
       buy: "購買",
-      invite:"邀請",
+      invite:"分享邀請",
       accept:"接受邀請"
     },
     text:{
@@ -11,7 +11,7 @@ export default {
         earned:"已賺取",
         play:"遊戲",
         playing:"進行中",
-        history:"歷史記錄",
+        history:"歷史",
         amount:"數量",
         copy:"已複製",
         round:"輪數",
@@ -20,7 +20,8 @@ export default {
         loosingText:"下拉刷新",
         loadingText:"加載中...",
         pullingText:"鬆開後刷新",
-        finishedText:"已經到底了"
+        finishedText:"已經到底了",
+        inviteLabel:"邀請碼"
     },
     message:{
         play:{
@@ -31,6 +32,11 @@ export default {
             install:"請點擊鏈接下載Metamask錢包",
             connect:"錢包尚未連接，請鏈接！"
         },
+        invite:{
+            tip:"是否輸入邀請碼？",
+            success:"操作成功",
+            required:"邀請碼不能為空！"
+        }
     },
     error:{
         required:"數量不能為空!",
