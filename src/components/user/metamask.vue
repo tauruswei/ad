@@ -126,7 +126,8 @@ function update(hascode) {
   }
   aacApi.updateAccount(data).then(res => {
     if (res.code == 0) {
-      showSuccessToast(proxy.$t('message.invite.success'))
+      showSuccessToast(proxy.$t('message.invite.success'));
+      store.commit("setInviteCode",null);
       visible.value = false;
       getInviteCode()
     }
