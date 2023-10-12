@@ -97,7 +97,7 @@ const activeName = ref("trans")
 const hasConfig = ref(false)
 const errorMsg = ref("")
 onMounted(()=>{
-  inviteUrl.value = `${window.location.protocol}${window.location.host}/invite`; 
+  inviteUrl.value = `${window.location.protocol}//${window.location.host}/invite`; 
 })
 console.log("store.state.abi", store.state.abi);
 function getABI() {
