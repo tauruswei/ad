@@ -27,6 +27,7 @@ onMounted(() => {
   invideCode.value = getQueryParamByKey('inviteCode');
   if(invideCode.value){
     store.commit("setInviteCode",invideCode.value);
+    store.commit("setMetaMask",null);
     router.push({ path: "/" });
   } 
 })
