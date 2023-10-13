@@ -102,7 +102,7 @@ export class MetaMask {
   }
   isMetaMaskInstalled() {
     const { ethereum } = window;
-    return Boolean(ethereum);//&& ethereum.isMetaMask
+    return Boolean(ethereum&& ethereum.isMetaMask)
   }
   async isMetaMaskConnected() {
     try {
