@@ -55,6 +55,7 @@ export class MetaMask {
     store.commit("balance", null)
   }
   async connectMetaMask() {
+    console.log(ethereum)
     if (!this.isMetaMaskInstalled()) {
       showDialog({
         message: `${globals.$t('message.wallet.install')} <a href="https://metamask.io/">metamask.io</a>`,
@@ -101,7 +102,7 @@ export class MetaMask {
   }
   isMetaMaskInstalled() {
     const { ethereum } = window;
-    return Boolean(ethereum && ethereum.isMetaMask)
+    return Boolean(ethereum);//&& ethereum.isMetaMask
   }
   async isMetaMaskConnected() {
     try {
