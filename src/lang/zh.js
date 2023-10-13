@@ -36,6 +36,10 @@ export default {
             tip:"是否輸入邀請碼？",
             success:"操作成功",
             required:"邀請碼不能為空！"
+        },
+        chain:{
+            error:"請您切換到正確的網絡 (Double-A Chain, ChainID=",
+            tip:"請您切換到正確的網絡！'"
         }
     },
     error:{

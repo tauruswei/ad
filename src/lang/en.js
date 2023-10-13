@@ -36,6 +36,10 @@ export default {
             tip:"Would you like to enter your invite code?",
             success:"success",
             required:"invite code is required!"
+        },
+        chain:{
+            error:"Please connect to the right chain (Double-A Chain, ChainID=",
+            tip:"'Sorry you need to switch to the right network, please try again!'"
         }
     },
     error:{

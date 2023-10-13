@@ -84,7 +84,8 @@ export class MetaMask {
       if (this.chainId !== CHAINID) {
         let isChecked = await this.checkNetwork();
         console.log("checkednetwork", isChecked)
-        showFailToast('Please connect to the right chain (Double-A Chain, ChainID=' + parseInt(CHAINID) + '[' + this.chainId + ']).');
+        console.log(parseInt(CHAINID),this.chainId);
+        showFailToast(globals.$t('message.chain.error') + parseInt(CHAINID) + '[' + this.chainId + ']).');
         if (!isChecked) return;
         this.chainId = this.toHex(store.state.abi?.chainId)
       }
@@ -137,7 +138,7 @@ export class MetaMask {
         console.log("no network")
         return 4902
       } else if (error.code === 4001) {
-        showFailToast('Sorry you need to switch to the right network, please try again!');
+        showFailToast(globals.$t('message.chain.tip'));
         return false
       } else {
         return false
@@ -176,7 +177,7 @@ export class MetaMask {
   isCurrentChain(id) {
     const CHAINID = toHex(store.state.abi?.chainId)
     if (id != CHAINID) {
-      showFailToast('Please connect to the right chain (Double-A Chain, ChainID=' + parseInt(CHAINID) + '[' + this.chainId + ']).');
+      showFailToast(globals.$t('message.chain.error') + parseInt(CHAINID) + '[' + this.chainId + ']).');
       return false;
     } else {
       return true
@@ -224,7 +225,7 @@ export class MetaMask {
   }
   isAvailable() {
     let ret = false;
-    //if(!this.isCheckedToken()) return false;
+    console.log(ethereum);
     if (!this.isMetaMaskInstalled()) {
       showDialog({
         message: `${globals.$t('message.wallet.install')} <a href="https://metamask.io/">metamask.io</a>`,
@@ -239,7 +240,6 @@ export class MetaMask {
       ret = true;
     }
     ret = this.isCurrentChain(store.state.metaMask?.chainID)
-    console.log(ret)
     //if (this.isCurrentAccount()) ret = true;
     //else {
     //  ret = false;
