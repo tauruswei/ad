@@ -21,7 +21,10 @@ export default {
         loadingText:"加載中...",
         pullingText:"鬆開後刷新",
         finishedText:"已經到底了",
-        inviteLabel:"邀請碼"
+        inviteLabel:"邀請碼",
+        nodata:"数据为空！",
+        language: "語言",
+        clickcopy:"複製"
     },
     message:{
         play:{

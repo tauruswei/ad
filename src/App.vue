@@ -39,10 +39,10 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #fff;
-  background-color: var(--van-gray-8)
+  background-color: transparent;
 }
 body{
-  background-color: var(--van-gray-8)
+  background: url("@/assets/body_bg.jpg") repeat;
 }
 </style>
 

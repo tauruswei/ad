@@ -2,7 +2,7 @@
   <div>
     <van-popover v-model:show="showPopover" :actions="columns" @select="onChange">
       <template #reference>
-        <van-button type="primary" size="small" round>{{result}}</van-button>
+        <van-button size="small" round>{{result}}</van-button>
       </template>
     </van-popover>
   </div>

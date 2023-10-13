@@ -28,7 +28,7 @@
           </van-col>
         </van-row>
       </van-list>
-      <van-empty v-if="!listData.length" style="margin:0 auto"></van-empty>
+      <div v-if="!listData.length" style="margin:40px auto;text-align:center">{{$t('text.nodata')}}</div>
     </van-pull-refresh>
   </div>
 </template>

@@ -21,7 +21,10 @@ export default {
         loadingText:"loading...",
         pullingText:"refresh after release",
         finishedText:"no more ...",
-        inviteLabel:"invite code"
+        inviteLabel:"invite code",
+        nodata:"No data !",
+        language: "language",
+        clickcopy:"copy"
     },
     message:{
         play:{
