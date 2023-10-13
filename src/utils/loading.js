@@ -5,7 +5,7 @@ export const loadingHelper = {
         showLoadingToast({
             forbidClick: true,
             loadingType: 'spinner',
-            message: msg||globals.t("text.loadingText")
+            message: msg||globals.$t("text.loadingText")
         });
     },
     hide: () => {
