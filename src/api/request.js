@@ -78,6 +78,6 @@ export const aacApi = {
 }
 export const rebateApi = {
   withdraw: (data) => post("/webTransaction/withdrawAac", data),
-  number: () => post("/user/getInvitedCount?userId=1"),
+  number: (id) => post("/user/getInvitedCount?userId="+id),
   reward: (data)=>post("/asset/queryUserAssets",data)
 }

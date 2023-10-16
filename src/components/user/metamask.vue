@@ -106,6 +106,7 @@ function isAccountExist() {
         update()
       }
     }else{
+      store.commit("setUser",{id:res.data.id,account:res.data.walletAddress})
       getInviteCode()
     }
   }).catch((err)=>{
@@ -140,7 +141,7 @@ function getInviteCode(){
   let data = {walletAddress:store.state.metaMask?.account};
   userApi.channelLeader(data).then(res=>{
     if(res && res.code == 0){
-      store.commit("setMyCode",res.data)
+      store.commit("setMyCode",res.data);
     }
   })
 }

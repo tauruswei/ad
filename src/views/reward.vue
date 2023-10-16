@@ -131,7 +131,7 @@
   }
   function getInviteNumber() {
     loadingHelper.show();
-    rebateApi.number().then((res) => {
+    rebateApi.number(store.state.user.id).then((res) => {
       loadingHelper.hide()
       number.value = res.data.level1;
     }).catch(err => {
@@ -140,7 +140,7 @@
   }
   function getReward() {
     let data = {
-        userId:3,
+        userId: store.state.user.id,
         assetType:100
     }
     loadingHelper.show();
@@ -162,10 +162,10 @@
     if(!reward.value) return;
     let data = {
       transType:13,
-      fromUserId:1,
+      fromUserId: store.state.user?.id,
       fromAssetType:100,
       fromAmount:reward.value,
-      toUserId:1,
+      toUserId: store.state.user?.id,
       toAmount:reward.value,
       gasPrice: Number(gas.gasPrice),
       gasLimit: Number(gas.gasLimit),
