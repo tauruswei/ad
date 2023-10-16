@@ -53,6 +53,12 @@ axios.interceptors.request.use(
     if (token) {
       //config.headers["Authorization"] = token;
     }
+    let language = localStorage.getItem("language");
+    let languages ={
+      en:"en-US,en;q=0.9",
+      zh:"zh-TW,zh;q=0.9"
+    }
+    config.headers["Accept-Language"] = languages[language];
     removePending(config); //在一个ajax发送前执行一下取消操作
     config.cancelToken = new axios.CancelToken((cancel) => {
       store.commit("pushRequestToken", { cancelToken: cancel });
