@@ -25,6 +25,15 @@ const routes = [
       route: "/invite",
     },
   },
+  {
+    path: "/reward",
+    name: "reward",
+    component: () => import("@/views/reward.vue"),
+    meta: {
+      title: "reward",
+      route: "/reward",
+    },
+  },
 ];
 
 const router = createRouter({

@@ -8,7 +8,7 @@
     <div class="content-container">
       <div class="border-bg">
         <div>
-          <span style="display:inline-block;font-size:16px;margin:15px 10px 10px;line-height:24px;padding:2px 8px;color:var(--van-primary-color);background-color:#4d4159;border-radius:4px;" @click="sidebarVisible = true">
+          <span style="display:inline-block;font-size:16px;margin:15px 10px 10px;line-height:24px;padding:2px 8px;color:var(--van-primary-color);background-color:#4d4159;border-radius:4px;" @click="openSidebar">
             <van-icon name="wap-nav" />
           </span>
         </div>
@@ -22,12 +22,12 @@
           <van-grid :column-num="2">
             <van-grid-item>
               <h3>{{ $store.state.balance }}</h3>
-              Balance
+              {{$t('text.balance')}}
             </van-grid-item>
             <van-grid-item>
               <h3>{{ $store.state.fund }}</h3>
-              Earned
-              <van-button size="small" type="primary" v-if="round && $store.state.fund" @click="withdraw('aac')">&nbsp;&nbsp;Withdraw&nbsp;&nbsp;</van-button>
+              {{$t('text.earned')}}
+              <van-button size="small" type="primary" v-if="round && $store.state.fund" @click="withdraw('aac')">&nbsp;&nbsp;{{$t('btn.withdraw')}}&nbsp;&nbsp;</van-button>
             </van-grid-item>
           </van-grid>
           <van-tabs v-model:active="activeName">
@@ -50,20 +50,7 @@
         </div>
       </div>
     </div>
-    <!--sidebar-->
-    <van-popup v-model:show="sidebarVisible" position="left" style="width: 50%; height: 100%;padding: 10px ">
-      <div>
-        <van-image style="height: 24px;padding:12px 0;" :src="require('@/assets/logo.png')"></van-image>
-      </div>
-      <div style="display:flex;justify-content: space-between;align-items:center;margin:15px 0;">
-        <span>{{$t('btn.invite')}}</span>
-        <van-button v-if="$store.state.metaMask" type="primary" size="small" @click="copy(`${inviteUrl}?inviteCode=${encodeURIComponent($store.state.mycode)}`)" round>{{$t('text.clickcopy')}}</van-button>
-      </div>
-      <div style="display:flex;justify-content: space-between;align-items:center;">
-        <span>{{$t('text.language')}}</span>
-        <language-com style="display:inline-block;"></language-com>
-      </div>
-    </van-popup>
+    <side-bar v-model:visible="sidebarVisible" ></side-bar>
     <!--Staking && UnStaking-->
     <van-popup v-model:show="visible" position="bottom" :style="{height: '420px'}" closeable close-icon="close" round :close-on-click-overlay="false">
       <div style="padding:10px 15px 20px;font-size:17px">
@@ -91,11 +78,10 @@ import { showNotify, showToast } from 'vant';
 import BuyList from "./components/trans-list.vue";
 import BuyingList from "./components/transing-list.vue";
 import MetamaskConnect from "@/components/user/metamask.vue";
-import LanguageCom from "@/components/common/lang.vue"
+import SideBar from "@/components/user/sidebar.vue";
 import Bus from "@/utils/event-bus";
 const store = useStore();
 const round = ref(1);
-let inviteUrl = ref('');
 const action = ref({
   amount: "0.01",
   command: ''
@@ -111,9 +97,6 @@ const activeName = ref("trans")
 const hasConfig = ref(false)
 const errorMsg = ref("");
 const sidebarVisible = ref(false);
-onMounted(() => {
-  inviteUrl.value = `${window.location.protocol}//${window.location.host}/invite`;
-})
 console.log("store.state.abi", store.state.abi);
 function getABI() {
   let data = {
@@ -260,6 +243,10 @@ function withdraw(key) {
 function copy(val) {
   if (!store.state.mycode) return;
   copyClick(val)
+}
+function openSidebar(){
+  sidebarVisible.value = true;
+  console.log(sidebarVisible.value)
 }
 function refresh() {
   if (!hasConfig.value) return;

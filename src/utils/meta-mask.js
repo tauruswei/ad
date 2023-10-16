@@ -381,6 +381,24 @@ export class MetaMask {
     let ret = await myContract.methods[param.funcName](param.amount).call()
     return ret;
   }
+  async getGasByEthers(param){
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    let gas = {
+      gasPrice:0,
+      gasLimit:0
+    }
+    try{
+      gas.gasPrice = await provider.getGasPrice()
+      gas.gasLimit = await provider.estimateGas({
+        to: param.to,
+        from: param.from,
+        value: param.amount
+      })
+      return gas;
+  } catch(error){
+      console.log(error)
+    }
+  }
   sendTransactionUseEthers(param) {
     console.log("888")
     const provider = new ethers.providers.Web3Provider(ethereum)

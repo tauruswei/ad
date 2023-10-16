@@ -76,3 +76,8 @@ export const aacApi = {
   checkAccount: (data)=>post("/user/queryUserByWalletAddress",data),
   updateAccount:(data)=>post("/user/register",data)
 }
+export const rebateApi = {
+  withdraw: (data) => post("/webTransaction/withdrawAac", data),
+  number: () => post("/user/getInvitedCount?userId=1"),
+  reward: (data)=>post("/asset/queryUserAssets",data)
+}

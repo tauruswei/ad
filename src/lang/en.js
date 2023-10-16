@@ -1,11 +1,13 @@
 export default {
     btn: {
+      withdraw:"withdraw",
       connect:"Connect Wallet",
       buy: "Buy",
       invite:"Share to invite",
       accept:"Accept Invitation"
     },
     text:{
+        home:"Home",
         connected:"Conected",
         balance:"Balance",
         earned:"Earned",
@@ -24,7 +26,10 @@ export default {
         inviteLabel:"invite code",
         nodata:"No data !",
         language: "language",
-        clickcopy:"copy"
+        clickcopy:"copy",
+        rebate:"rebate",
+        reward:"Reward",
+        inviteNum:"Invite Number"
     },
     message:{
         play:{
@@ -38,7 +43,8 @@ export default {
         invite:{
             tip:"Would you like to enter your invite code?",
             success:"success",
-            required:"invite code is required!"
+            required:"invite code is required!",
+            sub:"You will receive a 0.25% reward！"
         },
         chain:{
             error:"Please connect to the right chain (Double-A Chain, ChainID=",
