@@ -46,10 +46,10 @@
       <div style="padding:10px 15px 20px;font-size:17px">
         <h3>AAC</h3>
         <van-cell-group inset style="margin-bottom:15px;">
-          <van-field v-model="amount" :label="$t('text.amount')+':'" type="number" required :error-message="errorMsg" :placeholder="$t('text.amount')" clickable update:model-value="setAmount"/>
+          <van-field v-model="amount" :label="$t('text.amount')+':'" type="number" required :error-message="errorMsg" :placeholder="$t('text.amount')" clickable/>
         </van-cell-group>
-        <small>{{"Gas Price: "+gas.gasPrice}}</small>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small>{{"Gas Limit: "+gas.gasLimit}}</small>
+        <small>{{"Gas Price: "+(gas.gasPrice/Math.pow(10,9))}}</small>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small>{{"Gas Fee: "+(gasFee/Math.pow(10,18))}}</small>
         <van-button type="primary" @click="withdraw" style="width:100%">
           {{$t('btn.withdraw')}}
         </van-button>
@@ -59,7 +59,7 @@
     </div>
   </template>
   <script setup>
-  import { ref, onMounted, getCurrentInstance, onUnmounted } from "vue"
+  import { ref, onMounted, getCurrentInstance, onUnmounted,watch } from "vue"
   import { useStore } from "vuex"
   import { DateHelper } from "@/utils/helper";
   import { loadingHelper } from "@/utils/loading";
@@ -89,6 +89,7 @@
     gasPrice:0,
     gasLimit:0
   })
+  let gasFee = ref(0)
   function getABI() {
     let data = {
       network: "aac"
@@ -141,6 +142,7 @@
     if (!amount.value) {
       errorMsg.value = proxy.$t("error.required")
     }
+    console.log(!!amount.value)
     return !!amount.value;
   }
   function getInviteNumber() {
@@ -169,18 +171,28 @@
     if(!reward.value) return;
     visible.value = true;
   }
-  const setAmount = (value)=>{
-    if(ParseFloat(value)>reward.value) amount.value = reward.value;
+  watch(()=>amount.value,(val)=>{
+    setAmount(val)
+  })
+  const setAmount = async(value)=>{
+    await getFee();
+    if((parseFloat(value)+gasFee.value/Math.pow(10,18))>=reward.value){ 
+      amount.value = reward.value - gasFee.value/Math.pow(10,18);
+    }
   }
-  async function withdraw() {
+  async function getFee(){
     if (!metaMask.isAvailable()) return;
-    if(isEmpty()) return;
     let param = {
       form:store.state.abi?.contract.aacFundPool.address,
       to: store.state.metaMask?.account,
       value: amount.value
     }
     gas.value = await metaMask.getGasByEthers(param);
+    console.log(amount.value,gas.value)
+    gasFee.value = Number(gas.value.gasPrice) * Number(gas.value.gasLimit) * 2;
+  }
+  function withdraw() {
+    if(!isEmpty()) return;
     let data = {
       transType:13,
       fromUserId: store.state.user?.id,
@@ -189,12 +201,13 @@
       toUserId: store.state.user?.id,
       toAmount: -amount.value,
       gasPrice: Number(gas.value.gasPrice),
-      gasLimit: Number(gas.value.gasLimit),
+      gasLimit: Number(gas.value.gasLimit) * 2,
       nftVo:{}
     }
     loadingHelper.show();
     rebateApi.withdraw(data).then((res) => {
       loadingHelper.hide()
+      visible.value = false;
       refresh()
     }).catch(err => {
       loadingHelper.hide();
