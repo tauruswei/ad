@@ -36,12 +36,26 @@
                 <p style="color:var(--van-gray-5);margin-bottom:15px;">{{$t('message.invite.sub')}}</p>
                 <van-button v-if="$store.state.metaMask" type="primary" @click="copy(`${inviteUrl}?inviteCode=${encodeURIComponent($store.state.mycode)}`)">&nbsp;&nbsp;{{$t('text.clickcopy')}}&nbsp;&nbsp;</van-button>
                 &nbsp;&nbsp;
-                <van-button type="success" v-if="reward" @click="withdraw('aac')">&nbsp;&nbsp;{{$t('btn.withdraw')}}&nbsp;&nbsp;</van-button>
+                <van-button type="success" v-if="reward" @click="open">&nbsp;&nbsp;{{$t('btn.withdraw')}}&nbsp;&nbsp;</van-button>
               </div>
           </div>
         </div>
       </div>
       <side-bar v-model:visible="sidebarVisible" ></side-bar>
+      <van-popup v-model:show="visible" position="bottom" :style="{height: '420px'}" closeable close-icon="close" round :close-on-click-overlay="false">
+      <div style="padding:10px 15px 20px;font-size:17px">
+        <h3>AAC</h3>
+        <van-cell-group inset style="margin-bottom:15px;">
+          <van-field v-model="amount" :label="$t('text.amount')+':'" type="number" required :error-message="errorMsg" :placeholder="$t('text.amount')" clickable update:model-value="setAmount"/>
+        </van-cell-group>
+        <small>{{"Gas Price: "+gas.gasPrice}}</small>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small>{{"Gas Limit: "+gas.gasLimit}}</small>
+        <van-button type="primary" @click="withdraw" style="width:100%">
+          {{$t('btn.withdraw')}}
+        </van-button>
+        <van-number-keyboard :show="show" v-model="amount" theme="custom" extra-key="." safe-area-inset-bottom />
+      </div>
+    </van-popup>
     </div>
   </template>
   <script setup>
@@ -58,10 +72,6 @@
   import Bus from "@/utils/event-bus";
   const store = useStore();
   const round = ref(1);
-  const action = ref({
-    amount: "0.01",
-    command: ''
-  });
   const amount = ref("")
   getABI();
   const abis = ref({ aac: "" })
@@ -75,6 +85,10 @@
   let inviteUrl = ref('');
   let number = ref(0);
   let reward = ref(0);
+  let gas = ref({
+    gasPrice:0,
+    gasLimit:0
+  })
   function getABI() {
     let data = {
       network: "aac"
@@ -124,10 +138,10 @@
     })
   }
   function isEmpty() {
-    if (!action.value.amount) {
+    if (!amount.value) {
       errorMsg.value = proxy.$t("error.required")
     }
-    return !!action.value.amount;
+    return !!amount.value;
   }
   function getInviteNumber() {
     loadingHelper.show();
@@ -146,29 +160,36 @@
     loadingHelper.show();
     rebateApi.reward(data).then((res) => {
       loadingHelper.hide()
-      reward.value = res.data[0].amount;
+      reward.value = res.data[0]?.amount||0;
     }).catch(err => {
       loadingHelper.hide();
     })
   }
+  function open(){
+    if(!reward.value) return;
+    visible.value = true;
+  }
+  const setAmount = (value)=>{
+    if(ParseFloat(value)>reward.value) amount.value = reward.value;
+  }
   async function withdraw() {
     if (!metaMask.isAvailable()) return;
+    if(isEmpty()) return;
     let param = {
       form:store.state.abi?.contract.aacFundPool.address,
       to: store.state.metaMask?.account,
-      value:reward.value
+      value: amount.value
     }
-    let gas = await metaMask.getGasByEthers(param);
-    if(!reward.value) return;
+    gas.value = await metaMask.getGasByEthers(param);
     let data = {
       transType:13,
       fromUserId: store.state.user?.id,
       fromAssetType:100,
-      fromAmount:reward.value,
+      fromAmount: -amount.value,
       toUserId: store.state.user?.id,
-      toAmount:reward.value,
-      gasPrice: Number(gas.gasPrice),
-      gasLimit: Number(gas.gasLimit),
+      toAmount: -amount.value,
+      gasPrice: Number(gas.value.gasPrice),
+      gasLimit: Number(gas.value.gasLimit),
       nftVo:{}
     }
     loadingHelper.show();
