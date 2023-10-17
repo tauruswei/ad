@@ -382,14 +382,14 @@ export class MetaMask {
     return ret;
   }
   async getGasByEthers(param){
-    const provider = new ethers.providers.Web3Provider(ethereum);
+    const ethprovider = new ethers.providers.Web3Provider(ethereum);
     let gas = {
       gasPrice:0,
       gasLimit:0
     }
     try{
-      gas.gasPrice = await provider.getGasPrice()
-      gas.gasLimit = await provider.estimateGas({
+      gas.gasPrice = await ethprovider.getGasPrice()
+      gas.gasLimit = await ethprovider.estimateGas({
         to: param.to,
         from: param.from,
         value: param.amount
@@ -401,8 +401,10 @@ export class MetaMask {
   }
   sendTransactionUseEthers(param) {
     console.log("888")
-    const provider = new ethers.providers.Web3Provider(ethereum)
-    const signer = provider.getSigner();
+    console.log("ethereum",ethereum)
+    const ethprovider = new ethers.providers.Web3Provider(ethereum);
+    console.log("ethers.providers",provider);
+    const signer = ethprovider.getSigner();
     const contract = new ethers.Contract(param.address, param.abi, signer)
     return new Promise((resolve, reject) => {
       try {

@@ -139,11 +139,18 @@
     })
   }
   function isEmpty() {
+    let ret = false;
     if (!amount.value) {
       errorMsg.value = proxy.$t("error.required")
+    }else{
+      ret = true;
     }
-    console.log(!!amount.value)
-    return !!amount.value;
+    if(reward.value < (gasFee.value/Math.pow(10,18))){ 
+      ret = false;
+      console.log(reward.value,)
+      errorMsg.value = proxy.$t("error.exceed") 
+    }
+    return ret;
   }
   function getInviteNumber() {
     loadingHelper.show();
@@ -176,8 +183,11 @@
   })
   const setAmount = async(value)=>{
     await getFee();
-    if((parseFloat(value)+gasFee.value/Math.pow(10,18))>=reward.value){ 
-      amount.value = reward.value - gasFee.value/Math.pow(10,18);
+    if(value<0) amount.value = 0;
+    if(parseFloat(value)>=reward.value){ 
+      if(reward.value > gasFee.value/Math.pow(10,18)){
+        amount.value = reward.value - gasFee.value/Math.pow(10,18);
+      } 
     }
   }
   async function getFee(){
@@ -193,12 +203,14 @@
   }
   function withdraw() {
     if(!isEmpty()) return;
+    if(!gas.value.gasPrice||gas.value.gasLimit) return;
     let data = {
       transType:13,
       fromUserId: store.state.user?.id,
       fromAssetType:100,
       fromAmount: -amount.value,
       toUserId: store.state.user?.id,
+      toAssetType:100,
       toAmount: -amount.value,
       gasPrice: Number(gas.value.gasPrice),
       gasLimit: Number(gas.value.gasLimit) * 2,

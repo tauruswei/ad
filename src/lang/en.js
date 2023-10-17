@@ -58,6 +58,7 @@ export default {
         wrong:"It seems that something wrong happens in your wallet, please check and solve it first.",
         wait:"The wallet is processing your request, please finish the operation in the wallet.",
         failed:"failed!",
-        wentWrong:"Something went wrong."
+        wentWrong:"Something went wrong.",
+        exceed:"The current reward is less than the gas fee estimated"
     }
   }

@@ -58,6 +58,7 @@ export default {
         wrong: "錢包發生錯誤，請檢車後重試。",
         wait: "錢包已有該操作請求，請優先處理！",
         failed: "操作失敗",
-        wentWrong: "發生錯誤"
+        wentWrong: "發生錯誤",
+        exceed:"當前餘額過低，燃氣費用不足，可能導致提現失敗"
     }
 }
