@@ -273,6 +273,33 @@ export class MetaMask {
         .catch((error) => { console.error(error); reject(error) });
     })
   }
+  async sendTransactionToWithdraw(param) {
+    let enable = await window.ethereum.request({method:'eth_requestAccounts'});
+    console.log(enable)
+    let price = await this.getGasPrice();
+    let gas = await this.estimateGas();
+    const myContract = this.getContract(param.abi, param.address);
+    if (!myContract) return;
+    return new Promise((resolve, reject) => {
+      //metamask参数都是16进制，web3js方法10进制
+      ethereum.request({
+        method: "eth_sendTransaction",
+        params: [{
+          from: param.address, 
+          to: param.from, // Required except during contract publications.
+          value: toHex(param.amount * Math.pow(10,18)), 
+          gasPrice: web3.utils.numberToHex(price), // Customizable by the user during MetaMask confirmation.
+          gas: web3.utils.numberToHex(gas), // web3.utils.numberToHex
+          chainId: store.state.metaMask?.chainID
+        }]
+      })
+        .then((res) => {
+          console.log(res)
+          resolve(res)
+        })
+        .catch((error) => { console.error(error); reject(error) });
+    })
+  }
   async getGasPrice() {
     let ret;
     await web3.eth.getGasPrice().then(res => {
@@ -346,7 +373,8 @@ export class MetaMask {
     return new Promise((resolve, reject) => {
       myContract.methods[param.funcName](param.amount?toHex(this.toWei(param.amount, "ether")):null).send({
         from: param.from, gas:gas, gasPrice: price
-      }).then(res => {
+      }).on('receipt',res=>{
+      //.then(res => {
         resolve(res)
       }).catch(err => {
         reject(err);
@@ -403,7 +431,7 @@ export class MetaMask {
     console.log("888")
     console.log("ethereum",ethereum)
     const ethprovider = new ethers.providers.Web3Provider(ethereum);
-    console.log("ethers.providers",provider);
+    console.log("ethers.providers",ethprovider);
     const signer = ethprovider.getSigner();
     const contract = new ethers.Contract(param.address, param.abi, signer)
     return new Promise((resolve, reject) => {

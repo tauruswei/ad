@@ -214,7 +214,7 @@ function transfer(key) {
     abi: abis.value[key],
     funcName: "deposit"
   }
-  loadingHelper.show();
+  loadingHelper.show();//sendTransactionUseEthers
   metaMask.sendTransactionUseEthers(data).then((res) => {
     visible.value = false;
     loadingHelper.hide()
@@ -230,9 +230,10 @@ function withdraw(key) {
     from: store.state.metaMask?.account,
     address: store.state.abi?.contract.aacFundPool.address,
     abi: abis.value[key],
+    amount: store.state.fund,
     funcName: "withdraw"
   }
-  loadingHelper.show();
+  loadingHelper.show();//sendTransactionUseEthers
   metaMask.sendTransactionUseEthers(data).then((res) => {
     loadingHelper.hide()
     refresh()
