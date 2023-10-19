@@ -230,7 +230,7 @@ function withdraw(key) {
     from: store.state.metaMask?.account,
     address: store.state.abi?.contract.aacFundPool.address,
     abi: abis.value[key],
-    amount: store.state.fund,
+    //amount: store.state.fund,
     funcName: "withdraw"
   }
   loadingHelper.show();//sendTransactionUseEthers
