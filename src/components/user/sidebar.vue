@@ -26,7 +26,10 @@
 </template>
 <script setup>
 import { ref, onMounted, watch } from "vue";
+import { useStore } from "vuex"
 import LanguageCom from "@/components/common/lang.vue";
+import { copyClick } from '@/utils/copy';
+const store = useStore();
 let props = defineProps({
   visible: {
     type: Boolean,
@@ -40,6 +43,10 @@ watch(() => props.visible, (val) => {
   show.value = val;
   console.log('11131', show.value)
 })
+function copy(val) {
+    if (!store.state.mycode) return;
+    copyClick(val)
+}
 onMounted(() => {
   inviteUrl.value = `${window.location.protocol}//${window.location.host}/invite`;
 })
