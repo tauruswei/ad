@@ -209,14 +209,14 @@ function handleTransferOperate() {
   transferHandler[action.value.command]();
 }
 function checkValue() {
-  amount = parseFloat(action.value.amount);
+  let amount = parseFloat(action.value.amount);
   let ret = true;
   if (!amount) {
     errorMsg.value = proxy.$t("error.required");
     ret = false;
   }
   if(amount < min.value) {
-    errorMsg.value = proxy.$t("error.min") + min.value;
+    errorMsg.value = proxy.$t("error.min") + " "+min.value;
     ret = false;
   }
   return ret;
