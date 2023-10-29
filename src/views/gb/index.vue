@@ -34,7 +34,7 @@
             <van-tab :title="$t('text.play')" name="trans">
               <div style="padding:15px 10px 25px;text-align: center;">
                 <van-image width="240px" height="180px" fill="contain" :src="require('@/assets/hero_attack.gif')"></van-image>
-                <h3 style="margin:-30px 0 15px;color: var(--van-danger-color);">1000 AAC</h3>
+                <h3 style="margin:-30px 0 15px;color: var(--van-danger-color);">2000 AAC</h3>
                 <div style="font-weight: bold;font-size: 15px;">{{$t('message.play.title')}}</div>
                 <p style="color:var(--van-gray-5);margin-bottom:15px;">{{$t('message.play.sub')}}</p>
                 <van-button class="action-btn" size="small" type="primary" @click="open('buy')"></van-button>
@@ -83,7 +83,7 @@ import Bus from "@/utils/event-bus";
 const store = useStore();
 const round = ref(1);
 const action = ref({
-  amount: "1000",
+  amount: "2000",
   command: ''
 });
 const min = ref(2000);

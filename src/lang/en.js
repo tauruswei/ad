@@ -33,7 +33,7 @@ export default {
     },
     message:{
         play:{
-            title:"Spend 1000 AAC for a 8-players game",
+            title:"Spend 2000 AAC for a 8-players game",
             sub:"You will get paid if you win the game."
         },
         wallet:{
