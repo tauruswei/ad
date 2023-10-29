@@ -367,12 +367,13 @@ export class MetaMask {
   //交易花费gas
   async sendTransactionByContractOrigin(param) {
     const myContract = this.getContract(param.abi, param.address);
-    let price = await this.getGasPrice();
-    let gas = await this.estimateGas();
+    //let price = await this.getGasPrice();
+    //let gas = await this.estimateGas();
+    console.log(this.toWei(param.amount, "ether"))
     if (!myContract) return;
     return new Promise((resolve, reject) => {
-      myContract.methods[param.funcName](param.amount?toHex(this.toWei(param.amount, "ether")):null).send({
-        from: param.from, gas:gas, gasPrice: price
+      myContract.methods.deposit().send({
+        from: param.from, value: this.toWei(param.amount, "ether")
       }).on('receipt',res=>{
       //.then(res => {
         resolve(res)

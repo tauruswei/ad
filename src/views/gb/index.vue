@@ -27,7 +27,7 @@
             <van-grid-item>
               <h3>{{ $store.state.fund }}</h3>
               {{$t('text.earned')}}
-              <van-button size="small" type="primary" v-if="round && $store.state.fund" @click="withdraw('aac')">&nbsp;&nbsp;{{$t('btn.withdraw')}}&nbsp;&nbsp;</van-button>
+              <van-button size="small" type="primary" v-if="round && $store.state.fund" @click="open('withdraw')">&nbsp;&nbsp;{{$t('btn.withdraw')}}&nbsp;&nbsp;</van-button>
             </van-grid-item>
           </van-grid>
           <van-tabs v-model:active="activeName">
@@ -37,7 +37,7 @@
                 <h3 style="margin:-30px 0 15px;color: var(--van-danger-color);">1000 AAC</h3>
                 <div style="font-weight: bold;font-size: 15px;">{{$t('message.play.title')}}</div>
                 <p style="color:var(--van-gray-5);margin-bottom:15px;">{{$t('message.play.sub')}}</p>
-                <van-button class="action-btn" size="small" type="primary" @click="open('aacstaking')"></van-button>
+                <van-button class="action-btn" size="small" type="primary" @click="open('buy')"></van-button>
               </div>
             </van-tab>
             <van-tab :title="$t('text.playing')" name="playing">
@@ -59,7 +59,7 @@
           <van-field v-model="action.amount" :label="$t('text.amount')+':'" type="number" required :error-message="errorMsg" :placeholder="$t('text.amount')" clickable />
         </van-cell-group>
         <van-button type="primary" @click="handleTransferOperate()" style="width:100%">
-          {{$t('btn.buy')}}
+          {{$t(`btn.${action.command}`)}}
         </van-button>
         <van-number-keyboard :show="show" v-model="action.amount" theme="custom" extra-key="." safe-area-inset-bottom />
       </div>
@@ -83,9 +83,10 @@ import Bus from "@/utils/event-bus";
 const store = useStore();
 const round = ref(1);
 const action = ref({
-  amount: "0.01",
+  amount: "1000",
   command: ''
 });
+const min = ref(2000);
 const amount = ref("")
 getABI();
 const abis = ref({ aac: "" })
@@ -179,34 +180,51 @@ function getRound(key) {
 function open(command) {
   if (!metaMask.isAvailable()) return;
   action.value = {
-    amount: "0.01",
+    amount: "2000",
     command: command,
-    key: ''
+    key: 'aac'
+  }
+  min.value = 2000;
+  if(command == "withdraw"){
+    action.value.amount = "20000"
+    min.value = 20000
   }
   openHandler[command]();
 }
 const openHandler = {
-  aacstaking: () => {
+  buy: () => {
+    action.value.key = 'aac'
+    visible.value = true
+  },
+  withdraw: () => {
     action.value.key = 'aac'
     visible.value = true
   }
 }
 const transferHandler = {
-  aacstaking: transfer.bind(this, 'aac'),
+  buy: transfer.bind(this, 'aac'),
+  withdraw: withdraw.bind(this, 'aac')
 }
 function handleTransferOperate() {
   transferHandler[action.value.command]();
 }
-function isEmpty() {
-  if (!action.value.amount) {
-    errorMsg.value = proxy.$t("error.required")
+function checkValue() {
+  amount = parseFloat(action.value.amount);
+  let ret = true;
+  if (!amount) {
+    errorMsg.value = proxy.$t("error.required");
+    ret = false;
   }
-  return !!action.value.amount;
+  if(amount < min.value) {
+    errorMsg.value = proxy.$t("error.min") + min.value;
+    ret = false;
+  }
+  return ret;
 }
 function transfer(key) {
   if (!hasConfig.value) return;
   if (!metaMask.isAvailable()) return;
-  if (!isEmpty()) return;
+  if (!checkValue()) return;
   let data = {
     from: store.state.metaMask?.account,
     address: store.state.abi?.contract.aacFundPool.address,
