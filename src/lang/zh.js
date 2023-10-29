@@ -33,7 +33,7 @@ export default {
     },
     message: {
         play: {
-            title: "参与8人对战（1000AAC）",
+            title: "参与8人对战（2000AAC）",
             sub: "在遊戲中勝出將會贏得獎勵"
         },
         wallet: {
