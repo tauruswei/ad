@@ -27,7 +27,7 @@
             <van-grid-item>
               <h3>{{ $store.state.fund }}</h3>
               {{$t('text.earned')}}
-              <van-button size="small" type="primary" v-if="round && $store.state.fund > 20000" @click="open('withdraw')">&nbsp;&nbsp;{{$t('btn.withdraw')}}&nbsp;&nbsp;</van-button>
+              <van-button size="small" type="primary" v-if="round && $store.state.fund" @click="open('withdraw')">&nbsp;&nbsp;{{$t('btn.withdraw')}}&nbsp;&nbsp;</van-button>
             </van-grid-item>
           </van-grid>
           <van-tabs v-model:active="activeName">
@@ -83,10 +83,10 @@ import Bus from "@/utils/event-bus";
 const store = useStore();
 const round = ref(1);
 const action = ref({
-  amount: "2000",
+  amount: "0.01",
   command: ''
 });
-const min = ref(2000);
+const min = ref(0.01);
 const amount = ref("")
 getABI();
 const abis = ref({ aac: "" })
@@ -180,14 +180,14 @@ function getRound(key) {
 function open(command) {
   if (!metaMask.isAvailable()) return;
   action.value = {
-    amount: "2000",
+    amount: "0.01",
     command: command,
     key: 'aac'
   }
-  min.value = 2000;
+  min.value = 0.01;
   if(command == "withdraw"){
-    action.value.amount = "20000"
-    min.value = 20000;
+    action.value.amount = "0.01"
+    min.value = 0.01;
     transferHandler[action.value.command]()
   }else{
     openHandler[command]();
