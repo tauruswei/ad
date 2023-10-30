@@ -72,7 +72,7 @@
   import Bus from "@/utils/event-bus";
   const store = useStore();
   const round = ref(1);
-  const amount = ref("")
+  const amount = ref("20000")
   getABI();
   const abis = ref({ aac: "" })
   const visible = ref(false)
@@ -139,12 +139,15 @@
     })
   }
   function isEmpty() {
-    let ret = false;
+    let ret = true;
     if (!amount.value) {
       errorMsg.value = proxy.$t("error.required")
-    }else{
-      ret = true;
+      return false;
     }
+    if(parseFloat(amount.value) < 20000){
+      errorMsg.value = proxy.$t("error.min") + " 20000";
+      return false
+    } 
     if(reward.value < (gasFee.value/Math.pow(10,18))){ 
       ret = false;
       console.log(reward.value,)

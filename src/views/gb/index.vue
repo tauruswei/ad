@@ -103,7 +103,7 @@ function getABI() {
   let data = {
     network: "aac"
   }
-  let res = {
+  /*let res = {
     "code": 0,
     "msg": "success",
     "data": {
@@ -134,9 +134,9 @@ setTimeout(()=>{
       if (metaMask.isAvailable()) {
         refresh()
       }
-},100)
+},100)*/
 
-  /*userApi.abi(data).then(res => {
+  userApi.abi(data).then(res => {
     if (res.code == 0) {
       hasConfig.value = true;
       store.commit("setABI", res.data);
@@ -145,7 +145,7 @@ setTimeout(()=>{
         refresh()
       }
     }
-  })*/
+  })
 }
 
 function getBalance(key) {
