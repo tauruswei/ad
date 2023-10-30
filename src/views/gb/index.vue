@@ -27,7 +27,7 @@
             <van-grid-item>
               <h3>{{ $store.state.fund }}</h3>
               {{$t('text.earned')}}
-              <van-button size="small" type="primary" v-if="round && $store.state.fund" @click="open('withdraw')">&nbsp;&nbsp;{{$t('btn.withdraw')}}&nbsp;&nbsp;</van-button>
+              <van-button size="small" type="primary" v-if="round && $store.state.fund > 20000" @click="open('withdraw')">&nbsp;&nbsp;{{$t('btn.withdraw')}}&nbsp;&nbsp;</van-button>
             </van-grid-item>
           </van-grid>
           <van-tabs v-model:active="activeName">
@@ -187,17 +187,18 @@ function open(command) {
   min.value = 2000;
   if(command == "withdraw"){
     action.value.amount = "20000"
-    min.value = 20000
+    min.value = 20000;
+    transferHandler[action.value.command]()
+  }else{
+    openHandler[command]();
   }
-  openHandler[command]();
+  
 }
 const openHandler = {
   buy: () => {
-    action.value.key = 'aac'
     visible.value = true
   },
   withdraw: () => {
-    action.value.key = 'aac'
     visible.value = true
   }
 }
@@ -248,7 +249,7 @@ function withdraw(key) {
     from: store.state.metaMask?.account,
     address: store.state.abi?.contract.aacFundPool.address,
     abi: abis.value[key],
-    amount: action.value.amount,
+    //amount: action.value.amount,
     funcName: "withdraw"
   }
   loadingHelper.show();//sendTransactionUseEthers

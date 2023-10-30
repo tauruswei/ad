@@ -144,7 +144,7 @@
       errorMsg.value = proxy.$t("error.required")
       return false;
     }
-    if(parseFloat(amount.value) < 20000){
+    if(parseFloat(amount.value) < 20000||reward.value < 20000){
       errorMsg.value = proxy.$t("error.min") + " 20000";
       return false
     } 
