@@ -228,11 +228,11 @@ function transfer(key) {
   let data = {
     from: store.state.metaMask?.account,
     address: store.state.abi?.contract.aacFundPool.address,
-    amount: action.value.amount,
+    amount: process.env.NODE_ENV == "development" ?'0.01':action.value.amount,
     abi: abis.value[key],
     funcName: "deposit"
   }
-  loadingHelper.show();//sendTransactionUseEthers
+  loadingHelper.show();//sendTransactionUseEthers//sendTransactionByContractOrigin
   metaMask.sendTransactionUseEthers(data).then((res) => {
     visible.value = false;
     loadingHelper.hide()
@@ -273,6 +273,9 @@ function refresh() {
   getReward("aac")
   getRound("aac");
 }
+onMounted(()=>{
+  refresh()
+})
 Bus.$on('refresh', (isRefresh) => {
   if (isRefresh) refresh();
 })

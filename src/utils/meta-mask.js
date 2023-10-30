@@ -72,6 +72,8 @@ export class MetaMask {
     }
     let provider = await this.getProvider()
     if (provider !== ethereum) {
+      console.log("provider",provider)
+      console.log("ethereum",provider)
       console.error('Do you have multiple wallets installed?');
     }
     this.provider = ethereum;
@@ -367,13 +369,13 @@ export class MetaMask {
   //交易花费gas
   async sendTransactionByContractOrigin(param) {
     const myContract = this.getContract(param.abi, param.address);
-    //let price = await this.getGasPrice();
-    //let gas = await this.estimateGas();
+    let price = await this.getGasPrice();
+    let gas = await this.estimateGas();
     console.log(this.toWei(param.amount, "ether"))
     if (!myContract) return;
     return new Promise((resolve, reject) => {
       myContract.methods.deposit().send({
-        from: param.from, value: this.toWei(param.amount, "ether")
+        from: param.from, value: this.toWei(param.amount, "ether"),gasPrice: price,gas:gas
       }).on('receipt',res=>{
       //.then(res => {
         resolve(res)
@@ -407,7 +409,7 @@ export class MetaMask {
   async queryRoundByContract(param) {
     const myContract = this.getContract(param.abi, param.address);
     if (!myContract) return;
-    let ret = await myContract.methods[param.funcName](param.amount).call()
+    let ret = await myContract.methods[param.funcName](param.amount).call();
     return ret;
   }
   async getGasByEthers(param){
@@ -432,7 +434,6 @@ export class MetaMask {
     console.log("888")
     console.log("ethereum",ethereum)
     const ethprovider = new ethers.providers.Web3Provider(ethereum);
-    console.log("ethers.providers",ethprovider);
     const signer = ethprovider.getSigner();
     const contract = new ethers.Contract(param.address, param.abi, signer)
     return new Promise((resolve, reject) => {

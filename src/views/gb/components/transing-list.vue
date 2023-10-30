@@ -68,6 +68,7 @@ function getCurrentPlayers(round){
   loadingHelper.show();
   metaMask.queryRoundByContract(data).then((res) => {
     loadingHelper.hide()
+    console.log(res)
     players.value[round+"i"] = {
       fund: Number(res.totalFund)/Math.pow(10,18),
       player: Number(res.totalPlayers)
