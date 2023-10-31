@@ -440,7 +440,7 @@ export class MetaMask {
       try {
         const func = async () => {
           let value = param.amount?ethers.utils.parseEther(param.amount):null;
-          let tx = await contract[param.funcName](value?{ value: value }:null);
+          let tx = await contract.functions[param.funcName](value?{ value: value }:null);
           let receipt = await tx.wait();
           console.log(receipt)
           resolve(receipt)
