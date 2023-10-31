@@ -2,7 +2,7 @@ import MetaMaskSDK from '@metamask/sdk';
 import MetaMaskOnboarding from '@metamask/onboarding'
 import detectEthereumProvider from '@metamask/detect-provider';
 import Web3 from 'web3';
-import {ethers} from "ethers";
+import { ethers } from "ethers";
 import store from "../store/index";
 import router from "../router/index";
 import {globals} from '../main.js'
@@ -348,7 +348,7 @@ export class MetaMask {
   async getBalance(account) {
     let balance;
     await ethereum.request({method:'eth_getBalance',params:[account,"latest"]}).then(res=>{
-      balance = ethers.utils.formatEther(res)
+      balance = ethers.formatEther(res)
       console.log(balance)
       })
     return balance;
@@ -413,7 +413,7 @@ export class MetaMask {
     return ret;
   }
   async getGasByEthers(param){
-    const ethprovider = new ethers.providers.Web3Provider(ethereum);
+    const ethprovider = new ethers.BrowserProvider(ethereum);
     let gas = {
       gasPrice:0,
       gasLimit:0
@@ -433,15 +433,21 @@ export class MetaMask {
   sendTransactionUseEthers(param) {
     console.log("888")
     console.log("ethereum",ethereum)
-    const ethprovider = new ethers.providers.Web3Provider(ethereum);
+    const ethprovider = new ethers.BrowserProvider(ethereum);
+    console.log(ethers)
     const signer = ethprovider.getSigner();
     const contract = new ethers.Contract(param.address, param.abi, signer)
+    console.log(contract)
     return new Promise((resolve, reject) => {
       try {
         const func = async () => {
-          let value = param.amount?ethers.utils.parseEther(param.amount):null;
-          let tx = await contract[param.funcName](value?{ value: value }:null);
-          let receipt = await tx.wait();
+          let value = param.amount?ethers.parseEther(param.amount):null;
+          let funcs = contract.getFunction(param.funcName)
+          console.log(funcs(value?{ value: value }:null))
+          let tx = await contract.getFunction(param.funcName)(value?{ value: value }:null);
+          let receipt = await tx.then(res=>{
+            console.log(res)
+          });
           console.log(receipt)
           resolve(receipt)
         }
