@@ -371,7 +371,6 @@ export class MetaMask {
     const myContract = this.getContract(param.abi, param.address);
     let price = await this.getGasPrice();
     let gas = await this.estimateGas();
-    console.log(this.toWei(param.amount, "ether"))
     if (!myContract) return;
     return new Promise((resolve, reject) => {
       myContract.methods.deposit().send({
@@ -390,7 +389,7 @@ export class MetaMask {
     const myContract = this.getContract(param.abi, param.address);
     if (!myContract) return;
     return new Promise((resolve, reject) => {
-      myContract.methods[param.funcName](param.amount?toHex(this.toWei(param.amount, "ether")):null).send({
+      myContract.methods[param.funcName](this.toWei(param.amount, "ether")).send({
         from: param.from
       }).then(res => {
         resolve(res)
@@ -435,24 +434,14 @@ export class MetaMask {
     console.log("888")
     console.log("ethereum",ethereum)
     const ethprovider = new ethers.BrowserProvider(ethereum);
-    
-    //const privateKey = '0x227dbb8586117d55284e26620bc76534dfbd2394be34cf4a09cb775d593b6f2b'
-    //const wallet = new ethers.Wallet(privateKey, ethprovider)
-    
     return new Promise((resolve, reject) => {
       try {
         const func = async () => {
           let singer = await ethprovider.getSigner(store.state.metaMask.account);
           const contract = new ethers.Contract(param.address, param.abi, singer);
-          let gasObj;
+          let gasObj,tx;
           if(param.amount) gasObj = await this.getGasByEthers(param);
-          console.log(gasObj)
           let value = param.amount?ethers.parseEther(param.amount):null;
-          console.log(contract)
-          let b = await contract.rewards(param.from);
-          
-          console.log(b)
-          let tx;
           if(value) tx = await contract[param.funcName]({gas: gasObj?.gasLimit,gasPrice: gasObj.gasPrice, value: value});
           else tx = await contract[param.funcName]();
           let receipt = await tx.wait();
