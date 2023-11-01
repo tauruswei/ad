@@ -160,7 +160,7 @@ function getReward(key) {
     address: store.state.abi?.contract.aacFundPool.address,
     from: store.state.metaMask?.account,
     funcName: "rewards"
-  }//queryTransactionByContract
+  }//queryByethers
   metaMask.queryByethers(data).then(res => {
     store.commit("setFund", Number(res) / Math.pow(10, 18));
   });
@@ -173,7 +173,7 @@ function getRound(key) {
     from: store.state.metaMask?.account,
     funcName: "roundsCount"
   }
-  metaMask.queryByethers(data).then(res => {
+  metaMask.queryByethersNoParam(data).then(res => {
     round.value = res;
   });
 }

@@ -358,6 +358,12 @@ export class MetaMask {
     let contract = new web3.eth.Contract(abi, address);
     return contract
   }
+  getEthersContract(param){
+    const ethprovider = new ethers.providers.Web3Provider(ethereum);
+    const signer = ethprovider.getSigner();
+    const contract = new ethers.Contract(param.address, param.abi, signer)
+    return contract;
+  }
   toHex(num) {
     if (!web3) return
     return web3.utils.toHex(num + '000000000000000000');
@@ -408,18 +414,22 @@ export class MetaMask {
     return ret;
   }
   async queryByethers(param){
-    const ethprovider = new ethers.providers.Web3Provider(ethereum);
-    const signer = ethprovider.getSigner();
-    const contract = new ethers.Contract(param.address, param.abi, signer)
-    let ret = await contract.functions[param.funcName](param.from);
+    const contract = this.getEthersContract(param);
+    console.log(contract)
+    let ret = await contract[param.funcName](param.from);
+    console.log("current reward", Number(ret))
+    return ret
+  }
+  async queryByethersNoParam(param){
+    const contract = this.getEthersContract(param);
+    console.log(contract)
+    let ret = await contract[param.funcName]();
     console.log("current reward", Number(ret))
     return ret
   }
   async queryRoundByethers(param){
-    const ethprovider = new ethers.providers.Web3Provider(ethereum);
-    const signer = ethprovider.getSigner();
-    const contract = new ethers.Contract(param.address, param.abi, signer)
-    let ret = await contract.functions[param.funcName](param.amount);
+    const contract = this.getEthersContract(param);
+    let ret = await contract[param.funcName](param.amount);
     console.log("current rplaying", Number(ret))
     return ret
   }
@@ -450,16 +460,14 @@ export class MetaMask {
   sendTransactionUseEthers(param) {
     console.log("888")
     console.log("ethereum",ethereum)
-    const ethprovider = new ethers.providers.Web3Provider(ethereum);
-    const signer = ethprovider.getSigner();
-    const contract = new ethers.Contract(param.address, param.abi, signer)
+    const contract = this.getEthersContract(param);
     return new Promise((resolve, reject) => {
       try {
         const func = async () => {
           let value = param.amount?ethers.utils.parseEther(param.amount):null;
           let tx;
-          if(value) tx = await contract.functions[param.funcName]({ value: value });
-          else tx = await contract.functions[param.funcName]();
+          if(value) tx = await contract[param.funcName]({ value: value });
+          else tx = await contract[param.funcName]();
           let receipt = await tx.wait();
           console.log(receipt)
           resolve(receipt)
