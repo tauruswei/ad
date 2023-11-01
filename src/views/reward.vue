@@ -145,7 +145,7 @@
       return false;
     }*/
     if(reward.value < 20000){
-      errorMsg.value = proxy.$t("error.min") + " 20000";
+      showToast(proxy.$t("error.min") + " 20000");
       return false
     } 
     /*if(reward.value < (gasFee.value/Math.pow(10,18))){ 
@@ -204,9 +204,11 @@
     console.log(amount.value,gas.value)
     gasFee.value = Number(gas.value.gasPrice) * Number(gas.value.gasLimit) * 2;
   }
-  function withdraw() {
+  async function withdraw() {
     if(!isEmpty()) return;
-    if(!gas.value.gasPrice||gas.value.gasLimit) return;
+    loadingHelper.show();
+    await getFee();
+    if(!store.state.user?.id) return;
     let data = {
       transType:13,
       fromUserId: store.state.user?.id,
@@ -219,7 +221,6 @@
       gasLimit: Number(gas.value.gasLimit) * 2,
       nftVo:{}
     }
-    loadingHelper.show();
     rebateApi.withdraw(data).then((res) => {
       loadingHelper.hide()
       visible.value = false;
