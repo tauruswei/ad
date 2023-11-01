@@ -415,6 +415,14 @@ export class MetaMask {
     console.log("current reward", Number(ret))
     return ret
   }
+  async queryRoundByethers(param){
+    const ethprovider = new ethers.providers.Web3Provider(ethereum);
+    const signer = ethprovider.getSigner();
+    const contract = new ethers.Contract(param.address, param.abi, signer)
+    let ret = await contract.functions[param.funcName](param.amount);
+    console.log("current rplaying", Number(ret))
+    return ret
+  }
   async queryRoundByContract(param) {
     const myContract = this.getContract(param.abi, param.address);
     if (!myContract) return;
