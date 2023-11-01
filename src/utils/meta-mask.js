@@ -419,12 +419,13 @@ export class MetaMask {
       gasLimit:0
     }
     try{
-      gas.gasPrice = await ethprovider.getGasPrice()
-      gas.gasLimit = await ethprovider.estimateGas({
+      gas = await ethprovider.getFeeData();
+      gas["gasLimit"] = await ethprovider.estimateGas({
         to: param.to,
         from: param.from,
-        value: param.amount
+        value: ethers.parseUnits(param.amount, "ether")+ 1n,
       })
+      console.log(111,gas)
       return gas;
   } catch(error){
       console.log(error)
@@ -434,20 +435,27 @@ export class MetaMask {
     console.log("888")
     console.log("ethereum",ethereum)
     const ethprovider = new ethers.BrowserProvider(ethereum);
-    console.log(ethers)
-    const signer = ethprovider.getSigner();
-    const contract = new ethers.Contract(param.address, param.abi, signer)
-    console.log(contract)
+    
+    //const privateKey = '0x227dbb8586117d55284e26620bc76534dfbd2394be34cf4a09cb775d593b6f2b'
+    //const wallet = new ethers.Wallet(privateKey, ethprovider)
+    
     return new Promise((resolve, reject) => {
       try {
         const func = async () => {
+          let singer = await ethprovider.getSigner(store.state.metaMask.account);
+          const contract = new ethers.Contract(param.address, param.abi, singer);
+          let gasObj;
+          if(param.amount) gasObj = await this.getGasByEthers(param);
+          console.log(gasObj)
           let value = param.amount?ethers.parseEther(param.amount):null;
-          let funcs = contract.getFunction(param.funcName)
-          console.log(funcs(value?{ value: value }:null))
-          let tx = await contract.getFunction(param.funcName)(value?{ value: value }:null);
-          let receipt = await tx.then(res=>{
-            console.log(res)
-          });
+          console.log(contract)
+          let b = await contract.rewards(param.from);
+          
+          console.log(b)
+          let tx;
+          if(value) tx = await contract[param.funcName]({gas: gasObj?.gasLimit,gasPrice: gasObj.gasPrice, value: value});
+          else tx = await contract[param.funcName]();
+          let receipt = await tx.wait();
           console.log(receipt)
           resolve(receipt)
         }
