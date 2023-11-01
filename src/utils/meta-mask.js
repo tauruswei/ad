@@ -403,7 +403,8 @@ export class MetaMask {
   async queryTransactionByContract(param) {
     const myContract = this.getContract(param.abi, param.address);
     if (!myContract) return;
-    let ret = await myContract.methods[param.funcName](param.from).call()
+    let ret = await myContract.methods[param.funcName](param.from).call();
+    console.log("current reward",ret)
     return ret;
   }
   async queryRoundByContract(param) {
@@ -440,7 +441,9 @@ export class MetaMask {
       try {
         const func = async () => {
           let value = param.amount?ethers.utils.parseEther(param.amount):null;
-          let tx = await contract.functions[param.funcName](value?{ value: value }:null);
+          let tx;
+          if(value) tx = await contract.functions[param.funcName]({ value: value });
+          else tx = await contract.functions[param.funcName]();
           let receipt = await tx.wait();
           console.log(receipt)
           resolve(receipt)
