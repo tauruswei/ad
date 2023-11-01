@@ -423,7 +423,7 @@ export class MetaMask {
       gas.gasLimit = await ethprovider.estimateGas({
         to: param.to,
         from: param.from,
-        value: param.amount
+        value: ethers.utils.parseEther(param.amount)
       })
       return gas;
   } catch(error){
