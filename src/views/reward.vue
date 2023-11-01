@@ -36,7 +36,7 @@
                 <p style="color:var(--van-gray-5);margin-bottom:15px;">{{$t('message.invite.sub')}}</p>
                 <van-button v-if="$store.state.metaMask" type="primary" @click="copy(`${inviteUrl}?inviteCode=${encodeURIComponent($store.state.mycode)}`)">&nbsp;&nbsp;{{$t('text.clickcopy')}}&nbsp;&nbsp;</van-button>
                 &nbsp;&nbsp;
-                <van-button type="success" v-if="reward" @click="open">&nbsp;&nbsp;{{$t('btn.withdraw')}}&nbsp;&nbsp;</van-button>
+                <van-button type="success" v-if="reward" @click="withdraw">&nbsp;&nbsp;{{$t('btn.withdraw')}}&nbsp;&nbsp;</van-button>
               </div>
           </div>
         </div>
@@ -140,19 +140,19 @@
   }
   function isEmpty() {
     let ret = true;
-    if (!amount.value) {
+    /*if (!amount.value) {
       errorMsg.value = proxy.$t("error.required")
       return false;
-    }
-    if(parseFloat(amount.value) < 20000||reward.value < 20000){
-      errorMsg.value = proxy.$t("error.min") + " 20000";
+    }*/
+    if(reward.value < 20000){
+      showToast(proxy.$t("error.min") + " 20000");
       return false
     } 
-    if(reward.value < (gasFee.value/Math.pow(10,18))){ 
+    /*if(reward.value < (gasFee.value/Math.pow(10,18))){ 
       ret = false;
       console.log(reward.value,)
       errorMsg.value = proxy.$t("error.exceed") 
-    }
+    }*/
     return ret;
   }
   function getInviteNumber() {
@@ -204,22 +204,24 @@
     console.log(amount.value,gas.value)
     gasFee.value = Number(gas.value.gasPrice) * Number(gas.value.gasLimit) * 2;
   }
-  function withdraw() {
+  async function withdraw() {
+    if (!metaMask.isAvailable()) return;
     if(!isEmpty()) return;
-    if(!gas.value.gasPrice||gas.value.gasLimit) return;
+    loadingHelper.show();
+    await getFee();
     let data = {
       transType:13,
       fromUserId: store.state.user?.id,
       fromAssetType:100,
-      fromAmount: -amount.value,
+      fromAmount: -reward.value,
       toUserId: store.state.user?.id,
       toAssetType:100,
-      toAmount: -amount.value,
+      toAmount: -reward.value,
       gasPrice: Number(gas.value.gasPrice),
       gasLimit: Number(gas.value.gasLimit) * 2,
       nftVo:{}
     }
-    loadingHelper.show();
+    
     rebateApi.withdraw(data).then((res) => {
       loadingHelper.hide()
       visible.value = false;

@@ -161,7 +161,7 @@ function getReward(key) {
     from: store.state.metaMask?.account,
     funcName: "rewards"
   }
-  metaMask.queryTransactionByContract(data).then(res => {
+  metaMask.queryByethers(data).then(res => {
     store.commit("setFund", Number(res) / Math.pow(10, 18));
   });
 }
@@ -173,7 +173,7 @@ function getRound(key) {
     from: store.state.metaMask?.account,
     funcName: "roundsCount"
   }
-  metaMask.queryTransactionByContract(data).then(res => {
+  metaMask.queryByethersNoParam(data).then(res => {
     round.value = res;
   });
 }

@@ -358,6 +358,12 @@ export class MetaMask {
     let contract = new web3.eth.Contract(abi, address);
     return contract
   }
+  getEthersContract(param){
+    const ethprovider = new ethers.providers.Web3Provider(ethereum);
+    const signer = ethprovider.getSigner();
+    const contract = new ethers.Contract(param.address, param.abi, signer)
+    return contract
+  }
   toHex(num) {
     if (!web3) return
     return web3.utils.toHex(num + '000000000000000000');
@@ -412,6 +418,29 @@ export class MetaMask {
     let ret = await myContract.methods[param.funcName](param.amount).call();
     return ret;
   }
+  //reward
+  async queryByethers(param){
+    const contract = this.getEthersContract(param);
+    console.log(contract)
+    let ret = await contract[param.funcName](param.from);
+    console.log("current reward", Number(ret))
+    return ret
+  }
+  //round
+  async queryByethersNoParam(param){
+    const contract = this.getEthersContract(param);
+    console.log(contract)
+    let ret = await contract[param.funcName]();
+    console.log("current reward", Number(ret))
+    return ret
+  }
+  //fund&round
+  async queryRoundByethers(param){
+    const contract = this.getEthersContract(param);
+    let ret = await contract[param.funcName](param.amount);
+    console.log("current rplaying", Number(ret))
+    return ret
+  }
   async getGasByEthers(param){
     const ethprovider = new ethers.providers.Web3Provider(ethereum);
     let gas = {
@@ -433,9 +462,7 @@ export class MetaMask {
   sendTransactionUseEthers(param) {
     console.log("888")
     console.log("ethereum",ethereum)
-    const ethprovider = new ethers.providers.Web3Provider(ethereum);
-    const signer = ethprovider.getSigner();
-    const contract = new ethers.Contract(param.address, param.abi, signer)
+    const myContract = this.getContract(param.abi, param.address);
     return new Promise((resolve, reject) => {
       try {
         const func = async () => {

@@ -66,7 +66,7 @@ function getCurrentPlayers(round){
     useOrigin:true
   }
   loadingHelper.show();
-  metaMask.queryRoundByContract(data).then((res) => {
+  metaMask.queryRoundByethers(data).then((res) => {
     loadingHelper.hide()
     console.log(res)
     players.value[round+"i"] = {
