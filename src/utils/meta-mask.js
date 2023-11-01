@@ -404,8 +404,16 @@ export class MetaMask {
     const myContract = this.getContract(param.abi, param.address);
     if (!myContract) return;
     let ret = await myContract.methods[param.funcName](param.from).call();
-    console.log("current reward",ret)
+    console.log("current round",ret)
     return ret;
+  }
+  async queryByethers(param){
+    const ethprovider = new ethers.providers.Web3Provider(ethereum);
+    const signer = ethprovider.getSigner();
+    const contract = new ethers.Contract(param.address, param.abi, signer)
+    let ret = await contract.functions[param.funcName](param.from);
+    console.log("current reward", Number(ret))
+    return ret
   }
   async queryRoundByContract(param) {
     const myContract = this.getContract(param.abi, param.address);
