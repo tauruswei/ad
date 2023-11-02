@@ -125,7 +125,7 @@ function update(hascode) {
   }
   let data = {
     walletAddress: store.state.metaMask?.account,
-    inviterId: code.value ? code.value : null
+    inviterId: code.value ? decodeURIComponent(code.value) : null
   }
   aacApi.updateAccount(data).then(res => {
     if (res.code == 0) {
