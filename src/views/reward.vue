@@ -144,7 +144,7 @@
       errorMsg.value = proxy.$t("error.required")
       return false;
     }*/
-    if(reward.value < 20000){
+    if(reward.value < 0.01){
       showToast(proxy.$t("error.min") + " 20000");
       return false
     } 
