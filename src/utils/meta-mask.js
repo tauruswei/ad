@@ -2,12 +2,12 @@ import MetaMaskSDK from '@metamask/sdk';
 import MetaMaskOnboarding from '@metamask/onboarding'
 import detectEthereumProvider from '@metamask/detect-provider';
 import Web3 from 'web3';
-import {ethers} from "ethers";
+import { ethers } from "ethers";
 import store from "../store/index";
 import router from "../router/index";
-import {globals} from '../main.js'
+import { globals } from '../main.js'
 import { aacApi, chainApi, userApi } from '@/api/request';
-import { showToast, showSuccessToast, showFailToast, showConfirmDialog,showDialog } from 'vant';
+import { showToast, showSuccessToast, showFailToast, showConfirmDialog, showDialog } from 'vant';
 let option = {
   injectProvider: false,
   communicationLayerPreference: 'webrtc',
@@ -28,7 +28,7 @@ export class MetaMask {
     this.chainId = null;
     this.url = null;
   }
-  setValue(chainId,account){
+  setValue(chainId, account) {
     this.provider = ethereum;
     this.account = account;
     this.chainId = chainId;
@@ -41,8 +41,17 @@ export class MetaMask {
       console.log(error)
     }
   }
-  async getAccount(){
-    const accounts = await ethereum.request({ method: 'eth_requestAccounts' })
+  async getAccount() {
+    let accounts;
+    try {
+      if (!ethereum.ready) {
+        accounts = await ethereum.request({ method: 'eth_requestAccounts' })
+      } else {
+        accounts = await web3.eth.getAccounts()
+      }
+    } catch (error) {
+      console.log(error)
+    }
     if (accounts && accounts.length) this.account = accounts[0];
     return this.account;
   }
@@ -72,8 +81,8 @@ export class MetaMask {
     }
     let provider = await this.getProvider()
     if (provider !== ethereum) {
-      console.log("provider",provider)
-      console.log("ethereum",provider)
+      console.log("provider", provider)
+      console.log("ethereum", provider)
       console.error('Do you have multiple wallets installed?');
     }
     this.provider = ethereum;
@@ -86,16 +95,18 @@ export class MetaMask {
       if (this.chainId !== CHAINID) {
         let isChecked = await this.checkNetwork();
         console.log("checkednetwork", isChecked)
-        console.log(parseInt(CHAINID),this.chainId);
+        console.log(parseInt(CHAINID), this.chainId);
         showFailToast(globals.$t('message.chain.error') + parseInt(CHAINID) + '[' + this.chainId + ']).');
         if (!isChecked) return;
         this.chainId = this.toHex(store.state.abi?.chainId)
       }
-      const accounts = await ethereum.request({ method: 'eth_requestAccounts' })
-      if (accounts && accounts.length) this.account = accounts[0];
+      //const accounts = await web3.eth.getAccounts();
+      //console.log(accounts)
+      console.log("ready", ethereum.ready)
+      await this.getAccount();
+      //if (accounts && accounts.length) this.account = accounts[0];
       if (this.account) {
         store.commit("setMetaMask", { chainID: this.chainId, account: this.account, url: store.state.abi.rpcUrls[0] });
-        //this.isCurrentAccount()
       } else {
         this.disconnect()
       }
@@ -105,7 +116,7 @@ export class MetaMask {
   }
   isMetaMaskInstalled() {
     const { ethereum } = window;
-    return Boolean(ethereum&& ethereum.isMetaMask)
+    return Boolean(ethereum && ethereum.isMetaMask)
   }
   async isMetaMaskConnected() {
     try {
@@ -259,9 +270,9 @@ export class MetaMask {
       ethereum.request({
         method: "eth_sendTransaction",
         params: [{
-          from: param.from, 
+          from: param.from,
           to: param.address, // Required except during contract publications.
-          value: toHex(param.amount * Math.pow(10,18)), 
+          value: toHex(param.amount * Math.pow(10, 18)),
           gasPrice: web3.utils.numberToHex(price), // Customizable by the user during MetaMask confirmation.
           gas: web3.utils.numberToHex(gas), // web3.utils.numberToHex
           chainId: store.state.metaMask?.chainID,
@@ -276,7 +287,7 @@ export class MetaMask {
     })
   }
   async sendTransactionToWithdraw(param) {
-    let enable = await window.ethereum.request({method:'eth_requestAccounts'});
+    let enable = await window.ethereum.request({ method: 'eth_requestAccounts' });
     console.log(enable)
     let price = await this.getGasPrice();
     let gas = await this.estimateGas();
@@ -287,9 +298,9 @@ export class MetaMask {
       ethereum.request({
         method: "eth_sendTransaction",
         params: [{
-          from: param.address, 
+          from: param.address,
           to: param.from, // Required except during contract publications.
-          value: toHex(param.amount * Math.pow(10,18)), 
+          value: toHex(param.amount * Math.pow(10, 18)),
           gasPrice: web3.utils.numberToHex(price), // Customizable by the user during MetaMask confirmation.
           gas: web3.utils.numberToHex(gas), // web3.utils.numberToHex
           chainId: store.state.metaMask?.chainID
@@ -347,10 +358,10 @@ export class MetaMask {
   }
   async getBalance(account) {
     let balance;
-    await ethereum.request({method:'eth_getBalance',params:[account,"latest"]}).then(res=>{
+    await ethereum.request({ method: 'eth_getBalance', params: [account, "latest"] }).then(res => {
       balance = ethers.utils.formatEther(res)
       console.log(balance)
-      })
+    })
     return balance;
   }
   getContract(abi, address) {
@@ -358,7 +369,7 @@ export class MetaMask {
     let contract = new web3.eth.Contract(abi, address);
     return contract
   }
-  getEthersContract(param){
+  getEthersContract(param) {
     const ethprovider = new ethers.providers.Web3Provider(ethereum);
     const signer = ethprovider.getSigner();
     const contract = new ethers.Contract(param.address, param.abi, signer)
@@ -381,9 +392,9 @@ export class MetaMask {
     if (!myContract) return;
     return new Promise((resolve, reject) => {
       myContract.methods.deposit().send({
-        from: param.from, value: this.toWei(param.amount, "ether"),gasPrice: price,gas:gas
-      }).on('receipt',res=>{
-      //.then(res => {
+        from: param.from, value: this.toWei(param.amount, "ether"), gasPrice: price, gas: gas
+      }).on('receipt', res => {
+        //.then(res => {
         resolve(res)
       }).catch(err => {
         reject(err);
@@ -396,7 +407,7 @@ export class MetaMask {
     const myContract = this.getContract(param.abi, param.address);
     if (!myContract) return;
     return new Promise((resolve, reject) => {
-      myContract.methods[param.funcName](param.amount?toHex(this.toWei(param.amount, "ether")):null).send({
+      myContract.methods[param.funcName](param.amount ? toHex(this.toWei(param.amount, "ether")) : null).send({
         from: param.from
       }).then(res => {
         resolve(res)
@@ -410,24 +421,24 @@ export class MetaMask {
     const myContract = this.getContract(param.abi, param.address);
     if (!myContract) return;
     let ret = await myContract.methods[param.funcName](param.from).call();
-    console.log("current round",ret)
+    console.log("current round", ret)
     return ret;
   }
-  async queryByethers(param){
+  async queryByethers(param) {
     const contract = this.getEthersContract(param);
     console.log(contract)
     let ret = await contract[param.funcName](param.from);
     console.log("current reward", Number(ret))
     return ret
   }
-  async queryByethersNoParam(param){
+  async queryByethersNoParam(param) {
     const contract = this.getEthersContract(param);
     console.log(contract)
     let ret = await contract[param.funcName]();
     console.log("current reward", Number(ret))
     return ret
   }
-  async queryRoundByethers(param){
+  async queryRoundByethers(param) {
     const contract = this.getEthersContract(param);
     let ret = await contract[param.funcName](param.amount);
     console.log("current rplaying", Number(ret))
@@ -439,13 +450,13 @@ export class MetaMask {
     let ret = await myContract.methods[param.funcName](param.amount).call();
     return ret;
   }
-  async getGasByEthers(param){
+  async getGasByEthers(param) {
     const ethprovider = new ethers.providers.Web3Provider(ethereum);
     let gas = {
-      gasPrice:0,
-      gasLimit:0
+      gasPrice: 0,
+      gasLimit: 0
     }
-    try{
+    try {
       gas.gasPrice = await ethprovider.getGasPrice()
       gas.gasLimit = await ethprovider.estimateGas({
         to: param.to,
@@ -453,20 +464,20 @@ export class MetaMask {
         value: ethers.utils.parseEther(param.amount)
       })
       return gas;
-  } catch(error){
+    } catch (error) {
       console.log(error)
     }
   }
   sendTransactionUseEthers(param) {
     console.log("888")
-    console.log("ethereum",ethereum)
+    console.log("ethereum", ethereum)
     const contract = this.getEthersContract(param);
     return new Promise((resolve, reject) => {
       try {
         const func = async () => {
-          let value = param.amount?ethers.utils.parseEther(param.amount):null;
+          let value = param.amount ? ethers.utils.parseEther(param.amount) : null;
           let tx;
-          if(value) tx = await contract[param.funcName]({ value: value });
+          if (value) tx = await contract[param.funcName]({ value: value });
           else tx = await contract[param.funcName]();
           let receipt = await tx.wait();
           console.log(receipt)
@@ -478,7 +489,7 @@ export class MetaMask {
         reject(error)
       }
     })
-    }
+  }
 }
 function errorHandlerOfMetaMaskRequest(error) {
   console.log(error)

@@ -7,7 +7,7 @@
       <van-col :span="12">
         <van-button v-if="!$store.state.metaMask" size="small" type="primary" @click="connectWallet">{{$t('btn.connect')}}</van-button>
         <div v-if="$store.state.metaMask">
-          <p style="margin:0 0 10px;">{{ $store.state.metaMask?.account.substr(0,12)+"..." }} <van-icon name="records" @click="copy($store.state.metaMask?.account)" /></p>
+          <p style="margin:0 0 10px;">{{ $store.state.metaMask?.account?($store.state.metaMask?.account.substr(0,12)+"...") :""}} <van-icon name="records" @click="copy($store.state.metaMask?.account)" /></p>
           <van-tag type="success" round>{{$t('text.connected')}}</van-tag>
         </div>
       </van-col>
@@ -29,7 +29,7 @@
 <script setup>
 import { ref, getCurrentInstance, computed } from "vue";
 import { useStore } from "vuex"
-import { chainApi, aacApi,userApi } from "@/api/request";
+import { chainApi, aacApi, userApi } from "@/api/request";
 import { base64 } from "@/utils/base64";
 import { copyClick } from '@/utils/copy';
 import Bus from "@/utils/event-bus";
@@ -50,18 +50,18 @@ let isConnected = computed(() => {
 if (provider) {
   //手机钱包切换
   if (store.state.metaMask) {
-    let account;
-    ethereum.request({ method: 'eth_requestAccounts' }).then(async(accounts) => {
-      console.log(accounts);
+    let func = async () => {
+      let account = await metaMask.getAccount();
       let chainId = await ethereum.request({ method: 'eth_chainId' })
-      if (accounts && accounts.length) account = accounts[0];
-      metaMask.setValue(chainId,account);
+      metaMask.setValue(chainId, account);
       if (account != store.state.metaMask.account) {
         store.commit("setMetaMask", { chainID: chainId, url: store.state.metaMask?.url, account: account });
       }
       isAccountExist()
       Bus.$emit('refresh', true);
-    });
+    }
+    func()
+
   }
   provider.on('connect', async (info) => {
     console.log('connect', info)
@@ -94,22 +94,23 @@ if (provider) {
   })
 }
 function isAccountExist() {
+  console.log("provider.address", provider.address)
   let ret = false;
   let data = {
     walletAddress: store.state.metaMask?.account
   }
   aacApi.checkAccount(data).then(res => {
     if (!res.data) {
-      if(!code.value){
+      if (!code.value) {
         visible.value = true;
-      }else{
+      } else {
         update()
       }
-    }else{
-      store.commit("setUser",{id:res.data.id,account:res.data.walletAddress})
+    } else {
+      store.commit("setUser", { id: res.data.id, account: res.data.walletAddress })
       getInviteCode()
     }
-  }).catch((err)=>{
+  }).catch((err) => {
     console.log(err)
     metaMask.disconnect();
   })
@@ -128,20 +129,20 @@ function update(hascode) {
   aacApi.updateAccount(data).then(res => {
     if (res.code == 0) {
       showSuccessToast(proxy.$t('message.invite.success'));
-      store.commit("setInviteCode",null);
+      store.commit("setInviteCode", null);
       visible.value = false;
       getInviteCode()
     }
-  }).catch((err)=>{
+  }).catch((err) => {
     console.log(err)
     metaMask.disconnect();
   })
 }
-function getInviteCode(){
-  let data = {walletAddress:store.state.metaMask?.account};
-  userApi.channelLeader(data).then(res=>{
-    if(res && res.code == 0){
-      store.commit("setMyCode",res.data);
+function getInviteCode() {
+  let data = { walletAddress: store.state.metaMask?.account };
+  userApi.channelLeader(data).then(res => {
+    if (res && res.code == 0) {
+      store.commit("setMyCode", res.data);
     }
   })
 }
