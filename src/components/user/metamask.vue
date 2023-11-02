@@ -50,18 +50,17 @@ let isConnected = computed(() => {
 if (provider) {
   //手机钱包切换
   if (store.state.metaMask) {
-    let account;
-    ethereum.request({ method: 'eth_requestAccounts' }).then(async(accounts) => {
-      console.log(accounts);
+    let func = async () => {
+      let account = await metaMask.getAccount();
       let chainId = await ethereum.request({ method: 'eth_chainId' })
-      if (accounts && accounts.length) account = accounts[0];
-      metaMask.setValue(chainId,account);
+      metaMask.setValue(chainId, account);
       if (account != store.state.metaMask.account) {
         store.commit("setMetaMask", { chainID: chainId, url: store.state.metaMask?.url, account: account });
       }
       isAccountExist()
       Bus.$emit('refresh', true);
-    });
+    }
+    func()
   }
   provider.on('connect', async (info) => {
     console.log('connect', info)

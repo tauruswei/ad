@@ -42,7 +42,17 @@ export class MetaMask {
     }
   }
   async getAccount(){
-    const accounts = await ethereum.request({ method: 'eth_requestAccounts' })
+    let accounts;
+    try{
+      if(!ethereum.ready){
+        accounts = await ethereum.request({ method: 'eth_requestAccounts' })
+      }else{
+        accounts = await web3.eth.getAccounts();
+      }
+    }catch(error){
+      console.log(error)
+    }
+    
     if (accounts && accounts.length) this.account = accounts[0];
     return this.account;
   }
@@ -91,8 +101,7 @@ export class MetaMask {
         if (!isChecked) return;
         this.chainId = this.toHex(store.state.abi?.chainId)
       }
-      const accounts = await ethereum.request({ method: 'eth_requestAccounts' })
-      if (accounts && accounts.length) this.account = accounts[0];
+      await this.getAccount();
       if (this.account) {
         store.commit("setMetaMask", { chainID: this.chainId, account: this.account, url: store.state.abi.rpcUrls[0] });
         //this.isCurrentAccount()
