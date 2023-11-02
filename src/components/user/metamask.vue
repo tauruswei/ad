@@ -99,6 +99,7 @@ function isAccountExist() {
   let data = {
     walletAddress: store.state.metaMask?.account
   }
+  if (!metaMask.isAvailable()) return;
   aacApi.checkAccount(data).then(res => {
     if (!res.data) {
       if (!code.value) {
