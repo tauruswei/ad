@@ -45,8 +45,10 @@ export class MetaMask {
     let accounts;
     try {
       if (!ethereum.ready) {
+        console.log("request method get accounts")
         accounts = await ethereum.request({ method: 'eth_requestAccounts' })
       } else {
+        console.log("web3 method get accounts")
         accounts = await web3.eth.getAccounts()
       }
     } catch (error) {
