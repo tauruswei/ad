@@ -92,8 +92,10 @@ export class MetaMask {
     try {
       console.log("store.state.abi:");
       console.log(store.state.abi);
+      console.log("*******************chainid")
       const CHAINID = toHex(store.state.abi?.chainId)
       this.chainId = await ethereum.request({ method: 'eth_chainId' })
+      console.log(this.chainId)
       if (this.chainId !== CHAINID) {
         let isChecked = await this.checkNetwork();
         console.log("checkednetwork", isChecked)
