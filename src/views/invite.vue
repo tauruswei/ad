@@ -15,10 +15,11 @@ const store = useStore();
 const invideCode = ref("");
 function getQueryParamByKey(key) {
   let url = window.location.href;
+  url = url.replace("%20","%2B");
   let paramsStr = url.split("?")[1];
   let params = {};
   for (let i = 0; i < paramsStr.length; i++) {
-    let item = paramsStr.split("=");
+    let item = paramsStr.split(/=(.*)/s);
     params[item[0]] = item[1]
   }
   return decodeURIComponent(params[key])
