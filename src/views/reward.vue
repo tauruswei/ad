@@ -195,10 +195,11 @@
   }
   async function getFee(){
     if (!metaMask.isAvailable()) return;
+    if(!reward.value) return
     let param = {
       form:store.state.abi?.contract.aacFundPool.address,
       to: store.state.metaMask?.account,
-      value: amount.value
+      amount: reward.value + ""
     }
     gas.value = await metaMask.getGasByEthers(param);
     console.log(amount.value,gas.value)
