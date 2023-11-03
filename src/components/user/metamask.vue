@@ -94,7 +94,6 @@ if (provider) {
   })
 }
 function isAccountExist() {
-  console.log("provider.address", provider.address)
   let ret = false;
   let data = {
     walletAddress: store.state.metaMask?.account
@@ -123,6 +122,7 @@ function update(hascode) {
       return
     }
   }
+  console.log(code.value)
   let data = {
     walletAddress: store.state.metaMask?.account,
     inviterId: code.value ? decodeURIComponent(code.value) : null
