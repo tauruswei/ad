@@ -1,10 +1,12 @@
+import store from "../store/index"
 export default {
     btn: {
         withdraw:"提現",
         connect: "鏈接錢包",
         buy: "購買",
         invite: "分享邀請",
-        accept: "接受邀請"
+        accept: "接受邀請",
+        approve:"質押"
     },
     text: {
         home:"主頁",
@@ -12,6 +14,8 @@ export default {
         balance: "餘額",
         earned: "已賺取",
         play: "遊戲",
+        buy: "購買",
+        exchange:"兌換",
         playing: "進行中",
         history: "歷史",
         amount: "數量",
@@ -33,7 +37,7 @@ export default {
     },
     message: {
         play: {
-            title: "参与8人对战（2000AAC）",
+            title: "参与8人对战（"+store.state.pools[store.state.pool.toString()]+" EVIC）",
             sub: "在遊戲中勝出將會贏得獎勵"
         },
         wallet: {
@@ -47,7 +51,7 @@ export default {
             sub:"您將獲得 0.25% 的返利"
         },
         chain: {
-            error: "請您切換到正確的網絡 (Double-A Chain, ChainID=",
+            error: "請您切換到正確的網絡 (Binance Smart Chain, ChainID=",
             tip: "請您切換到正確的網絡！'"
         }
     },
@@ -60,6 +64,7 @@ export default {
         failed: "操作失敗",
         wentWrong: "發生錯誤",
         exceed:"當前餘額過低，燃氣費用不足，可能導致提現失敗",
-        min:"最小金额"
+        min:"小於最小金额",
+        max:"最大金额不能超出餘額"
     }
 }

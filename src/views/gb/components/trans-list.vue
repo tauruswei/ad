@@ -35,7 +35,7 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useStore } from "vuex"
-import { aacApi } from "@/api/request";
+import { bscApi } from "@/api/request";
 import { DateHelper } from "@/utils/helper";
 const store = useStore();
 const listData = ref([]);
@@ -49,18 +49,21 @@ onMounted(()=>{
 function query() {
   let data = {
     isFinished: true,
+    poolIndex:store.state.pool,
     address: store.state.metaMask?.account,
     pageSize: 20,
     pageNum: page.value
   }
   loading.value = true;
-  aacApi.playList(data).then((res) => {
+  bscApi.playList(data).then((res) => {
     if (res.code == 0) {
-      if(res.data.list && res.data.list.length) listData.value = res.data.list;
-      listData.value.forEach(item => {
+      if(res.data.list && res.data.list.length){ 
+        listData.value = res.data.list;
+        listData.value.forEach(item => {
         if (item.createTime) item.createTime = DateHelper.toString(item.createTime)
         if (item.updateTime) item.updateTime = DateHelper.toString(item.updateTime)
       })
+    }
       loading.value = false;
       page.value++;
       if((page.value * 20 - 20) > res.data.total) finished.value = true; 

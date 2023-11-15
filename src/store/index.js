@@ -1,5 +1,6 @@
 import { createStore } from "vuex";
-import createPersistedstate from "vuex-persistedstate"
+import createPersistedstate from "vuex-persistedstate";
+import { base64 } from "@/utils/base64";
 
 const store = createStore({
     state() {
@@ -9,12 +10,14 @@ const store = createStore({
             role: null,
             roles: [{ id: 0, name: "admin" }, { id: 1, name: "user" }],
             metaMask: null,
-            balance: 0,
+            balance:{evic:0,busd:0},
             fund:0,
             time: null,
-            abi: null,
+            config: null,
             inviteCode:"",
             mycode:"",
+            pool: 0,
+            pools: {"0":1000,"1":2000,"2":2000},
             cancelTokenArr: []
         }
     },
@@ -44,14 +47,20 @@ const store = createStore({
         setMetaMask(state, metaMask) {
             state.metaMask = metaMask;
         },
-        setBalance(state, balance) {
-            state.balance = balance;
+        setBalance(state, data) {
+            console.log(data.key)
+            console.log(state.balance)
+            state.balance[data.key] = data.value;
         },
         setFund(state, fund) {
             state.fund = fund;
         },
-        setABI(state, abi) {
-            state.abi = abi;
+        setConfig(state, config) {
+            let contract = config.contract;
+            for(let k in contract){
+                contract[k].abi = JSON.parse(base64.decode(config?.contract[k].abi))
+            }
+            state.config = config;
         },
         setInviteCode(state, code){
             state.inviteCode = code;

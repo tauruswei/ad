@@ -70,7 +70,7 @@ export const dashboardApi = {
   alldata: (data) => get("/admin/sumEvicDay", data),
   evicdata: (data) => get("/admin/sumEvicDay", data),
 }
-export const aacApi = {
+export const bscApi = {
   playingList: (data) => post("/aac/roundsListPending", data),
   playList: (data) => post("/aac/roundsListFinished", data),
   checkAccount: (data)=>post("/user/queryUserByWalletAddress",data),

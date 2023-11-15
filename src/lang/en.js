@@ -1,10 +1,12 @@
+import store from "../store/index"
 export default {
     btn: {
       withdraw:"withdraw",
       connect:"Connect Wallet",
       buy: "Buy",
       invite:"Share to invite",
-      accept:"Accept Invitation"
+      accept:"Accept Invitation",
+      approve:"Approve"
     },
     text:{
         home:"Home",
@@ -12,6 +14,8 @@ export default {
         balance:"Balance",
         earned:"Earned",
         play:"Play",
+        buy: "Buy",
+        exchange:"Exchange",
         playing:"Playing",
         history:"History",
         amount:"AMOUNT",
@@ -33,7 +37,7 @@ export default {
     },
     message:{
         play:{
-            title:"Spend 2000 AAC for a 8-players game",
+            title:"Spend "+store.state.pools[store.state.pool.toString()]+" EVIC for a 8-players game",
             sub:"You will get paid if you win the game."
         },
         wallet:{
@@ -47,7 +51,7 @@ export default {
             sub:"You will receive a 0.25% reward！"
         },
         chain:{
-            error:"Please connect to the right chain (Double-A Chain, ChainID=",
+            error:"Please connect to the right chain (Binance Smart Chain, ChainID=",
             tip:"'Sorry you need to switch to the right network, please try again!'"
         }
     },
@@ -60,6 +64,7 @@ export default {
         failed:"failed!",
         wentWrong:"Something went wrong.",
         exceed:"The current reward is less than the gas fee estimated",
-        min:"The amount can not be less than"
+        min:"The amount can not be less than",
+        max:"The amount can not be more than balance"
     }
   }

@@ -19,25 +19,30 @@
         <div class="wallet"></div>
         <div class="bg">
           <metamask-connect></metamask-connect>
+          <div style="padding:5px 10px;display:flex;justify-content: space-between;">
+            <p>BUSD {{$t('text.balance')}}: <b>{{ $store.state.balance.busd }}</b></p>
+            <van-button size="mini" type="primary" @click="open('busd_exchange-approve')">&nbsp;&nbsp;{{$t('text.exchange')}}&nbsp;&nbsp;</van-button>
+          </div>
           <van-grid :column-num="2">
             <van-grid-item>
-              <h3>{{ $store.state.balance }}</h3>
-              {{$t('text.balance')}}
+              <h3>{{ $store.state.balance.evic }}</h3>
+              <p><small>Evic {{$t('text.balance')}}</small></p>
+              <van-button size="mini" type="primary" @click="open('evic_exchange-approve')">&nbsp;&nbsp;{{$t('text.exchange')}}&nbsp;&nbsp;</van-button>
             </van-grid-item>
             <van-grid-item>
               <h3>{{ $store.state.fund }}</h3>
-              {{$t('text.earned')}}
-              <van-button size="small" type="primary" v-if="round && $store.state.fund" @click="open('withdraw')">&nbsp;&nbsp;{{$t('btn.withdraw')}}&nbsp;&nbsp;</van-button>
+              <p><small>{{$t('text.earned')}}</small></p>
+              <van-button size="mini" type="primary" @click="open('evic_withdraw')">&nbsp;&nbsp;{{$t('btn.withdraw')}}&nbsp;&nbsp;</van-button>
             </van-grid-item>
           </van-grid>
           <van-tabs v-model:active="activeName">
             <van-tab :title="$t('text.play')" name="trans">
               <div style="padding:15px 10px 25px;text-align: center;">
                 <van-image width="240px" height="180px" fill="contain" :src="require('@/assets/hero_attack.gif')"></van-image>
-                <h3 style="margin:-30px 0 15px;color: var(--van-danger-color);">2000 AAC</h3>
+                <h3 style="margin:-30px 0 15px;color: var(--van-danger-color);">{{$store.state.pools[$store.state.pool.toString()]}} EVIC</h3>
                 <div style="font-weight: bold;font-size: 15px;">{{$t('message.play.title')}}</div>
                 <p style="color:var(--van-gray-5);margin-bottom:15px;">{{$t('message.play.sub')}}</p>
-                <van-button class="action-btn" size="small" type="primary" @click="open('buy')"></van-button>
+                <van-button class="action-btn" size="small" type="primary" @click="open('evic_play-approve')"></van-button>
               </div>
             </van-tab>
             <van-tab :title="$t('text.playing')" name="playing">
@@ -50,20 +55,9 @@
         </div>
       </div>
     </div>
-    <side-bar v-model:visible="sidebarVisible" ></side-bar>
-    <!--Staking && UnStaking-->
-    <van-popup v-model:show="visible" position="bottom" :style="{height: '420px'}" closeable close-icon="close" round :close-on-click-overlay="false">
-      <div style="padding:10px 15px 20px;font-size:17px">
-        <h3>AAC</h3>
-        <van-cell-group inset style="margin-bottom:15px;">
-          <van-field v-model="action.amount" :label="$t('text.amount')+':'" type="number" required :error-message="errorMsg" :placeholder="$t('text.amount')" clickable />
-        </van-cell-group>
-        <van-button type="primary" @click="handleTransferOperate()" style="width:100%">
-          {{$t(`btn.${action.command}`)}}
-        </van-button>
-        <van-number-keyboard :show="show" v-model="action.amount" theme="custom" extra-key="." safe-area-inset-bottom />
-      </div>
-    </van-popup>
+    <side-bar v-model:visible="sidebarVisible"></side-bar>
+    <exchange-pop v-model:visible="visible" :title="action.title" :type="action.type" :error="errorMsg" @do="handleTransferOperate">
+    </exchange-pop>
   </div>
 </template>
 <script setup>
@@ -72,9 +66,9 @@ import { useStore } from "vuex"
 import { DateHelper } from "@/utils/helper";
 import { loadingHelper } from "@/utils/loading";
 import { userApi } from "@/api/request";
-import { base64 } from "@/utils/base64";
 import { copyClick } from '@/utils/copy';
 import { showNotify, showToast } from 'vant';
+import ExchangePop from "./components/exchangePop.vue";
 import BuyList from "./components/trans-list.vue";
 import BuyingList from "./components/transing-list.vue";
 import MetamaskConnect from "@/components/user/metamask.vue";
@@ -83,64 +77,35 @@ import Bus from "@/utils/event-bus";
 const store = useStore();
 const round = ref(1);
 const action = ref({
-  amount: "0.01",
+  title: "",
+  amount: "1000",
   command: ''
 });
-const min = ref(0.01);
+const min = ref(1000);
 const amount = ref("")
 getABI();
-const abis = ref({ aac: "" })
+const abis = ref({ aacFundPool: "" })
 const visible = ref(false)
-const show = ref(true)
 const { proxy } = getCurrentInstance();
 const metaMask = proxy.metaMask;
 const activeName = ref("trans")
 const hasConfig = ref(false)
-const errorMsg = ref("");
+const errorMsg = ref({ msg1: "", msg2: "" });
 const sidebarVisible = ref(false);
-console.log("store.state.abi", store.state.abi);
 function getABI() {
   let data = {
-    network: "aac"
+    network: "bsc"
   }
-  /*let res = {
-    "code": 0,
-    "msg": "success",
-    "data": {
-        "networkName": "Double-A Chain",
-        "nativeCurrency": "AAC",
-        "rpcUrls": [
-            "https://rpc.acuteangle.com"
-        ],
-        "explorer": "https://scan.acuteangle.com",
-        "blockNumber": 6,
-        "chainId": 512,
-        "nftReceiveAddress": null,
-        "tokenUriPrefix": null,
-        "contract": {
-            "aacFundPool": {
-                "address": "0xa69C8f705845969F7a0360f5e6Fd8e014d880263",
-                "proxyAddress": "0xa69C8f705845969F7a0360f5e6Fd8e014d880263",
-                "abi": "WwoJewoJCSJpbnB1dHMiOiBbCgkJCXsKCQkJCSJpbnRlcm5hbFR5cGUiOiAiYWRkcmVzcyIsCgkJCQkibmFtZSI6ICJfb3BlcmF0b3IiLAoJCQkJInR5cGUiOiAiYWRkcmVzcyIKCQkJfQoJCV0sCgkJIm5hbWUiOiAiYWRkT3BlcmF0b3IiLAoJCSJvdXRwdXRzIjogW10sCgkJInN0YXRlTXV0YWJpbGl0eSI6ICJub25wYXlhYmxlIiwKCQkidHlwZSI6ICJmdW5jdGlvbiIKCX0sCgl7CgkJImlucHV0cyI6IFtdLAoJCSJuYW1lIjogImRlcG9zaXQiLAoJCSJvdXRwdXRzIjogW10sCgkJInN0YXRlTXV0YWJpbGl0eSI6ICJwYXlhYmxlIiwKCQkidHlwZSI6ICJmdW5jdGlvbiIKCX0sCgl7CgkJImlucHV0cyI6IFsKCQkJewoJCQkJImludGVybmFsVHlwZSI6ICJ1aW50MjU2IiwKCQkJCSJuYW1lIjogIl9tYXhQbGF5ZXJzIiwKCQkJCSJ0eXBlIjogInVpbnQyNTYiCgkJCX0sCgkJCXsKCQkJCSJpbnRlcm5hbFR5cGUiOiAidWludDI1NiIsCgkJCQkibmFtZSI6ICJfZmlyc3RSZXdhcmQiLAoJCQkJInR5cGUiOiAidWludDI1NiIKCQkJfSwKCQkJewoJCQkJImludGVybmFsVHlwZSI6ICJ1aW50MjU2IiwKCQkJCSJuYW1lIjogIl9zZWNvbmRSZXdhcmQiLAoJCQkJInR5cGUiOiAidWludDI1NiIKCQkJfSwKCQkJewoJCQkJImludGVybmFsVHlwZSI6ICJ1aW50MjU2IiwKCQkJCSJuYW1lIjogIl90aGlyZFJld2FyZCIsCgkJCQkidHlwZSI6ICJ1aW50MjU2IgoJCQl9LAoJCQl7CgkJCQkiaW50ZXJuYWxUeXBlIjogInVpbnQyNTYiLAoJCQkJIm5hbWUiOiAiX21pbkFtb3VudCIsCgkJCQkidHlwZSI6ICJ1aW50MjU2IgoJCQl9CgkJXSwKCQkic3RhdGVNdXRhYmlsaXR5IjogIm5vbnBheWFibGUiLAoJCSJ0eXBlIjogImNvbnN0cnVjdG9yIgoJfSwKCXsKCQkiYW5vbnltb3VzIjogZmFsc2UsCgkJImlucHV0cyI6IFsKCQkJewoJCQkJImluZGV4ZWQiOiBmYWxzZSwKCQkJCSJpbnRlcm5hbFR5cGUiOiAidWludDgiLAoJCQkJIm5hbWUiOiAidmVyc2lvbiIsCgkJCQkidHlwZSI6ICJ1aW50OCIKCQkJfQoJCV0sCgkJIm5hbWUiOiAiSW5pdGlhbGl6ZWQiLAoJCSJ0eXBlIjogImV2ZW50IgoJfSwKCXsKCQkiaW5wdXRzIjogW10sCgkJIm5hbWUiOiAicGF1c2UiLAoJCSJvdXRwdXRzIjogW10sCgkJInN0YXRlTXV0YWJpbGl0eSI6ICJub25wYXlhYmxlIiwKCQkidHlwZSI6ICJmdW5jdGlvbiIKCX0sCgl7CgkJImFub255bW91cyI6IGZhbHNlLAoJCSJpbnB1dHMiOiBbCgkJCXsKCQkJCSJpbmRleGVkIjogZmFsc2UsCgkJCQkiaW50ZXJuYWxUeXBlIjogImFkZHJlc3MiLAoJCQkJIm5hbWUiOiAiYWNjb3VudCIsCgkJCQkidHlwZSI6ICJhZGRyZXNzIgoJCQl9CgkJXSwKCQkibmFtZSI6ICJQYXVzZWQiLAoJCSJ0eXBlIjogImV2ZW50IgoJfSwKCXsKCQkiaW5wdXRzIjogWwoJCQl7CgkJCQkiaW50ZXJuYWxUeXBlIjogInVpbnQyNTYiLAoJCQkJIm5hbWUiOiAicm91bmRJbmRleCIsCgkJCQkidHlwZSI6ICJ1aW50MjU2IgoJCQl9LAoJCQl7CgkJCQkiaW50ZXJuYWxUeXBlIjogImFkZHJlc3MiLAoJCQkJIm5hbWUiOiAiZmlyc3QiLAoJCQkJInR5cGUiOiAiYWRkcmVzcyIKCQkJfSwKCQkJewoJCQkJImludGVybmFsVHlwZSI6ICJhZGRyZXNzIiwKCQkJCSJuYW1lIjogInNlY29uZCIsCgkJCQkidHlwZSI6ICJhZGRyZXNzIgoJCQl9LAoJCQl7CgkJCQkiaW50ZXJuYWxUeXBlIjogImFkZHJlc3MiLAoJCQkJIm5hbWUiOiAidGhpcmQiLAoJCQkJInR5cGUiOiAiYWRkcmVzcyIKCQkJfQoJCV0sCgkJIm5hbWUiOiAicGF5b3V0IiwKCQkib3V0cHV0cyI6IFtdLAoJCSJzdGF0ZU11dGFiaWxpdHkiOiAibm9ucGF5YWJsZSIsCgkJInR5cGUiOiAiZnVuY3Rpb24iCgl9LAoJewoJCSJpbnB1dHMiOiBbCgkJCXsKCQkJCSJpbnRlcm5hbFR5cGUiOiAiYWRkcmVzcyIsCgkJCQkibmFtZSI6ICJfb3BlcmF0b3IiLAoJCQkJInR5cGUiOiAiYWRkcmVzcyIKCQkJfQoJCV0sCgkJIm5hbWUiOiAicmVtb3ZlT3BlcmF0b3IiLAoJCSJvdXRwdXRzIjogW10sCgkJInN0YXRlTXV0YWJpbGl0eSI6ICJub25wYXlhYmxlIiwKCQkidHlwZSI6ICJmdW5jdGlvbiIKCX0sCgl7CgkJImFub255bW91cyI6IGZhbHNlLAoJCSJpbnB1dHMiOiBbCgkJCXsKCQkJCSJpbmRleGVkIjogdHJ1ZSwKCQkJCSJpbnRlcm5hbFR5cGUiOiAidWludDI1NiIsCgkJCQkibmFtZSI6ICJyb3VuZEluZGV4IiwKCQkJCSJ0eXBlIjogInVpbnQyNTYiCgkJCX0sCgkJCXsKCQkJCSJpbmRleGVkIjogZmFsc2UsCgkJCQkiaW50ZXJuYWxUeXBlIjogImFkZHJlc3NbXSIsCgkJCQkibmFtZSI6ICJwbGF5ZXJBZGRyZXNzZXMiLAoJCQkJInR5cGUiOiAiYWRkcmVzc1tdIgoJCQl9LAoJCQl7CgkJCQkiaW5kZXhlZCI6IGZhbHNlLAoJCQkJImludGVybmFsVHlwZSI6ICJ1aW50MjU2IiwKCQkJCSJuYW1lIjogInRvdGFsRnVuZCIsCgkJCQkidHlwZSI6ICJ1aW50MjU2IgoJCQl9CgkJXSwKCQkibmFtZSI6ICJSb3VuZEZpbmlzaGVkIiwKCQkidHlwZSI6ICJldmVudCIKCX0sCgl7CgkJImFub255bW91cyI6IGZhbHNlLAoJCSJpbnB1dHMiOiBbCgkJCXsKCQkJCSJpbmRleGVkIjogdHJ1ZSwKCQkJCSJpbnRlcm5hbFR5cGUiOiAidWludDI1NiIsCgkJCQkibmFtZSI6ICJyb3VuZEluZGV4IiwKCQkJCSJ0eXBlIjogInVpbnQyNTYiCgkJCX0sCgkJCXsKCQkJCSJpbmRleGVkIjogZmFsc2UsCgkJCQkiaW50ZXJuYWxUeXBlIjogImFkZHJlc3MiLAoJCQkJIm5hbWUiOiAicGxheWVyQWRkcmVzc2VzIiwKCQkJCSJ0eXBlIjogImFkZHJlc3MiCgkJCX0sCgkJCXsKCQkJCSJpbmRleGVkIjogZmFsc2UsCgkJCQkiaW50ZXJuYWxUeXBlIjogInVpbnQyNTYiLAoJCQkJIm5hbWUiOiAidmFsdWUiLAoJCQkJInR5cGUiOiAidWludDI1NiIKCQkJfQoJCV0sCgkJIm5hbWUiOiAiUm91bmRQZW5kaW5nIiwKCQkidHlwZSI6ICJldmVudCIKCX0sCgl7CgkJImlucHV0cyI6IFsKCQkJewoJCQkJImludGVybmFsVHlwZSI6ICJhZGRyZXNzIiwKCQkJCSJuYW1lIjogIm5ld093bmVyIiwKCQkJCSJ0eXBlIjogImFkZHJlc3MiCgkJCX0KCQldLAoJCSJuYW1lIjogInRyYW5zZmVyT3duZXJzaGlwIiwKCQkib3V0cHV0cyI6IFtdLAoJCSJzdGF0ZU11dGFiaWxpdHkiOiAibm9ucGF5YWJsZSIsCgkJInR5cGUiOiAiZnVuY3Rpb24iCgl9LAoJewoJCSJpbnB1dHMiOiBbXSwKCQkibmFtZSI6ICJ1bnBhdXNlIiwKCQkib3V0cHV0cyI6IFtdLAoJCSJzdGF0ZU11dGFiaWxpdHkiOiAibm9ucGF5YWJsZSIsCgkJInR5cGUiOiAiZnVuY3Rpb24iCgl9LAoJewoJCSJhbm9ueW1vdXMiOiBmYWxzZSwKCQkiaW5wdXRzIjogWwoJCQl7CgkJCQkiaW5kZXhlZCI6IGZhbHNlLAoJCQkJImludGVybmFsVHlwZSI6ICJhZGRyZXNzIiwKCQkJCSJuYW1lIjogImFjY291bnQiLAoJCQkJInR5cGUiOiAiYWRkcmVzcyIKCQkJfQoJCV0sCgkJIm5hbWUiOiAiVW5wYXVzZWQiLAoJCSJ0eXBlIjogImV2ZW50IgoJfSwKCXsKCQkiaW5wdXRzIjogW10sCgkJIm5hbWUiOiAid2l0aGRyYXciLAoJCSJvdXRwdXRzIjogW10sCgkJInN0YXRlTXV0YWJpbGl0eSI6ICJub25wYXlhYmxlIiwKCQkidHlwZSI6ICJmdW5jdGlvbiIKCX0sCgl7CgkJImlucHV0cyI6IFsKCQkJewoJCQkJImludGVybmFsVHlwZSI6ICJhZGRyZXNzIHBheWFibGUiLAoJCQkJIm5hbWUiOiAicmVjaXBpZW50IiwKCQkJCSJ0eXBlIjogImFkZHJlc3MiCgkJCX0KCQldLAoJCSJuYW1lIjogIndpdGhkcmF3UmVtYWluaW5nIiwKCQkib3V0cHV0cyI6IFtdLAoJCSJzdGF0ZU11dGFiaWxpdHkiOiAibm9ucGF5YWJsZSIsCgkJInR5cGUiOiAiZnVuY3Rpb24iCgl9LAoJewoJCSJpbnB1dHMiOiBbCgkJCXsKCQkJCSJpbnRlcm5hbFR5cGUiOiAidWludDI1NiIsCgkJCQkibmFtZSI6ICIiLAoJCQkJInR5cGUiOiAidWludDI1NiIKCQkJfQoJCV0sCgkJIm5hbWUiOiAiZmluaXNoUGF5b3V0IiwKCQkib3V0cHV0cyI6IFsKCQkJewoJCQkJImludGVybmFsVHlwZSI6ICJib29sIiwKCQkJCSJuYW1lIjogIiIsCgkJCQkidHlwZSI6ICJib29sIgoJCQl9CgkJXSwKCQkic3RhdGVNdXRhYmlsaXR5IjogInZpZXciLAoJCSJ0eXBlIjogImZ1bmN0aW9uIgoJfSwKCXsKCQkiaW5wdXRzIjogW10sCgkJIm5hbWUiOiAiZmlyc3RSZXdhcmQiLAoJCSJvdXRwdXRzIjogWwoJCQl7CgkJCQkiaW50ZXJuYWxUeXBlIjogInVpbnQyNTYiLAoJCQkJIm5hbWUiOiAiIiwKCQkJCSJ0eXBlIjogInVpbnQyNTYiCgkJCX0KCQldLAoJCSJzdGF0ZU11dGFiaWxpdHkiOiAidmlldyIsCgkJInR5cGUiOiAiZnVuY3Rpb24iCgl9LAoJewoJCSJpbnB1dHMiOiBbCgkJCXsKCQkJCSJpbnRlcm5hbFR5cGUiOiAiYWRkcmVzcyIsCgkJCQkibmFtZSI6ICJvd25lciIsCgkJCQkidHlwZSI6ICJhZGRyZXNzIgoJCQl9CgkJXSwKCQkibmFtZSI6ICJnZXRSZXdhcmRzQnlPd25lciIsCgkJIm91dHB1dHMiOiBbCgkJCXsKCQkJCSJjb21wb25lbnRzIjogWwoJCQkJCXsKCQkJCQkJImludGVybmFsVHlwZSI6ICJ1aW50MjU2IiwKCQkJCQkJIm5hbWUiOiAicm91bmRJbmRleCIsCgkJCQkJCSJ0eXBlIjogInVpbnQyNTYiCgkJCQkJfSwKCQkJCQl7CgkJCQkJCSJpbnRlcm5hbFR5cGUiOiAidWludDI1NiIsCgkJCQkJCSJuYW1lIjogInJld2FyZCIsCgkJCQkJCSJ0eXBlIjogInVpbnQyNTYiCgkJCQkJfQoJCQkJXSwKCQkJCSJpbnRlcm5hbFR5cGUiOiAic3RydWN0IEZ1bmRzUG9vbC5wbGF5ZXJSZXdhcmRbXSIsCgkJCQkibmFtZSI6ICIiLAoJCQkJInR5cGUiOiAidHVwbGVbXSIKCQkJfQoJCV0sCgkJInN0YXRlTXV0YWJpbGl0eSI6ICJ2aWV3IiwKCQkidHlwZSI6ICJmdW5jdGlvbiIKCX0sCgl7CgkJImlucHV0cyI6IFtdLAoJCSJuYW1lIjogIm1heFBsYXllcnMiLAoJCSJvdXRwdXRzIjogWwoJCQl7CgkJCQkiaW50ZXJuYWxUeXBlIjogInVpbnQyNTYiLAoJCQkJIm5hbWUiOiAiIiwKCQkJCSJ0eXBlIjogInVpbnQyNTYiCgkJCX0KCQldLAoJCSJzdGF0ZU11dGFiaWxpdHkiOiAidmlldyIsCgkJInR5cGUiOiAiZnVuY3Rpb24iCgl9LAoJewoJCSJpbnB1dHMiOiBbXSwKCQkibmFtZSI6ICJtaW5BbW91bnQiLAoJCSJvdXRwdXRzIjogWwoJCQl7CgkJCQkiaW50ZXJuYWxUeXBlIjogInVpbnQyNTYiLAoJCQkJIm5hbWUiOiAiIiwKCQkJCSJ0eXBlIjogInVpbnQyNTYiCgkJCX0KCQldLAoJCSJzdGF0ZU11dGFiaWxpdHkiOiAidmlldyIsCgkJInR5cGUiOiAiZnVuY3Rpb24iCgl9LAoJewoJCSJpbnB1dHMiOiBbCgkJCXsKCQkJCSJpbnRlcm5hbFR5cGUiOiAiYWRkcmVzcyIsCgkJCQkibmFtZSI6ICIiLAoJCQkJInR5cGUiOiAiYWRkcmVzcyIKCQkJfQoJCV0sCgkJIm5hbWUiOiAib3BlcmF0b3IiLAoJCSJvdXRwdXRzIjogWwoJCQl7CgkJCQkiaW50ZXJuYWxUeXBlIjogImJvb2wiLAoJCQkJIm5hbWUiOiAiIiwKCQkJCSJ0eXBlIjogImJvb2wiCgkJCX0KCQldLAoJCSJzdGF0ZU11dGFiaWxpdHkiOiAidmlldyIsCgkJInR5cGUiOiAiZnVuY3Rpb24iCgl9LAoJewoJCSJpbnB1dHMiOiBbXSwKCQkibmFtZSI6ICJvd25lciIsCgkJIm91dHB1dHMiOiBbCgkJCXsKCQkJCSJpbnRlcm5hbFR5cGUiOiAiYWRkcmVzcyIsCgkJCQkibmFtZSI6ICIiLAoJCQkJInR5cGUiOiAiYWRkcmVzcyIKCQkJfQoJCV0sCgkJInN0YXRlTXV0YWJpbGl0eSI6ICJ2aWV3IiwKCQkidHlwZSI6ICJmdW5jdGlvbiIKCX0sCgl7CgkJImlucHV0cyI6IFtdLAoJCSJuYW1lIjogInBhdXNlZCIsCgkJIm91dHB1dHMiOiBbCgkJCXsKCQkJCSJpbnRlcm5hbFR5cGUiOiAiYm9vbCIsCgkJCQkibmFtZSI6ICIiLAoJCQkJInR5cGUiOiAiYm9vbCIKCQkJfQoJCV0sCgkJInN0YXRlTXV0YWJpbGl0eSI6ICJ2aWV3IiwKCQkidHlwZSI6ICJmdW5jdGlvbiIKCX0sCgl7CgkJImlucHV0cyI6IFtdLAoJCSJuYW1lIjogInByb2ZpdCIsCgkJIm91dHB1dHMiOiBbCgkJCXsKCQkJCSJpbnRlcm5hbFR5cGUiOiAidWludDI1NiIsCgkJCQkibmFtZSI6ICIiLAoJCQkJInR5cGUiOiAidWludDI1NiIKCQkJfQoJCV0sCgkJInN0YXRlTXV0YWJpbGl0eSI6ICJ2aWV3IiwKCQkidHlwZSI6ICJmdW5jdGlvbiIKCX0sCgl7CgkJImlucHV0cyI6IFsKCQkJewoJCQkJImludGVybmFsVHlwZSI6ICJhZGRyZXNzIiwKCQkJCSJuYW1lIjogIiIsCgkJCQkidHlwZSI6ICJhZGRyZXNzIgoJCQl9CgkJXSwKCQkibmFtZSI6ICJyZXdhcmRzIiwKCQkib3V0cHV0cyI6IFsKCQkJewoJCQkJImludGVybmFsVHlwZSI6ICJ1aW50MjU2IiwKCQkJCSJuYW1lIjogIiIsCgkJCQkidHlwZSI6ICJ1aW50MjU2IgoJCQl9CgkJXSwKCQkic3RhdGVNdXRhYmlsaXR5IjogInZpZXciLAoJCSJ0eXBlIjogImZ1bmN0aW9uIgoJfSwKCXsKCQkiaW5wdXRzIjogWwoJCQl7CgkJCQkiaW50ZXJuYWxUeXBlIjogImFkZHJlc3MiLAoJCQkJIm5hbWUiOiAiIiwKCQkJCSJ0eXBlIjogImFkZHJlc3MiCgkJCX0sCgkJCXsKCQkJCSJpbnRlcm5hbFR5cGUiOiAidWludDI1NiIsCgkJCQkibmFtZSI6ICIiLAoJCQkJInR5cGUiOiAidWludDI1NiIKCQkJfQoJCV0sCgkJIm5hbWUiOiAicm91bmRSZXdhcmRzIiwKCQkib3V0cHV0cyI6IFsKCQkJewoJCQkJImludGVybmFsVHlwZSI6ICJ1aW50MjU2IiwKCQkJCSJuYW1lIjogInJvdW5kSW5kZXgiLAoJCQkJInR5cGUiOiAidWludDI1NiIKCQkJfSwKCQkJewoJCQkJImludGVybmFsVHlwZSI6ICJ1aW50MjU2IiwKCQkJCSJuYW1lIjogInJld2FyZCIsCgkJCQkidHlwZSI6ICJ1aW50MjU2IgoJCQl9CgkJXSwKCQkic3RhdGVNdXRhYmlsaXR5IjogInZpZXciLAoJCSJ0eXBlIjogImZ1bmN0aW9uIgoJfSwKCXsKCQkiaW5wdXRzIjogWwoJCQl7CgkJCQkiaW50ZXJuYWxUeXBlIjogInVpbnQyNTYiLAoJCQkJIm5hbWUiOiAiIiwKCQkJCSJ0eXBlIjogInVpbnQyNTYiCgkJCX0KCQldLAoJCSJuYW1lIjogInJvdW5kcyIsCgkJIm91dHB1dHMiOiBbCgkJCXsKCQkJCSJpbnRlcm5hbFR5cGUiOiAidWludDI1NiIsCgkJCQkibmFtZSI6ICJ0b3RhbEZ1bmQiLAoJCQkJInR5cGUiOiAidWludDI1NiIKCQkJfSwKCQkJewoJCQkJImludGVybmFsVHlwZSI6ICJ1aW50MjU2IiwKCQkJCSJuYW1lIjogInRvdGFsUGxheWVycyIsCgkJCQkidHlwZSI6ICJ1aW50MjU2IgoJCQl9CgkJXSwKCQkic3RhdGVNdXRhYmlsaXR5IjogInZpZXciLAoJCSJ0eXBlIjogImZ1bmN0aW9uIgoJfSwKCXsKCQkiaW5wdXRzIjogW10sCgkJIm5hbWUiOiAicm91bmRzQ291bnQiLAoJCSJvdXRwdXRzIjogWwoJCQl7CgkJCQkiaW50ZXJuYWxUeXBlIjogInVpbnQyNTYiLAoJCQkJIm5hbWUiOiAiIiwKCQkJCSJ0eXBlIjogInVpbnQyNTYiCgkJCX0KCQldLAoJCSJzdGF0ZU11dGFiaWxpdHkiOiAidmlldyIsCgkJInR5cGUiOiAiZnVuY3Rpb24iCgl9LAoJewoJCSJpbnB1dHMiOiBbXSwKCQkibmFtZSI6ICJzZWNvbmRSZXdhcmQiLAoJCSJvdXRwdXRzIjogWwoJCQl7CgkJCQkiaW50ZXJuYWxUeXBlIjogInVpbnQyNTYiLAoJCQkJIm5hbWUiOiAiIiwKCQkJCSJ0eXBlIjogInVpbnQyNTYiCgkJCX0KCQldLAoJCSJzdGF0ZU11dGFiaWxpdHkiOiAidmlldyIsCgkJInR5cGUiOiAiZnVuY3Rpb24iCgl9LAoJewoJCSJpbnB1dHMiOiBbXSwKCQkibmFtZSI6ICJ0aGlyZFJld2FyZCIsCgkJIm91dHB1dHMiOiBbCgkJCXsKCQkJCSJpbnRlcm5hbFR5cGUiOiAidWludDI1NiIsCgkJCQkibmFtZSI6ICIiLAoJCQkJInR5cGUiOiAidWludDI1NiIKCQkJfQoJCV0sCgkJInN0YXRlTXV0YWJpbGl0eSI6ICJ2aWV3IiwKCQkidHlwZSI6ICJmdW5jdGlvbiIKCX0sCgl7CgkJImlucHV0cyI6IFtdLAoJCSJuYW1lIjogInRvdGFsUmV3YXJkcyIsCgkJIm91dHB1dHMiOiBbCgkJCXsKCQkJCSJpbnRlcm5hbFR5cGUiOiAidWludDI1NiIsCgkJCQkibmFtZSI6ICIiLAoJCQkJInR5cGUiOiAidWludDI1NiIKCQkJfQoJCV0sCgkJInN0YXRlTXV0YWJpbGl0eSI6ICJ2aWV3IiwKCQkidHlwZSI6ICJmdW5jdGlvbiIKCX0KXQog",
-                "image": null
-            }
-        }
-    }
-}
-setTimeout(()=>{
-  hasConfig.value = true;
-      store.commit("setABI",res.data);
-      abis.value = { aac: JSON.parse(base64.decode(store.state.abi?.contract.aacFundPool.abi)) }
-      if (metaMask.isAvailable()) {
-        refresh()
-      }
-},100)*/
-
   userApi.abi(data).then(res => {
     if (res.code == 0) {
       hasConfig.value = true;
-      store.commit("setABI", res.data);
-      abis.value = { aac: JSON.parse(base64.decode(store.state.abi?.contract.aacFundPool.abi)) }
+      store.commit("setConfig", res.data);
+      abis.value = {
+        aacFundPool: store.state.config?.contract.aacFundPool.abi,
+        evic: store.state.config?.contract.evic.abi,
+        busd: store.state.config?.contract.busd.abi,
+        exchangeEvic: store.state.config?.contract.exchangeEvic.abi,
+      }
       if (metaMask.isAvailable()) {
         refresh()
       }
@@ -149,17 +114,25 @@ setTimeout(()=>{
 }
 
 function getBalance(key) {
-  metaMask.getBalance(store.state.metaMask?.account).then(res => {
-    store.commit("setBalance", Math.round((res) * 1000) / 1000);
+  let data = {
+    abi: abis.value[key],
+    address: store.state.config?.contract[key].address,
+    from: store.state.metaMask?.account,
+    funcName: "balanceOf"
+  }
+  metaMask.getBalanceByContract(data).then(res => {
+    console.log(res)
+    let balance = Number(res) / Math.pow(10, 18);
+    store.commit("setBalance", { key: key, value: Math.round((balance) * 1000) / 1000 });
   });
 }
 function getReward(key) {
   if (!hasConfig.value) return;
   let data = {
     abi: abis.value[key],
-    address: store.state.abi?.contract.aacFundPool.address,
+    address: store.state.config?.contract[key].address,
     from: store.state.metaMask?.account,
-    funcName: "rewards"
+    funcName: "userRewards"
   }//queryByethers
   metaMask.queryByethers(data).then(res => {
     store.commit("setFund", Number(res) / Math.pow(10, 18));
@@ -169,7 +142,7 @@ function getRound(key) {
   if (!hasConfig.value) return;
   let data = {
     abi: abis.value[key],
-    address: store.state.abi?.contract.aacFundPool.address,
+    address: store.state.config?.contract[key].address,
     from: store.state.metaMask?.account,
     funcName: "roundsCount"
   }
@@ -179,62 +152,155 @@ function getRound(key) {
 }
 function open(command) {
   if (!metaMask.isAvailable()) return;
+  //command: KEY_TYPE;
+  //key:币种(evic/aac/busd);
+  //type:play/buy/exchange/withdraw
   action.value = {
-    amount: "0.01",
     command: command,
-    key: 'aac'
+    key: command.split("_")[0],
+    type: command.split("-")[0],
+    title: ""
   }
-  min.value = 0.01;
-  if(command == "withdraw"){
-    action.value.amount = "0.01"
-    min.value = 0.01;
+  min.value = store.state.pools[store.state.pool.toString()];
+  if (command == "evic_withdraw") {
+    if(!store.state.fund) return;
     transferHandler[action.value.command]()
-  }else{
-    openHandler[command]();
+  } else {
+    let key = command.split("-")[0]||command;
+    action.value.title = proxy.$t(`text.${key.split("_")[1]}`);
+    openHandler();
   }
-  
+
 }
-const openHandler = {
-  buy: () => {
-    visible.value = true
-  },
-  withdraw: () => {
-    visible.value = true
-  }
+const openHandler = () => {
+  visible.value = true;
 }
 const transferHandler = {
-  buy: transfer.bind(this, 'aac'),
-  withdraw: withdraw.bind(this, 'aac')
+  "busd_exchange-approve": approveExchange.bind(this),
+  "evic_exchange-approve": approveExchange.bind(this),
+  "evic_play-approve": approve.bind(this),
+  "busd_buy-approve": approve.bind(this),
+  busd_exchange: exchangeBusd.bind(this),
+  evic_exchange: exchange.bind(this),
+  evic_play: transfer.bind(this),
+  busd_buy: transfer.bind(this),
+  evic_withdraw: withdraw.bind(this, 'evic')
 }
-function handleTransferOperate() {
-  transferHandler[action.value.command]();
+function handleTransferOperate(value) {
+  transferHandler[(value&&value.command?value.command:action.value.command)](value);
 }
-function checkValue() {
-  let amount = parseFloat(action.value.amount);
+function checkValue(amount) {
   let ret = true;
-  if (!amount) {
-    errorMsg.value = proxy.$t("error.required");
-    ret = false;
-  }
-  if(amount < min.value) {
-    errorMsg.value = proxy.$t("error.min") + " "+min.value;
+  if (amount < min.value) {
+    errorMsg.value.msg1 = proxy.$t("error.min") + " " + min.value;
     ret = false;
   }
   return ret;
 }
-function transfer(key) {
+//玩游戏；使用evic合约，参数使用aacFundPool.proxyAddress
+function approve(value) {
   if (!hasConfig.value) return;
   if (!metaMask.isAvailable()) return;
   if (!checkValue()) return;
+  let key = action.value.key;
   let data = {
     from: store.state.metaMask?.account,
-    address: store.state.abi?.contract.aacFundPool.address,
-    amount: process.env.NODE_ENV == "development" ?'0.01':action.value.amount,
+    address: store.state.config?.contract[key].address,
+    amount: key == "evic"?value.amount1:value.amount,
+    abi: abis.value[key],
+    addressParam: store.state.config?.contract.aacFundPool.proxyAddress,
+    funcName: "approve"
+  }
+  loadingHelper.show();
+  metaMask.sendApproveByContract(data).then((res) => {
+    loadingHelper.hide()
+    //refresh()
+  }).catch(err => {
+    loadingHelper.hide();
+  })
+}
+//evic => busd;使用evic合约，参数使用exchangeEvic
+//busd => evic;使用busd合约，参数使用exchangeEvic
+function approveExchange(value) {
+  if (!hasConfig.value) return;
+  if (!metaMask.isAvailable()) return;
+  if (!checkValue()) return;
+  let key = action.value.key;
+  let data = {
+    from: store.state.metaMask?.account,
+    address: store.state.config?.contract[key].address,
+    amount: key=="evic"?value.amount1:value.amount,
+    abi: abis.value[key],
+    addressParam: store.state.config?.contract.exchangeEvic.address,
+    funcName: "approve"
+  }
+  loadingHelper.show();
+  metaMask.sendApproveByContract(data).then((res) => {
+    loadingHelper.hide()
+    //refresh()
+  }).catch(err => {
+    loadingHelper.hide();
+  })
+}
+//evic => busd;参数 evic数量
+function exchangeBusd(value) {
+  if (!hasConfig.value) return;
+  if (!metaMask.isAvailable()) return;
+  if (!checkValue()) return;
+  let key = "exchangeEvic";
+  let data = {
+    from: store.state.metaMask?.account,
+    address: store.state.config?.contract[key].address,
+    amount: value.amount1,
+    abi: abis.value[key],
+    funcName: "sellToken"
+  }
+  loadingHelper.show();
+  metaMask.sendTransactionByContractNoPool(data).then((res) => {
+    visible.value = false;
+    loadingHelper.hide()
+    refresh()
+  }).catch(err => {
+    loadingHelper.hide();
+  })
+}
+//busd => evic;参数 busd数量
+function exchange(value) {
+  if (!hasConfig.value) return;
+  if (!metaMask.isAvailable()) return;
+  if (!checkValue()) return;
+  let key = "exchangeEvic";
+  let data = {
+    from: store.state.metaMask?.account,
+    address: store.state.config?.contract[key].address,
+    amount: value.amount,
+    abi: abis.value[key],
+    funcName: "buyToken"
+  }
+  loadingHelper.show();
+  metaMask.sendTransactionByContractNoPool(data).then((res) => {
+    visible.value = false;
+    loadingHelper.hide()
+    refresh()
+  }).catch(err => {
+    loadingHelper.hide();
+  })
+}
+//玩游戏，使用aacFundPool合约
+function transfer(value) {
+  if (!hasConfig.value) return;
+  if (!metaMask.isAvailable()) return;
+  if (!checkValue()) return;
+  let key = 'aacFundPool';
+  let data = {
+    from: store.state.metaMask?.account,
+    address: store.state.config?.contract[key].proxyAddress,
+    amount: value.amount1,
     abi: abis.value[key],
     funcName: "deposit"
   }
-  loadingHelper.show();//sendTransactionUseEthers//sendTransactionByContractOrigin
-  metaMask.sendTransactionUseEthers(data).then((res) => {
+  loadingHelper.show();//sendTransactionByContract
+  metaMask.sendTransactionByContract(data).then((res) => {
     visible.value = false;
     loadingHelper.hide()
     refresh()
@@ -247,13 +313,12 @@ function withdraw(key) {
   if (!metaMask.isAvailable()) return;
   let data = {
     from: store.state.metaMask?.account,
-    address: store.state.abi?.contract.aacFundPool.address,
+    address: store.state.config?.contract[key].address,
     abi: abis.value[key],
-    //amount: action.value.amount,
     funcName: "withdraw"
   }
-  loadingHelper.show();//sendTransactionUseEthers
-  metaMask.sendTransactionUseEthers(data).then((res) => {
+  loadingHelper.show();
+  metaMask.sendTransactionByContract(data).then((res) => {
     loadingHelper.hide()
     refresh()
   }).catch(err => {
@@ -264,17 +329,18 @@ function copy(val) {
   if (!store.state.mycode) return;
   copyClick(val)
 }
-function openSidebar(){
+function openSidebar() {
   sidebarVisible.value = true;
   console.log(sidebarVisible.value)
 }
 function refresh() {
   if (!hasConfig.value) return;
-  getBalance('aac')
-  getReward("aac")
-  getRound("aac");
+  getBalance('busd')
+  getBalance('evic')
+  getReward("aacFundPool")
+  //getRound("aacFundPool");
 }
-onMounted(()=>{
+onMounted(() => {
   refresh()
 })
 Bus.$on('refresh', (isRefresh) => {
@@ -286,6 +352,4 @@ function handleClickb(tab) {
 onUnmounted(() => {
   Bus.$off('refresh')
 })
-
-//getABI();
 </script>

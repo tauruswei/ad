@@ -10,11 +10,12 @@
   --van-background-color: var(--van-gray-8);
   --van-border-color: var(--van-gray-7);
   --van-number-keyboard-background: var(--van-gray-7);
-  --van-tab-active-text-color:var(--van-primary-color)
+  --van-tab-active-text-color:var(--van-primary-color);
+  --van-cell-active-color: var(--van-gray-8);
 }
 h3 {
   margin: 0;
-  font-size: 24px;
+  font-size: 22px;
 }
 .content-container {
   position: relative;

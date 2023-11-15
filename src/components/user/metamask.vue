@@ -4,20 +4,20 @@
       <van-col :span="4">
         <van-image style="width:48px;height:48px;padding:8px;box-sizing:border-box;background-color: rgba(255,255,255,.05);" :src="require('@/assets/metamask-fox.svg')" round></van-image>
       </van-col>
-      <van-col :span="12">
+      <van-col :span="8">
         <van-button v-if="!$store.state.metaMask" size="small" type="primary" @click="connectWallet">{{$t('btn.connect')}}</van-button>
         <div v-if="$store.state.metaMask">
           <p style="margin:0 0 10px;">{{ $store.state.metaMask?.account?($store.state.metaMask?.account.substr(0,12)+"...") :""}} <van-icon name="records" @click="copy($store.state.metaMask?.account)" /></p>
           <van-tag type="success" round>{{$t('text.connected')}}</van-tag>
         </div>
       </van-col>
-      <van-col :span="8">
-        <span style="display:block;text-align: right;color:#f09424" :title="$store.state.abi?.networkName"><small>{{$store.state.abi?.networkName ||""}}</small></span>
+      <van-col :span="12">
+        <span style="display:block;text-align: right;color:#f09424" :title="$store.state.config?.networkName"><small>{{$store.state.config?.networkName ||""}}</small></span>
       </van-col>
     </van-row>
     <van-popup v-model:show="visible" position="bottom" :style="{height: '420px'}" round :close-on-click-overlay="false">
       <div style="padding:10px 15px 20px;font-size:17px">
-        <h3>AAC</h3>
+        <h3>Evic</h3>
         <van-cell-group inset style="margin-bottom:15px;">
           <van-field v-model="code" :label="`${$t('text.inviteLabel')}:`" type="text" required :error-message="errorMsg" placeholder="code" clickable />
         </van-cell-group>
@@ -29,14 +29,14 @@
 <script setup>
 import { ref, getCurrentInstance, computed } from "vue";
 import { useStore } from "vuex"
-import { chainApi, aacApi, userApi } from "@/api/request";
+import { chainApi, bscApi, userApi } from "@/api/request";
 import { base64 } from "@/utils/base64";
 import { copyClick } from '@/utils/copy';
 import Bus from "@/utils/event-bus";
 import { showSuccessToast, showConfirmDialog } from "vant";
 const { proxy } = getCurrentInstance()
 const store = useStore()
-let CONTRACTS = store.state.abi?.contract;
+let CONTRACTS = store.state.config?.contract;
 const emit = defineEmits(['refresh'])
 const metaMask = proxy.metaMask;
 const provider = window.ethereum;
@@ -99,7 +99,7 @@ function isAccountExist() {
     walletAddress: store.state.metaMask?.account
   }
   if (!metaMask.isAvailable()) return;
-  aacApi.checkAccount(data).then(res => {
+  bscApi.checkAccount(data).then(res => {
     if (!res.data) {
       if (!code.value) {
         visible.value = true;
@@ -127,7 +127,7 @@ function update(hascode) {
     walletAddress: store.state.metaMask?.account,
     inviterId: code.value ? decodeURIComponent(code.value) : null
   }
-  aacApi.updateAccount(data).then(res => {
+  bscApi.updateAccount(data).then(res => {
     if (res.code == 0) {
       showSuccessToast(proxy.$t('message.invite.success'));
       store.commit("setInviteCode", null);
