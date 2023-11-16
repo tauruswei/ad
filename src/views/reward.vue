@@ -63,7 +63,7 @@
   import { useStore } from "vuex"
   import { DateHelper } from "@/utils/helper";
   import { loadingHelper } from "@/utils/loading";
-  import { userApi,rebateApi } from "@/api/request";
+  import { userApi,rebateApi,evicsApi } from "@/api/request";
   import { base64 } from "@/utils/base64";
   import { copyClick } from '@/utils/copy';
   import { showNotify, showToast } from 'vant';
@@ -140,7 +140,7 @@
   function getReward() {
     let data = {
         userId: store.state.user.id,
-        assetType:100
+        assetType:3
     }
     loadingHelper.show();
     rebateApi.reward(data).then((res) => {
@@ -195,7 +195,7 @@
       gasLimit: Number(gas.value.gasLimit) * 2,
       nftVo:{}
     }
-    rebateApi.withdraw(data).then((res) => {
+    evicsApi.withdraw(data).then((res) => {
       loadingHelper.hide()
       //visible.value = false;
       refresh()
