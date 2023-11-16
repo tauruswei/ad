@@ -480,6 +480,7 @@ export class MetaMask {
     const myContract = this.getContract(param.abi, param.address);
     if (!myContract) return;
     let ret = await myContract.methods[param.funcName](param.from,param.to).call();
+    console.log("allowance",ret)
     return ret;
   }
   async getGasByEthers(param) {

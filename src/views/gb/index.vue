@@ -149,7 +149,8 @@ function getReward(key) {
     funcName: "userRewards"
   }//queryByethers
   metaMask.queryByethers(data).then(res => {
-    store.commit("setFund", Number(res) / Math.pow(10, 18));
+    let reward = Number(res) / Math.pow(10, 18);
+    store.commit("setFund", Math.round(reward * 1000) / 1000);
   });
 }
 function getRound(key) {

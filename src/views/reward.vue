@@ -186,10 +186,10 @@
     let data = {
       transType:13,
       fromUserId: store.state.user?.id,
-      fromAssetType:100,
+      fromAssetType:3,
       fromAmount: -reward.value,
       toUserId: store.state.user?.id,
-      toAssetType:100,
+      toAssetType:3,
       toAmount: -reward.value,
       gasPrice: Number(gas.value.gasPrice),
       gasLimit: Number(gas.value.gasLimit) * 2,
