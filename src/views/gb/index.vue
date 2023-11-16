@@ -21,18 +21,18 @@
           <metamask-connect></metamask-connect>
           <div style="padding:5px 10px;display:flex;justify-content: space-between;">
             <p>BUSD {{$t('text.balance')}}: <b>{{ $store.state.balance.busd }}</b></p>
-            <van-button size="mini" type="primary" @click="open('busd_exchange-approve')">&nbsp;&nbsp;{{$t('text.exchange')}}&nbsp;&nbsp;</van-button>
+            <van-button size="mini" type="primary" @click="open('evic_exchange-approve')">&nbsp;&nbsp;{{$t('text.exchange')}}&nbsp;&nbsp;</van-button>
           </div>
           <van-grid :column-num="2">
             <van-grid-item>
               <h3>{{ $store.state.balance.evic }}</h3>
               <p><small>Evic {{$t('text.balance')}}</small></p>
-              <van-button size="mini" type="primary" @click="open('evic_exchange-approve')">&nbsp;&nbsp;{{$t('text.exchange')}}&nbsp;&nbsp;</van-button>
+              <van-button size="mini" type="primary" @click="open('busd_exchange-approve')">&nbsp;&nbsp;{{$t('text.exchange')}}&nbsp;&nbsp;</van-button>
             </van-grid-item>
             <van-grid-item>
               <h3>{{ $store.state.fund }}</h3>
               <p><small>{{$t('text.earned')}}</small></p>
-              <van-button size="mini" type="primary" @click="open('evic_withdraw')">&nbsp;&nbsp;{{$t('btn.withdraw')}}&nbsp;&nbsp;</van-button>
+              <van-button size="mini" type="primary" :disabled="$store.state.fund?false:true" @click="open('evic_withdraw')">&nbsp;&nbsp;{{$t('btn.withdraw')}}&nbsp;&nbsp;</van-button>
             </van-grid-item>
           </van-grid>
           <van-tabs v-model:active="activeName">
@@ -92,6 +92,7 @@ const activeName = ref("trans")
 const hasConfig = ref(false)
 const errorMsg = ref({ msg1: "", msg2: "" });
 const sidebarVisible = ref(false);
+//config
 function getABI() {
   let data = {
     network: "bsc"
@@ -112,7 +113,7 @@ function getABI() {
     }
   })
 }
-
+//余额
 function getBalance(key) {
   let data = {
     abi: abis.value[key],
@@ -120,17 +121,30 @@ function getBalance(key) {
     from: store.state.metaMask?.account,
     funcName: "balanceOf"
   }
-  metaMask.getBalanceByContract(data).then(res => {
-    console.log(res)
+  metaMask.getDataByContract(data).then(res => {
     let balance = Number(res) / Math.pow(10, 18);
     store.commit("setBalance", { key: key, value: Math.round((balance) * 1000) / 1000 });
   });
 }
+function getAllowance(key,type) {
+  let data = {
+    abi: abis.value[key],
+    address: store.state.config?.contract[key].address,
+    from: store.state.metaMask?.account,
+    to: type=='play'? store.state.config?.contract.aacFundPool.proxyAddress:store.state.config?.contract.exchangeEvic.proxyAddress,
+    funcName: "allowance"
+  }
+  metaMask.getAllowanceByContract(data).then(res => {
+    let allowance = Number(res) / Math.pow(10, 18);
+    store.commit("setAllowance", { key: key+"_"+type, value: Math.round((allowance) * 1000) / 1000 });
+  });
+}
+//游戏收益
 function getReward(key) {
   if (!hasConfig.value) return;
   let data = {
     abi: abis.value[key],
-    address: store.state.config?.contract[key].address,
+    address: store.state.config?.contract[key].proxyAddress,
     from: store.state.metaMask?.account,
     funcName: "userRewards"
   }//queryByethers
@@ -163,8 +177,7 @@ function open(command) {
   }
   min.value = store.state.pools[store.state.pool.toString()];
   if (command == "evic_withdraw") {
-    if(!store.state.fund) return;
-    transferHandler[action.value.command]()
+    transferHandler["evic_withdraw"]()
   } else {
     let key = command.split("-")[0]||command;
     action.value.title = proxy.$t(`text.${key.split("_")[1]}`);
@@ -176,15 +189,15 @@ const openHandler = () => {
   visible.value = true;
 }
 const transferHandler = {
-  "busd_exchange-approve": approveExchange.bind(this),
-  "evic_exchange-approve": approveExchange.bind(this),
+  "busd_exchange-approve": approveExchange.bind(this),//to evic
+  "evic_exchange-approve": approveExchange.bind(this),//to busd
   "evic_play-approve": approve.bind(this),
   "busd_buy-approve": approve.bind(this),
-  busd_exchange: exchangeBusd.bind(this),
-  evic_exchange: exchange.bind(this),
+  busd_exchange: exchange.bind(this),//to evic
+  evic_exchange: exchangeBusd.bind(this),//to busd
   evic_play: transfer.bind(this),
   busd_buy: transfer.bind(this),
-  evic_withdraw: withdraw.bind(this, 'evic')
+  evic_withdraw: withdraw.bind(this, 'aacFundPool')
 }
 function handleTransferOperate(value) {
   transferHandler[(value&&value.command?value.command:action.value.command)](value);
@@ -201,7 +214,6 @@ function checkValue(amount) {
 function approve(value) {
   if (!hasConfig.value) return;
   if (!metaMask.isAvailable()) return;
-  if (!checkValue()) return;
   let key = action.value.key;
   let data = {
     from: store.state.metaMask?.account,
@@ -211,49 +223,56 @@ function approve(value) {
     addressParam: store.state.config?.contract.aacFundPool.proxyAddress,
     funcName: "approve"
   }
+  if (!checkValue(data.amount)) return;
   loadingHelper.show();
   metaMask.sendApproveByContract(data).then((res) => {
-    loadingHelper.hide()
+    loadingHelper.hide();
+    getAllowance('evic','play')
     //refresh()
   }).catch(err => {
     loadingHelper.hide();
   })
 }
-//evic => busd;使用evic合约，参数使用exchangeEvic
-//busd => evic;使用busd合约，参数使用exchangeEvic
+//evic => busd;使用busd合约，参数使用exchangeEvic
+//busd => evic;使用evic合约，参数使用exchangeEvic
 function approveExchange(value) {
   if (!hasConfig.value) return;
   if (!metaMask.isAvailable()) return;
-  if (!checkValue()) return;
   let key = action.value.key;
   let data = {
     from: store.state.metaMask?.account,
     address: store.state.config?.contract[key].address,
     amount: key=="evic"?value.amount1:value.amount,
     abi: abis.value[key],
-    addressParam: store.state.config?.contract.exchangeEvic.address,
+    addressParam: store.state.config?.contract.exchangeEvic.proxyAddress,
     funcName: "approve"
   }
   loadingHelper.show();
   metaMask.sendApproveByContract(data).then((res) => {
-    loadingHelper.hide()
+    loadingHelper.hide();
+    getAllowance('evic','exchange')
+    getAllowance('busd','exchange')
     //refresh()
   }).catch(err => {
     loadingHelper.hide();
   })
 }
-//evic => busd;参数 evic数量
+//evic => busd;参数 busd数量
 function exchangeBusd(value) {
   if (!hasConfig.value) return;
   if (!metaMask.isAvailable()) return;
-  if (!checkValue()) return;
   let key = "exchangeEvic";
   let data = {
     from: store.state.metaMask?.account,
-    address: store.state.config?.contract[key].address,
+    address: store.state.config?.contract[key].proxyAddress,
     amount: value.amount1,
     abi: abis.value[key],
     funcName: "sellToken"
+  }
+  console.log(data)
+  if(data.amount > store.state.allowance[value.command]) {
+    showToast(`${proxy.$t('error.allowance')}`)
+    return
   }
   loadingHelper.show();
   metaMask.sendTransactionByContractNoPool(data).then((res) => {
@@ -264,18 +283,21 @@ function exchangeBusd(value) {
     loadingHelper.hide();
   })
 }
-//busd => evic;参数 busd数量
+//busd => evic;参数 evic数量
 function exchange(value) {
   if (!hasConfig.value) return;
   if (!metaMask.isAvailable()) return;
-  if (!checkValue()) return;
   let key = "exchangeEvic";
   let data = {
     from: store.state.metaMask?.account,
-    address: store.state.config?.contract[key].address,
+    address: store.state.config?.contract[key].proxyAddress,
     amount: value.amount,
     abi: abis.value[key],
     funcName: "buyToken"
+  }
+  if(data.amount > store.state.allowance[value.command]) {
+    showToast(`${proxy.$t('error.allowance')}`)
+    return
   }
   loadingHelper.show();
   metaMask.sendTransactionByContractNoPool(data).then((res) => {
@@ -290,7 +312,6 @@ function exchange(value) {
 function transfer(value) {
   if (!hasConfig.value) return;
   if (!metaMask.isAvailable()) return;
-  if (!checkValue()) return;
   let key = 'aacFundPool';
   let data = {
     from: store.state.metaMask?.account,
@@ -298,6 +319,11 @@ function transfer(value) {
     amount: value.amount1,
     abi: abis.value[key],
     funcName: "deposit"
+  }
+  if (!checkValue(data.amount)) return;
+  if(data.amount > store.state.allowance[value.command]) {
+    showToast(`${proxy.$t('error.allowance')}`)
+    return
   }
   loadingHelper.show();//sendTransactionByContract
   metaMask.sendTransactionByContract(data).then((res) => {
@@ -313,14 +339,15 @@ function withdraw(key) {
   if (!metaMask.isAvailable()) return;
   let data = {
     from: store.state.metaMask?.account,
-    address: store.state.config?.contract[key].address,
+    address: store.state.config?.contract[key].proxyAddress,
     abi: abis.value[key],
     funcName: "withdraw"
   }
   loadingHelper.show();
-  metaMask.sendTransactionByContract(data).then((res) => {
+  metaMask.sendTransactionByContractNoParam(data).then((res) => {
     loadingHelper.hide()
-    refresh()
+    getBalance('evic')
+    getReward("aacFundPool")
   }).catch(err => {
     loadingHelper.hide();
   })
@@ -337,6 +364,9 @@ function refresh() {
   if (!hasConfig.value) return;
   getBalance('busd')
   getBalance('evic')
+  getAllowance('busd','exchange')
+  getAllowance('evic','exchange')
+  getAllowance('evic','play')
   getReward("aacFundPool")
   //getRound("aacFundPool");
 }

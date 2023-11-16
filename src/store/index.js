@@ -11,6 +11,7 @@ const store = createStore({
             roles: [{ id: 0, name: "admin" }, { id: 1, name: "user" }],
             metaMask: null,
             balance:{evic:0,busd:0},
+            allowance:{evic:0,busd:0},
             fund:0,
             time: null,
             config: null,
@@ -48,9 +49,10 @@ const store = createStore({
             state.metaMask = metaMask;
         },
         setBalance(state, data) {
-            console.log(data.key)
-            console.log(state.balance)
             state.balance[data.key] = data.value;
+        },
+        setAllowance(state, data) {
+            state.allowance[data.key] = data.value;
         },
         setFund(state, fund) {
             state.fund = fund;

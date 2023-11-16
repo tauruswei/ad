@@ -7,7 +7,7 @@
         </van-col>
         <van-col :span="18">
           <p style="font-size:15px;margin-top:2px;margin-bottom:8px;"><b>{{ item }}</b><small>&nbsp;&nbsp;{{$t('text.round')}}</small></p>
-          <a style="font-size:12px;margin:8px 0;color:var(--van-gray-6);word-break: break-all;" :href="$store.state.config ?`${$store.state.config?.explorer}/address/${$store.state.config.contract[key].address}`:'#' "><van-text-ellipsis :content="$store.state.config?.contract[key].address" /></a>
+          <a style="font-size:12px;margin:8px 0;color:var(--van-gray-6);word-break: break-all;" :href="$store.state.config ?`${$store.state.config?.explorer}/address/${$store.state.config.contract.aacFundPool.proxyAddress}`:'#' "><van-text-ellipsis :content="$store.state.config?.contract.aacFundPool.proxyAddress" /></a>
           <div>
             <p>{{$t('text.players')}}: <span>{{ players[item+'i']?.player||"0" }}</span>&nbsp;&nbsp;{{$t('text.round')}}:{{ players[item+'i']?.fund||"0" }}&nbsp;&nbsp;&nbsp;<van-icon name="replay"  @click="getCurrentPlayers(item)"/></p>
             
@@ -60,7 +60,7 @@ function getCurrentPlayers(round){
   if (!metaMask.isAvailable()) return;
   let data = {
     from: store.state.metaMask?.account,
-    address: store.state.config?.contract.aacFundPool.address,
+    address: store.state.config?.contract.aacFundPool.proxyAddress,
     abi: store.state.config?.contract.aacFundPool.abi,
     funcName: "getRound",
     amount:round,

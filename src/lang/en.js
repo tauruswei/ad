@@ -33,7 +33,9 @@ export default {
         clickcopy:"copy",
         rebate:"rebate",
         reward:"Reward",
-        inviteNum:"Invite Number"
+        inviteNum:"Invite Number",
+        allowance:"Allowance",
+        exchangeTo:"Exchange to",
     },
     message:{
         play:{
@@ -65,6 +67,7 @@ export default {
         wentWrong:"Something went wrong.",
         exceed:"The current reward is less than the gas fee estimated",
         min:"The amount can not be less than",
-        max:"The amount can not be more than balance"
+        max:"The amount can not be more than balance",
+        allowance:"The amount can not be more than allowance"
     }
   }

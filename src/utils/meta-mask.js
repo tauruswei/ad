@@ -364,7 +364,6 @@ export class MetaMask {
     let balance;
     await ethereum.request({ method: 'eth_getBalance', params: [account, "latest"] }).then(res => {
       balance = ethers.utils.formatEther(res)
-      console.log(balance)
     })
     return balance;
   }
@@ -417,6 +416,20 @@ export class MetaMask {
       })
     })
   }
+  async sendTransactionByContractNoParam(param) {
+    const myContract = this.getContract(param.abi, param.address);
+    if (!myContract) return;
+    return new Promise((resolve, reject) => {
+      myContract.methods[param.funcName]().send({
+        from: param.from
+      }).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err);
+        showToast(err)
+      })
+    })
+  }
   async sendTransactionByContract(param) {
     const myContract = this.getContract(param.abi, param.address);
     if (!myContract) return;
@@ -457,10 +470,16 @@ export class MetaMask {
     console.log("current playing", Number(ret))
     return ret
   }
-  async getBalanceByContract(param) {
+  async getDataByContract(param) {
     const myContract = this.getContract(param.abi, param.address);
     if (!myContract) return;
     let ret = await myContract.methods[param.funcName](param.from).call();
+    return ret;
+  }
+  async getAllowanceByContract(param) {
+    const myContract = this.getContract(param.abi, param.address);
+    if (!myContract) return;
+    let ret = await myContract.methods[param.funcName](param.from,param.to).call();
     return ret;
   }
   async getGasByEthers(param) {

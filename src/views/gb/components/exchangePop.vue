@@ -3,9 +3,11 @@
     <van-form ref="form" style="padding:10px 15px 20px;font-size:17px">
       <h3>{{ title }}</h3>
       <van-cell-group inset style="margin-bottom:15px;">
-        <van-field v-if="!(type == 'evic_play')" v-model="action.amount" name="amount" label="BUSD:" type="number" :rules="rules.amount" required :error-message="error.msg1" @input="busdChange" :placeholder="$t('text.amount')" clickable />
-        <van-field v-model="action.amount1" name="amount1" label="EVIC:" type="number" :rules="rules.amount1" required :error-message="error.msg2" @input="evicChange" :placeholder="$t('text.amount')" clickable />
+        <van-field v-if="type == 'evic_play'" v-model="action.amount1" name="amount1" label="EVIC:" type="number" :rules="rules.amount1" required :error-message="error.msg2" @input="evicChange" :placeholder="$t('text.amount')" clickable />
+        <van-field v-if="type != 'evic_play'" v-model="action.amount" name="amount" label="BUSD:" type="number" :rules="rules.amount" required :error-message="error.msg1" @input="busdChange" :placeholder="$t('text.amount')" clickable />
+        <van-field v-if="type != 'evic_play'" v-model="action.amount1" name="amount1" label="EVIC:" type="number" :rules="rules.amount1" required :error-message="error.msg2" @input="evicChange" :placeholder="$t('text.amount')" clickable />
       </van-cell-group>
+      <div>{{type.split('_')[0].toUpperCase()+' '+$t('text.allowance')+": " }}<b>{{ $store.state.allowance[type] }}</b></div>
       <van-button @click="submit()" style="width:100%;margin-bottom: 10px;">
         {{$t('btn.approve')}}
       </van-button>
@@ -13,10 +15,10 @@
         {{$t('btn.buy')}}
       </van-button>
       <van-button v-if="type=='busd_exchange'" type="primary" @click="submit('busd_exchange')" style="width:100%">
-        {{$t('text.exchange') + ' EVIC'}}
+        {{$t('text.exchangeTo') + ' EVIC'}}
       </van-button>
       <van-button v-if="type=='evic_exchange'" type="primary" @click="submit('evic_exchange')" style="width:100%">
-        {{$t('text.exchange')+ " BUSD"}}
+        {{$t('text.exchangeTo')+ " BUSD"}}
       </van-button>
     </van-form>
   </van-popup>
