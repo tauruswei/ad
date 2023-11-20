@@ -479,13 +479,31 @@ export class MetaMask {
     console.log("current playing", Number(ret))
     return ret
   }
-  //tp只支持web3
+  //tp只支持web3查询
   async getBalanceOfDifferentWallet(param){
     let ret;
     if(ethereum.isTokenPocket){
       ret = await this.getDataByContract(param)
     }else{
       ret = await this.queryByethers(param)
+    }
+    return ret;
+  }
+  async getAllowanceDifferentWallet(param){
+    let ret;
+    if(ethereum.isTokenPocket){
+      ret = await this.getAllowanceByContract(param)
+    }else{
+      ret = await this.queryAllowanceByethers(param)
+    }
+    return ret;
+  }
+  async getRoundDifferentWallet(param){
+    let ret;
+    if(ethereum.isTokenPocket){
+      ret = await this.getRoundByContract(param)
+    }else{
+      ret = await this.queryRoundByethers(param)
     }
     return ret;
   }
@@ -502,6 +520,13 @@ export class MetaMask {
     if (!myContract) return;
     let ret = await myContract.methods[param.funcName](param.from,param.to).call();
     console.log("allowance",ret)
+    return ret;
+  }
+  async getRoundByContract(param) {
+    const myContract = this.getContract(param.abi, param.address);
+    if (!myContract) return;
+    let ret = await myContract.methods[param.funcName](store.state.pool,param.amount).call();
+    console.log("round",ret)
     return ret;
   }
   async getGasByEthers(param) {
@@ -522,9 +547,27 @@ export class MetaMask {
       console.log(error)
     }
   }
+  approveByEthers(param){
+    const contract = this.getEthersContract(param);
+    return new Promise((resolve, reject) => {
+      try {
+        const func = async () => {
+          let value = param.amount ? ethers.utils.parseEther(param.amount) : null;
+          let tx;
+          if (value) tx = await contract[param.funcName](param.addressParam,value);
+          else tx = await contract[param.funcName]();
+          let receipt = await tx.wait();
+          console.log(receipt)
+          resolve(receipt)
+        }
+        func();
+      } catch (error) {
+        console.log(error)
+        reject(error)
+      }
+    })
+  }
   sendTransactionUseEthers(param) {
-    console.log("888")
-    console.log("ethereum", ethereum)
     const contract = this.getEthersContract(param);
     return new Promise((resolve, reject) => {
       try {
@@ -532,6 +575,46 @@ export class MetaMask {
           let value = param.amount ? ethers.utils.parseEther(param.amount) : null;
           let tx;
           if (value) tx = await contract[param.funcName](store.state.pool,value);
+          else tx = await contract[param.funcName]();
+          let receipt = await tx.wait();
+          console.log(receipt)
+          resolve(receipt)
+        }
+        func();
+      } catch (error) {
+        console.log(error)
+        reject(error)
+      }
+    })
+  }
+  sendTransactionUseEthersNoPool(param) {
+    const contract = this.getEthersContract(param);
+    return new Promise((resolve, reject) => {
+      try {
+        const func = async () => {
+          let value = param.amount ? ethers.utils.parseEther(param.amount) : null;
+          let tx;
+          if (value) tx = await contract[param.funcName](value);
+          else tx = await contract[param.funcName]();
+          let receipt = await tx.wait();
+          console.log(receipt)
+          resolve(receipt)
+        }
+        func();
+      } catch (error) {
+        console.log(error)
+        reject(error)
+      }
+    })
+  }
+  withdrawUseEthers(param) {
+    const contract = this.getEthersContract(param);
+    return new Promise((resolve, reject) => {
+      try {
+        const func = async () => {
+          let value = param.amount ? ethers.utils.parseEther(param.amount) : null;
+          let tx;
+          if (value) tx = await contract[param.funcName]();
           else tx = await contract[param.funcName]();
           let receipt = await tx.wait();
           console.log(receipt)

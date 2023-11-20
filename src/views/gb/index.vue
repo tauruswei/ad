@@ -136,7 +136,7 @@ function getAllowance(key,type) {
     funcName: "allowance"
   }
   console.log("search allowance")
-  metaMask.queryAllowanceByethers(data).then(res => {
+  metaMask.getAllowanceDifferentWallet(data).then(res => {
     let allowance = Number(res) / Math.pow(10, 18);
     store.commit("setAllowance", { key: key+"_"+type, value: Math.round((allowance) * 1000) / 1000 });
   });
@@ -151,7 +151,7 @@ function getReward(key) {
     funcName: "userRewards"
   }//queryByethers
   console.log("rewards")
-  metaMask.queryByethers(data).then(res => {
+  metaMask.getBalanceOfDifferentWallet(data).then(res => {
     let reward = Number(res) / Math.pow(10, 18);
     store.commit("setFund", Math.round(reward * 1000) / 1000);
   });
@@ -232,7 +232,7 @@ function approve(value) {
   }
   if (!checkValue(data.amount)) return;
   loadingHelper.show();
-  metaMask.sendApproveByContract(data).then((res) => {
+  metaMask.approveByEthers(data).then((res) => {
     loadingHelper.hide();
     getAllowance('evic','play')
     //refresh()
@@ -255,7 +255,7 @@ function approveExchange(value) {
     funcName: "approve"
   }
   loadingHelper.show();
-  metaMask.sendApproveByContract(data).then((res) => {
+  metaMask.approveByEthers(data).then((res) => {
     loadingHelper.hide();
     getAllowance('evic','exchange')
     getAllowance('busd','exchange')
@@ -282,7 +282,7 @@ function exchangeBusd(value) {
     return
   }
   loadingHelper.show();
-  metaMask.sendTransactionByContractNoPool(data).then((res) => {
+  metaMask.sendTransactionUseEthersNoPool(data).then((res) => {
     visible.value = false;
     loadingHelper.hide()
     refresh()
@@ -307,7 +307,7 @@ function exchange(value) {
     return
   }
   loadingHelper.show();
-  metaMask.sendTransactionByContractNoPool(data).then((res) => {
+  metaMask.sendTransactionUseEthersNoPool(data).then((res) => {
     visible.value = false;
     loadingHelper.hide()
     refresh()
@@ -333,7 +333,7 @@ function transfer(value) {
     return
   }
   loadingHelper.show();//sendTransactionByContract
-  metaMask.sendTransactionByContract(data).then((res) => {
+  metaMask.sendTransactionUseEthers(data).then((res) => {
     visible.value = false;
     loadingHelper.hide()
     refresh()
@@ -351,7 +351,7 @@ function withdraw(key) {
     funcName: "withdraw"
   }
   loadingHelper.show();
-  metaMask.sendTransactionByContractNoParam(data).then((res) => {
+  metaMask.withdrawUseEthers(data).then((res) => {
     loadingHelper.hide()
     getBalance('evic')
     getReward("aacFundPool")
