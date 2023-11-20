@@ -83,7 +83,7 @@ const rules = ref({
 })
 const close = () => {
   emit('update:visible', false);
-  form.value.resetValidation();
+  formRef.value.resetValidation();
   reset();
 }
 const reset = () => {
