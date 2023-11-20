@@ -43,9 +43,9 @@ export class MetaMask {
   }
   async getAccount() {
     let accounts;
-    console.log(ethereum)
+    console.log("getaccounts",ethereum)
     try {
-      if (!ethereum.ready) {
+      if (ethereum.ready) {
         console.log("request method get accounts")
         accounts = await ethereum.request({ method: 'eth_requestAccounts' })
       } else {
