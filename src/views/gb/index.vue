@@ -176,6 +176,7 @@ function open(command) {
     type: command.split("-")[0],
     title: ""
   }
+  console.log("command",command)
   min.value = store.state.pools[store.state.pool.toString()];
   if (command == "evic_withdraw") {
     transferHandler["evic_withdraw"]()
@@ -201,7 +202,9 @@ const transferHandler = {
   evic_withdraw: withdraw.bind(this, 'aacFundPool')
 }
 function handleTransferOperate(value) {
-  transferHandler[(value&&value.command?value.command:action.value.command)](value);
+  console.log(value)
+  let key = (value && value.command)?value.command:action.value.command
+  transferHandler[key](value);
 }
 function checkValue(amount) {
   let ret = true;
@@ -248,6 +251,7 @@ function approveExchange(value) {
     addressParam: store.state.config?.contract.exchangeEvic.proxyAddress,
     funcName: "approve"
   }
+  console.log(data)
   loadingHelper.show();
   metaMask.sendApproveByContract(data).then((res) => {
     loadingHelper.hide();
