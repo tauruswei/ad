@@ -459,6 +459,12 @@ export class MetaMask {
     console.log("current reward", Number(ret))
     return ret
   }
+  async queryAllowanceByethers(param) {
+    const contract = this.getEthersContract(param);
+    let ret = await contract[param.funcName](param.from,param.to);
+    console.log("current allowance", Number(ret))
+    return ret
+  }
   async queryByethersNoParam(param) {
     const contract = this.getEthersContract(param);
     let ret = await contract[param.funcName](store.state.pool);
@@ -472,10 +478,12 @@ export class MetaMask {
     console.log("current playing", Number(ret))
     return ret
   }
+  //tp只支持web3
   async getDataByContract(param) {
     const myContract = this.getContract(param.abi, param.address);
     if (!myContract) return;
     let ret = await myContract.methods[param.funcName](param.from).call();
+    console.log("balanceof",ret)
     return ret;
   }
   async getAllowanceByContract(param) {

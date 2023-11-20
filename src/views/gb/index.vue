@@ -120,7 +120,8 @@ function getBalance(key) {
     address: store.state.config?.contract[key].address,
     from: store.state.metaMask?.account,
     funcName: "balanceOf"
-  }
+  }//getDataByContract
+  console.log("balance of")
   metaMask.getDataByContract(data).then(res => {
     let balance = Number(res) / Math.pow(10, 18);
     store.commit("setBalance", { key: key, value: Math.round((balance) * 1000) / 1000 });
@@ -134,7 +135,8 @@ function getAllowance(key,type) {
     to: type=='play'? store.state.config?.contract.aacFundPool.proxyAddress:store.state.config?.contract.exchangeEvic.proxyAddress,
     funcName: "allowance"
   }
-  metaMask.getAllowanceByContract(data).then(res => {
+  console.log("search allowance")
+  metaMask.queryAllowanceByethers(data).then(res => {
     let allowance = Number(res) / Math.pow(10, 18);
     store.commit("setAllowance", { key: key+"_"+type, value: Math.round((allowance) * 1000) / 1000 });
   });
@@ -148,7 +150,8 @@ function getReward(key) {
     from: store.state.metaMask?.account,
     funcName: "userRewards"
   }//queryByethers
-  metaMask.queryTransactionByContract(data).then(res => {
+  console.log("rewards")
+  metaMask.queryByethers(data).then(res => {
     let reward = Number(res) / Math.pow(10, 18);
     store.commit("setFund", Math.round(reward * 1000) / 1000);
   });
