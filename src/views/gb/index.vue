@@ -122,7 +122,7 @@ function getBalance(key) {
     funcName: "balanceOf"
   }//getDataByContract
   console.log("balance of")
-  metaMask.getDataByContract(data).then(res => {
+  metaMask.getBalanceOfDifferentWallet(data).then(res => {
     let balance = Number(res) / Math.pow(10, 18);
     store.commit("setBalance", { key: key, value: Math.round((balance) * 1000) / 1000 });
   });

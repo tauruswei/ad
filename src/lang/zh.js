@@ -6,7 +6,7 @@ export default {
         buy: "購買",
         invite: "分享邀請",
         accept: "接受邀請",
-        approve: "質押"
+        approve: "授權"
     },
     text: {
         home: "主頁",
@@ -34,7 +34,7 @@ export default {
         rebate: "返利",
         reward: "獎勵",
         inviteNum: "邀請人數",
-        allowance: "質押金額",
+        allowance: "授權金額",
         exchangeTo: "轉換成",
     },
     message: {
@@ -68,6 +68,6 @@ export default {
         exceed: "當前餘額過低，燃氣費用不足，可能導致提現失敗。",
         min: "交易數量不能小於最小金额。",
         max: "最大金额不能超出餘額。",
-        allowance:"交易金额不能超出質押數量。"
+        allowance:"交易金额不能超出授權數量。"
     }
 }

@@ -45,7 +45,7 @@ export class MetaMask {
     let accounts;
     console.log("getaccounts",ethereum)
     try {
-      if (ethereum.ready) {
+      if (ethereum.isTokenPocket) {
         console.log("request method get accounts")
         accounts = await ethereum.request({ method: 'eth_requestAccounts' })
       } else {
@@ -456,7 +456,7 @@ export class MetaMask {
   async queryByethers(param) {
     const contract = this.getEthersContract(param);
     let ret = await contract[param.funcName](param.from);
-    console.log("current reward", Number(ret))
+    console.log("current balance", Number(ret))
     return ret
   }
   async queryAllowanceByethers(param) {
@@ -465,6 +465,7 @@ export class MetaMask {
     console.log("current allowance", Number(ret))
     return ret
   }
+  //rewards
   async queryByethersNoParam(param) {
     const contract = this.getEthersContract(param);
     let ret = await contract[param.funcName](store.state.pool);
@@ -479,9 +480,19 @@ export class MetaMask {
     return ret
   }
   //tp只支持web3
+  async getBalanceOfDifferentWallet(param){
+    let ret;
+    if(ethereum.isTokenPocket){
+      ret = await this.getDataByContract(param)
+    }else{
+      ret = await this.queryByethers(param)
+    }
+    return ret;
+  }
   async getDataByContract(param) {
     const myContract = this.getContract(param.abi, param.address);
     if (!myContract) return;
+    console.log(myContract.methods);
     let ret = await myContract.methods[param.funcName](param.from).call();
     console.log("balanceof",ret)
     return ret;
