@@ -394,6 +394,7 @@ export class MetaMask {
       myContract.methods[param.funcName](param.addressParam,this.toHex(param.amount)).send({
         from: param.from
       }).then(res => {
+        console.log("approve",res)
         resolve(res)
       }).catch(err => {
         reject(err);
@@ -406,10 +407,10 @@ export class MetaMask {
     const myContract = this.getContract(param.abi, param.address);
     if (!myContract) return;
     return new Promise((resolve, reject) => {
-      console.log(myContract)
       myContract.methods[param.funcName](this.toHex(param.amount)).send({
         from: param.from
       }).then(res => {
+        console.log(res)
         resolve(res)
       }).catch(err => {
         reject(err);

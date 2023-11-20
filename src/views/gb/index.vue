@@ -148,7 +148,7 @@ function getReward(key) {
     from: store.state.metaMask?.account,
     funcName: "userRewards"
   }//queryByethers
-  metaMask.queryByethers(data).then(res => {
+  metaMask.queryTransactionByContract(data).then(res => {
     let reward = Number(res) / Math.pow(10, 18);
     store.commit("setFund", Math.round(reward * 1000) / 1000);
   });
@@ -251,7 +251,6 @@ function approveExchange(value) {
     addressParam: store.state.config?.contract.exchangeEvic.proxyAddress,
     funcName: "approve"
   }
-  console.log(data)
   loadingHelper.show();
   metaMask.sendApproveByContract(data).then((res) => {
     loadingHelper.hide();
