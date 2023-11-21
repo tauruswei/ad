@@ -36,6 +36,7 @@ export default {
         inviteNum:"Invite Number",
         allowance:"Allowance",
         exchangeTo:"Exchange to",
+        totalFund:"total Fund"
     },
     message:{
         play:{

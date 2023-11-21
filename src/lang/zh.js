@@ -36,6 +36,7 @@ export default {
         inviteNum: "邀請人數",
         allowance: "授權金額",
         exchangeTo: "轉換成",
+        totalFund:"質押總數"
     },
     message: {
         play: {
