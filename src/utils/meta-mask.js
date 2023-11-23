@@ -93,9 +93,13 @@ export class MetaMask {
       console.log("store.state.config:");
       console.log(store.state.config);
       console.log("*******************chainid")
+      console.log("ethereum+++++",ethereum)
       const CHAINID = toHex(store.state.config?.chainId)
+      console.log("ready", ethereum.ready)
+      await this.getAccount();
       this.chainId = await ethereum.request({ method: 'eth_chainId' })
-      console.log(this.chainId)
+      console.log("eth_chainid",this.chainId)
+      console.log("store.state.config",CHAINID)
       if (this.chainId !== CHAINID) {
         let isChecked = await this.checkNetwork();
         console.log("checkednetwork", isChecked)
@@ -106,8 +110,6 @@ export class MetaMask {
       }
       //const accounts = await web3.eth.getAccounts();
       //console.log(accounts)
-      console.log("ready", ethereum.ready)
-      await this.getAccount();
       //if (accounts && accounts.length) this.account = accounts[0];
       if (this.account) {
         store.commit("setMetaMask", { chainID: this.chainId, account: this.account, url: store.state.config.rpcUrls[0] });
