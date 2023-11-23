@@ -61,7 +61,6 @@ if (provider) {
       Bus.$emit('refresh', true);
     }
     func()
-
   }
   provider.on('connect', async (info) => {
     console.log('connect', info)

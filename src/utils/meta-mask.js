@@ -15,7 +15,8 @@ let option = {
 }
 const MMSDK = new MetaMaskSDK(option);
 const ethereum = MMSDK.getProvider();
-let web3 = new Web3(ethereum);
+const web3 = new Web3(ethereum);
+console.log(web3)
 function toHex(num) {
   let hex = '0x' + num.toString(16);
   return hex
@@ -43,7 +44,7 @@ export class MetaMask {
   }
   async getAccount() {
     let accounts;
-    console.log("getaccounts",ethereum)
+    if(!web3) web3 = new Web3(ethereum);
     try {
       if (!ethereum.ready) {
         console.log("request method get accounts")
@@ -62,9 +63,11 @@ export class MetaMask {
     this.enabled = false;
     this.account = null;
     this.chainId = null;
+    this.provider = null;
     this.url = null;
     store.commit("setMetaMask", null)
-    store.commit("balance", null)
+    let balance = {evic:0,busd:0}
+    store.commit("setBalance", balance)
   }
   async connectMetaMask() {
     if (!this.isMetaMaskInstalled()) {
@@ -95,11 +98,10 @@ export class MetaMask {
       console.log("*******************chainid")
       console.log("ethereum+++++",ethereum)
       const CHAINID = toHex(store.state.config?.chainId)
-      console.log("ready", ethereum.ready)
-      await this.getAccount();
+      
       this.chainId = await ethereum.request({ method: 'eth_chainId' })
       console.log("eth_chainid",this.chainId)
-      console.log("store.state.config",CHAINID)
+      console.log("CHAINID",CHAINID)
       if (this.chainId !== CHAINID) {
         let isChecked = await this.checkNetwork();
         console.log("checkednetwork", isChecked)
@@ -108,6 +110,8 @@ export class MetaMask {
         if (!isChecked) return;
         this.chainId = this.toHex(store.state.config?.chainId)
       }
+      console.log("ready", ethereum.ready)
+      await this.getAccount();
       //const accounts = await web3.eth.getAccounts();
       //console.log(accounts)
       //if (accounts && accounts.length) this.account = accounts[0];

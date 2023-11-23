@@ -39,7 +39,7 @@
             <van-tab :title="$t('text.play')" name="trans">
               <div style="padding:15px 10px 25px;text-align: center;">
                 <van-image width="240px" height="180px" fill="contain" :src="require('@/assets/hero_attack.gif')"></van-image>
-                <h3 style="margin:-30px 0 15px;color: var(--van-danger-color);">{{$store.state.pools[$store.state.pool.toString()]}} EVIC</h3>
+                <h3 style="margin:-30px 0 15px;color: var(--van-danger-color);">{{$store.state.pools[$store.state.pool+'']}} EVIC</h3>
                 <div style="font-weight: bold;font-size: 15px;">{{$t('message.play.title')}}</div>
                 <p style="color:var(--van-gray-5);margin-bottom:15px;">{{$t('message.play.sub')}}</p>
                 <van-button class="action-btn" size="small" type="primary" @click="open('evic_play-approve')"></van-button>
@@ -184,7 +184,7 @@ function open(command) {
     title: ""
   }
   console.log("command",command)
-  min.value = store.state.pools[store.state.pool.toString()];
+  min.value = store.state.pools[store.state.pool+''];
   if (command == "evic_withdraw") {
     transferHandler["evic_withdraw"]()
   } else {
