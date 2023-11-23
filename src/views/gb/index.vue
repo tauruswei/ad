@@ -124,7 +124,9 @@ function getBalance(key) {
   console.log("balance of")
   metaMask.getBalanceOfDifferentWallet(data).then(res => {
     let balance = Number(res) / Math.pow(10, 18);
-    store.commit("setBalance", { key: key, value: Math.round((balance) * 1000) / 1000 });
+    let obj={};
+    obj[key] = Math.round((balance) * 1000) / 1000;
+    store.commit("setBalance", obj);
   });
 }
 function getAllowance(key,type) {
@@ -138,7 +140,9 @@ function getAllowance(key,type) {
   console.log("search allowance")
   metaMask.getAllowanceDifferentWallet(data).then(res => {
     let allowance = Number(res) / Math.pow(10, 18);
-    store.commit("setAllowance", { key: key+"_"+type, value: Math.round((allowance) * 1000) / 1000 });
+    let obj={};
+    obj[key] = Math.round((allowance) * 1000) / 1000
+    store.commit("setAllowance", obj);
   });
 }
 //游戏收益
