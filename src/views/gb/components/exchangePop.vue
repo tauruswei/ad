@@ -55,7 +55,7 @@ const emit = defineEmits(['update:visible', 'do'])
 watch(() => props.visible, (val) => {
   show.value = val;
   if (!val) {
-    form.value.resetValidation();
+    formRef.value.resetValidation();
     reset();
   }
 })
