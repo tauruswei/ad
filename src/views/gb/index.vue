@@ -201,8 +201,6 @@ function open(command) {
     type: command.split("-")[0],
     title: ""
   }
-  console.log("command",command)
-  min.value = store.state.pools[store.state.pool+''];
   if (command == "evic_withdraw") {
     transferHandler["evic_withdraw"]()
   } else {
@@ -237,6 +235,8 @@ function checkValue(amount,min) {
   if (amount < min) {
     errorMsg.value.msg2 = proxy.$t("error.min") + " " + min;
     ret = false;
+  }else{
+    errorMsg.value.msg2 = ''
   }
   return ret;
 }
@@ -253,6 +253,7 @@ function approve(value) {
     addressParam: store.state.config?.contract.aacFundPool.proxyAddress,
     funcName: "approve"
   }
+  min.value = store.state.pools[store.state.pool+''];
   if (!checkValue(data.amount,min.value)) return;
   loadingHelper.show();
   metaMask.approveByEthers(data).then(async(res) => {
@@ -352,6 +353,7 @@ function transfer(value) {
     abi: abis.value[key],
     funcName: "deposit"
   }
+  min.value = store.state.pools[store.state.pool+''];
   if (!checkValue(data.amount,min.value)) return;
   if(data.amount > store.state.allowance[value.command]) {
     showToast(`${proxy.$t('error.allowance')}`)
