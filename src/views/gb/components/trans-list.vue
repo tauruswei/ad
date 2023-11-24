@@ -12,7 +12,8 @@
             </div>
           </van-col>
           <van-col :span="18" style="height:100%;padding-left:10px">
-            <p>{{$t('text.date')}}: {{ item.updateTime }}</p>
+            <span :class="`level level${item.poolIndex||0}`">{{ $store.state.pools[(item.poolIndex||0)+''] }}</span>
+            <p>{{ item.updateTime }}</p>
             <div style="padding:7px 0 3px;">
               <van-tag type="primary">1</van-tag>
               <small :title="item.firstWinner">&nbsp;&nbsp;{{ item.firstWinner?.substr(12)+"..." }}</small>
@@ -49,7 +50,6 @@ onMounted(()=>{
 function query() {
   let data = {
     isFinished: true,
-    poolIndex:store.state.pool,
     address: store.state.metaMask?.account,
     pageSize: 20,
     pageNum: page.value

@@ -99,3 +99,44 @@ h3 {
   background:transparent url("@/assets/tab_line.webp") no-repeat center bottom;
   background-size: cover;
 }
+
+.van-list .van-row{
+  position:relative;
+}
+.level{
+  position:absolute;
+  right: 10px;
+  top: 0;
+  line-height: 18px;
+  padding: 0 8px;
+  border-radius: 0 0 0 6px;
+  color:#fff;
+  &.level0{
+    background-color: #6dd054;
+  }
+  &.level1{
+    background-color: #548bd0;
+  }
+  &.level2{
+    background-color: #8c54d0;
+  }
+  &.level3{
+    background-color: #d05454;
+  }
+}
+
+.leveltext{
+  &.level0{
+    color: #6dd054;
+  }
+  &.level1{
+    color: #548bd0;
+  }
+  &.level2{
+    color: #8c54d0;
+  }
+  &.level3{
+    color: #d05454;
+  }
+}
+

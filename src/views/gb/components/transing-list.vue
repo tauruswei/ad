@@ -1,21 +1,25 @@
 <template>
   <div style="height:calc(100vh - 300px);overflow-y: auto;">
     <van-list v-model:loading="loading" :finished="finished" :finished-text="$t('text.finishedText')" :loading-text="$t('text.loadingText')" @load="query">
-      <van-row :gutter="8" v-for="item in listData" :key="item" :title="item.id" style="margin-top:10px;margin-bottom:10px">
+      <template v-for="(item,key) in listData">
+      <div v-if="item.length" :key="key">
+      <van-row :gutter="8" v-for="item0 in item" :key="key+item0" :title="item.id" style="margin-top:10px;margin-bottom:10px">
         <van-col :span="4">
           <van-image width="56px" height="56px" fill="cover" style="border:.5px solid var(--van-primary-color);background-color: #fff;" :src="require('@/assets/img/game.gif')" round></van-image>
         </van-col>
         <van-col :span="18">
-          <p style="font-size:15px;margin-top:2px;margin-bottom:8px;"><b>{{ item }}</b><small>&nbsp;&nbsp;{{$t('text.round')}}</small></p>
+          <span :class="`level level${key}`">{{ $store.state.pools[key] }}</span>
+          <p style="font-size:15px;margin-top:2px;margin-bottom:8px;"><b>{{ item0 }}</b><small>&nbsp;&nbsp;{{$t('text.round')}}</small></p>
           <a style="font-size:12px;margin:8px 0;color:var(--van-gray-6);word-break: break-all;" :href="$store.state.config ?`${$store.state.config?.explorer}/address/${$store.state.config.contract.aacFundPool.proxyAddress}`:'#' "><van-text-ellipsis :content="$store.state.config?.contract.aacFundPool.proxyAddress" /></a>
           <div>
-            <p>{{$t('text.players')}}: <span>{{ players[item+'i']?.player||"0" }}</span>&nbsp;&nbsp;{{$t('text.totalFund')}}:{{ players[item+'i']?.fund||"0" }}&nbsp;&nbsp;&nbsp;<van-icon name="replay"  @click="getCurrentPlayers(item)"/></p>
-            
+            <p>{{$t('text.players')}}: <span>{{ players[item0+key+'i']?.player||"0" }}</span>&nbsp;&nbsp;{{$t('text.totalFund')}}:{{ players[item0+key+'i']?.fund||"0" }}&nbsp;&nbsp;&nbsp;<van-icon name="replay"  @click="getCurrentPlayers(item0,key)"/></p>
           </div>
       </van-col>
       </van-row>
+    </div>
+    </template>
     </van-list>
-    <div v-if="!listData.length" style="margin:40px auto;text-align:center">{{$t('text.nodata')}}</div>
+    <div v-if="!Object.keys(listData).length" style="margin:40px auto;text-align:center">{{$t('text.nodata')}}</div>
   </div>
 </template>
 <script setup>
@@ -26,7 +30,7 @@ import { DateHelper } from "@/utils/helper";
 import { base64 } from "@/utils/base64";
 import { loadingHelper } from "@/utils/loading";
 const store = useStore();
-const listData = ref([]);
+const listData = ref({});
 const loading = ref(false);
 const finished = ref(false);
 const players = ref({});
@@ -38,30 +42,24 @@ onMounted(()=>{
 function query() {
   let data = {
     isFinished: false,
-    poolIndex:store.state.pool,
     address: store.state.metaMask?.account,
   }
   loading.value = true;
   bscApi.playingList(data).then((res) => {
     if (res.code == 0) {
-      listData.value = res.data||[];
-      if(listData.value.length){
-        listData.value.forEach(item => {
-          if (item.createTime) item.createTime = DateHelper.toString(item.createTime)
-          if (item.updateTime) item.updateTime = DateHelper.toString(item.updateTime)
-        })
-      }
+      listData.value = res.data||{};
       loading.value = false;
       finished.value = true;
     }
   })
 }
-function getCurrentPlayers(round){
+function getCurrentPlayers(round,pool){
   if (!metaMask.isAvailable()) return;
   let data = {
     from: store.state.metaMask?.account,
     address: store.state.config?.contract.aacFundPool.proxyAddress,
     abi: store.state.config?.contract.aacFundPool.abi,
+    pool: pool,
     funcName: "getRound",
     amount:round,
     useOrigin:true
@@ -69,7 +67,7 @@ function getCurrentPlayers(round){
   loadingHelper.show();
   metaMask.queryRoundByethers(data).then((res) => {
     loadingHelper.hide()
-    players.value[round+"i"] = {
+    players.value[round+pool+"i"] = {
       fund: Number(res.totalFund)/Math.pow(10,18),
       player: Number(res.totalPlayers)
     }
