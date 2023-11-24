@@ -4,7 +4,6 @@ import number from './number';
 const directives = {
   number
 }
-
 export default {
   install(Vue) {
     Object.keys(directives).forEach((key) => {

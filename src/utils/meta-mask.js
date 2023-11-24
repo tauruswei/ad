@@ -529,7 +529,7 @@ export class MetaMask {
   async getRoundByContract(param) {
     const myContract = this.getContract(param.abi, param.address);
     if (!myContract) return;
-    let ret = await myContract.methods[param.funcName](store.state.pool,param.amount).call();
+    let ret = await myContract.methods[param.funcName](param.pool,param.amount).call();
     console.log("round",ret)
     return ret;
   }
