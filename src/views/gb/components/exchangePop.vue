@@ -1,5 +1,5 @@
 <template>
-  <van-popup v-model:show="show" position="bottom" :style="{height: '280px'}" closeable close-icon="close" round :close-on-click-overlay="false" @close="close">
+  <van-popup v-model:show="show" position="bottom" :style="{height: '300px'}" closeable close-icon="close" round :close-on-click-overlay="false" @close="close">
     <van-form ref="formRef" style="padding:10px 15px 20px;font-size:17px">
       <h3>{{ title }}</h3>
       <van-cell-group inset style="margin-bottom:15px;">
@@ -7,7 +7,10 @@
         <van-field v-if="type != 'evic_play'" v-model="action.amount" name="amount" label="BUSD:" type="number" :rules="rules.amount" required :error-message="error.msg1" @input="busdChange" :placeholder="$t('text.amount')" clickable />
         <van-field v-if="type != 'evic_play'" v-model="action.amount1" name="amount1" label="EVIC:" type="number" :rules="rules.amount1" required :error-message="error.msg2" @input="evicChange" :placeholder="$t('text.amount')" clickable />
       </van-cell-group>
-      <div>{{type.split('_')[0].toUpperCase()+' '+$t('text.allowance')+": " }}<b>{{ $store.state.allowance[type] }}</b></div>
+      <div>
+        {{type.split('_')[0].toUpperCase()+' '+$t('text.allowance')+": " }}<b>{{ $store.state.allowance[type] }}</b>&nbsp;&nbsp;
+        <van-icon name="replay"  @click="refresh"/>
+      </div>
       <van-button @click="submit('')" native-type="button" style="width:100%;margin-bottom: 10px;">
         {{$t('btn.approve')}}
       </van-button>
@@ -15,10 +18,10 @@
         {{$t('btn.buy')}}
       </van-button>
       <van-button v-if="type=='busd_exchange'" native-type="button" type="primary" @click="submit('busd_exchange')" style="width:100%">
-        {{$t('text.exchangeTo') + ' EVIC'}}
+        BUSD <van-icon name="exchange" /> EVIC
       </van-button>
       <van-button v-if="type=='evic_exchange'" native-type="button" type="primary" @click="submit('evic_exchange')" style="width:100%">
-        {{$t('text.exchangeTo')+ " BUSD"}}
+        EVIC <van-icon name="exchange" /> BUSD
       </van-button>
     </van-form>
   </van-popup>
@@ -51,7 +54,7 @@ const props = defineProps({
     type: Object
   }
 })
-const emit = defineEmits(['update:visible', 'do'])
+const emit = defineEmits(['update:visible', 'do',"refresh",'reset'])
 watch(() => props.visible, (val) => {
   show.value = val;
   if (!val) {
@@ -92,6 +95,7 @@ const reset = () => {
     amount1: "",
     command: ""
   }
+  emit('reset')
 }
 const submit = (command) => {
   formRef.value?.validate(['action.value.amount','action.value.amount1']).then((res) => {
@@ -107,5 +111,8 @@ function busdChange() {
 }
 function evicChange() {
   action.value.amount = action.value.amount1 / 100
+}
+function refresh(){
+  emit('refresh')
 }
 </script>

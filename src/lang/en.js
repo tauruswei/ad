@@ -28,19 +28,20 @@ export default {
         pullingText:"refresh after release",
         finishedText:"no more ...",
         inviteLabel:"invite code",
-        nodata:"No data !",
+        nodata: "No data !",
         language: "language",
-        clickcopy:"copy",
-        rebate:"rebate",
-        reward:"Reward",
-        inviteNum:"Invite Number",
-        allowance:"Allowance",
-        exchangeTo:"Exchange to",
-        totalFund:"total Fund"
+        clickcopy: "copy",
+        rebate: "rebate",
+        reward: "Reward",
+        inviteNum: "Invite Number",
+        allowance: "Allowance",
+        exchangeTo: "Exchange to",
+        totalFund: "total Fund",
+        level: "level"
     },
     message:{
         play:{
-            title:"Spend "+store.state.pools[store.state.pool.toString()]+" EVIC for a 8-players game",
+            title:"Spend EVIC for a 8-players game",
             sub:"You will get paid if you win the game."
         },
         wallet:{

@@ -11,7 +11,7 @@ const store = createStore({
             roles: [{ id: 0, name: "admin" }, { id: 1, name: "user" }],
             metaMask: null,
             balance: { evic:0, busd:0},
-            allowance:{evic:0,busd:0},
+            allowance:{evic_play:0,busd_exchange:0,evic_exchange:0},
             fund:0,
             time: null,
             config: null,
@@ -56,6 +56,9 @@ const store = createStore({
         },
         setFund(state, fund) {
             state.fund = fund;
+        },
+        setPool(state, pool) {
+            state.pool = pool;
         },
         setConfig(state, config) {
             let contract = config.contract;

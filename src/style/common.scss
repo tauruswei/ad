@@ -12,6 +12,7 @@
   --van-number-keyboard-background: var(--van-gray-7);
   --van-tab-active-text-color:var(--van-primary-color);
   --van-cell-active-color: var(--van-gray-8);
+  --van-picker-mask-color: linear-gradient(180deg, rgba(0, 0, 0, .9), rgba(0, 0, 0, .4)), linear-gradient(0deg, rgba(0, 0, 0, .9), rgba(0, 0, 0, .4))
 }
 h3 {
   margin: 0;

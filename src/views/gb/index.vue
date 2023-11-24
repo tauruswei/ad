@@ -21,12 +21,20 @@
           <metamask-connect></metamask-connect>
           <div style="padding:5px 10px;display:flex;justify-content: space-between;">
             <p>BUSD {{$t('text.balance')}}: <b>{{ $store.state.balance.busd }}</b></p>
-            <van-button size="mini" type="primary" @click="open('evic_exchange-approve')">&nbsp;&nbsp;{{$t('text.exchange')}}&nbsp;&nbsp;</van-button>
+            <van-button size="mini" type="primary" @click="open('evic_exchange-approve')">&nbsp;&nbsp;EVIC <van-icon name="exchange" /> BUSD&nbsp;&nbsp;</van-button>
           </div>
-          <van-grid :column-num="2">
+          <div style="padding:5px 10px;display:flex;justify-content: space-between;">
+            <p>EVIC {{$t('text.balance')}}: <b>{{ $store.state.balance.evic }}</b></p>
+            <van-button size="mini" type="primary" @click="open('busd_exchange-approve')">&nbsp;&nbsp;BUSD <van-icon name="exchange" /> EVIC&nbsp;&nbsp;</van-button>
+          </div>
+          <div style="padding:5px 10px;display:flex;justify-content: space-between;">
+            <p>EVIC {{$t('text.earned')}}: <b>{{ $store.state.fund }}</b></p>
+            <van-button size="mini" type="primary" :disabled="$store.state.fund?false:true" @click="open('evic_withdraw')">&nbsp;&nbsp;{{$t('btn.withdraw')}}&nbsp;&nbsp;</van-button>
+          </div>
+          <!--<van-grid :column-num="2">
             <van-grid-item>
               <h3>{{ $store.state.balance.evic }}</h3>
-              <p><small>Evic {{$t('text.balance')}}</small></p>
+              <p><small>EVIC {{$t('text.balance')}}</small></p>
               <van-button size="mini" type="primary" @click="open('busd_exchange-approve')">&nbsp;&nbsp;{{$t('text.exchange')}}&nbsp;&nbsp;</van-button>
             </van-grid-item>
             <van-grid-item>
@@ -34,7 +42,7 @@
               <p><small>{{$t('text.earned')}}</small></p>
               <van-button size="mini" type="primary" :disabled="$store.state.fund?false:true" @click="open('evic_withdraw')">&nbsp;&nbsp;{{$t('btn.withdraw')}}&nbsp;&nbsp;</van-button>
             </van-grid-item>
-          </van-grid>
+          </van-grid>-->
           <van-tabs v-model:active="activeName">
             <van-tab :title="$t('text.play')" name="trans">
               <div style="padding:15px 10px 25px;text-align: center;">
@@ -56,7 +64,8 @@
       </div>
     </div>
     <side-bar v-model:visible="sidebarVisible"></side-bar>
-    <exchange-pop v-model:visible="visible" :title="action.title" :type="action.type" :error="errorMsg" @do="handleTransferOperate">
+    <level :title="$t('text.level')" v-model:visible="levelVisible" @select="selectLevel"></level>
+    <exchange-pop v-model:visible="visible" :title="action.title" :type="action.type" :error="errorMsg" @do="handleTransferOperate" @refresh="refreshAllowance" @reset="resetMsg">
     </exchange-pop>
   </div>
 </template>
@@ -69,6 +78,7 @@ import { userApi } from "@/api/request";
 import { copyClick } from '@/utils/copy';
 import { showNotify, showToast } from 'vant';
 import ExchangePop from "./components/exchangePop.vue";
+import Level from "./components/level.vue";
 import BuyList from "./components/trans-list.vue";
 import BuyingList from "./components/transing-list.vue";
 import MetamaskConnect from "@/components/user/metamask.vue";
@@ -86,6 +96,7 @@ const amount = ref("")
 getABI();
 const abis = ref({ aacFundPool: "" })
 const visible = ref(false)
+const levelVisible = ref(false);
 const { proxy } = getCurrentInstance();
 const metaMask = proxy.metaMask;
 const activeName = ref("trans")
@@ -112,6 +123,13 @@ function getABI() {
       }
     }
   })
+}
+function resetMsg(){
+  errorMsg.value = { msg1: "", msg2: "" }
+}
+function selectLevel(){
+  levelVisible.value = false;
+  visible.value = true;
 }
 //余额
 function getBalance(key) {
@@ -141,7 +159,7 @@ function getAllowance(key,type) {
   metaMask.getAllowanceDifferentWallet(data).then(res => {
     let allowance = Number(res) / Math.pow(10, 18);
     let obj={};
-    obj[key] = Math.round((allowance) * 1000) / 1000
+    obj[`${key}_${type}`] = Math.round((allowance) * 1000) / 1000;
     store.commit("setAllowance", obj);
   });
 }
@@ -195,7 +213,8 @@ function open(command) {
 
 }
 const openHandler = () => {
-  visible.value = true;
+  if(action.value.command == "evic_play-approve") levelVisible.value = true;
+  else visible.value = true
 }
 const transferHandler = {
   "busd_exchange-approve": approveExchange.bind(this),//to evic
@@ -213,10 +232,10 @@ function handleTransferOperate(value) {
   let key = (value && value.command)?value.command:action.value.command
   transferHandler[key](value);
 }
-function checkValue(amount) {
+function checkValue(amount,min) {
   let ret = true;
-  if (amount < min.value) {
-    errorMsg.value.msg1 = proxy.$t("error.min") + " " + min.value;
+  if (amount < min) {
+    errorMsg.value.msg2 = proxy.$t("error.min") + " " + min;
     ret = false;
   }
   return ret;
@@ -234,11 +253,12 @@ function approve(value) {
     addressParam: store.state.config?.contract.aacFundPool.proxyAddress,
     funcName: "approve"
   }
-  if (!checkValue(data.amount)) return;
+  if (!checkValue(data.amount,min.value)) return;
   loadingHelper.show();
-  metaMask.approveByEthers(data).then((res) => {
+  metaMask.approveByEthers(data).then(async(res) => {
+    
+    await getAllowance('evic','play')
     loadingHelper.hide();
-    getAllowance('evic','play')
     //refresh()
   }).catch(err => {
     loadingHelper.hide();
@@ -258,11 +278,12 @@ function approveExchange(value) {
     addressParam: store.state.config?.contract.exchangeEvic.proxyAddress,
     funcName: "approve"
   }
+  if (key=='evic' && !checkValue(data.amount,1000)) return;
   loadingHelper.show();
-  metaMask.approveByEthers(data).then((res) => {
+  metaMask.approveByEthers(data).then(async(res) => {
+    await getAllowance('evic','exchange')
+    await getAllowance('busd','exchange')
     loadingHelper.hide();
-    getAllowance('evic','exchange')
-    getAllowance('busd','exchange')
     //refresh()
   }).catch(err => {
     loadingHelper.hide();
@@ -331,7 +352,7 @@ function transfer(value) {
     abi: abis.value[key],
     funcName: "deposit"
   }
-  if (!checkValue(data.amount)) return;
+  if (!checkValue(data.amount,min.value)) return;
   if(data.amount > store.state.allowance[value.command]) {
     showToast(`${proxy.$t('error.allowance')}`)
     return
@@ -380,6 +401,11 @@ function refresh() {
   getAllowance('evic','play')
   getReward("aacFundPool")
   //getRound("aacFundPool");
+}
+function refreshAllowance(){
+  getAllowance('busd','exchange')
+  getAllowance('evic','exchange')
+  getAllowance('evic','play')
 }
 onMounted(() => {
   refresh()

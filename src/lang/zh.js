@@ -36,11 +36,12 @@ export default {
         inviteNum: "邀請人數",
         allowance: "授權金額",
         exchangeTo: "轉換成",
-        totalFund:"質押總數"
+        totalFund: "質押總數",
+        level: "等級"
     },
     message: {
         play: {
-            title: "参与8人对战（" + store.state.pools[store.state.pool.toString()] + " EVIC）",
+            title: "参与8人对战",
             sub: "在遊戲中勝出將會贏得獎勵"
         },
         wallet: {
@@ -69,6 +70,6 @@ export default {
         exceed: "當前餘額過低，燃氣費用不足，可能導致提現失敗。",
         min: "交易數量不能小於最小金额。",
         max: "最大金额不能超出餘額。",
-        allowance:"交易金额不能超出授權數量。"
+        allowance: "交易金额不能超出授權數量。"
     }
 }
