@@ -480,10 +480,8 @@ export class MetaMask {
   }
   async queryRoundByethers(param) {
     const contract = this.getEthersContract(param);
-    console.log(111,contract)
     let pool = param.pool || store.state.pool;
     let ret = await contract[param.funcName](pool,param.amount);
-    console.log("current playing", ret,pool)
     return ret
   }
   //tp只支持web3查询

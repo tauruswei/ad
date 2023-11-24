@@ -30,9 +30,7 @@ function formatNum(num) {
 //实现一键复制文本内容，用于鼠标右键粘贴。
 const number = {
     beforeMount(el, binding) {
-        console.log(el,binding)
       el.innerText = formatNum(binding.value);
-      console.log(el)
     },
     // 当传进来的值更新的时候触发
     updated(el, binding) {
