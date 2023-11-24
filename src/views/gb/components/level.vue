@@ -9,9 +9,8 @@
     </van-popup>
   </template>
   <script setup>
-  import { ref, watch, getCurrentInstance, toRaw } from "vue";
+  import { ref, watch } from "vue";
   import { useStore } from "vuex";
-  const { proxy } = getCurrentInstance();
   const store = useStore()
   const show = ref(false)
   const columns = [

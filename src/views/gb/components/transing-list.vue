@@ -12,7 +12,7 @@
           <p style="font-size:15px;margin-top:2px;margin-bottom:8px;"><b>{{ item0 }}</b><small>&nbsp;&nbsp;{{$t('text.round')}}</small></p>
           <a style="font-size:12px;margin:8px 0;color:var(--van-gray-6);word-break: break-all;" :href="$store.state.config ?`${$store.state.config?.explorer}/address/${$store.state.config.contract.aacFundPool.proxyAddress}`:'#' "><van-text-ellipsis :content="$store.state.config?.contract.aacFundPool.proxyAddress" /></a>
           <div>
-            <p>{{$t('text.players')}}: <span>{{ players[item0+key+'i']?.player||"0" }}</span>&nbsp;&nbsp;{{$t('text.totalFund')}}:{{ players[item0+key+'i']?.fund||"0" }}&nbsp;&nbsp;&nbsp;<van-icon name="replay"  @click="getCurrentPlayers(item0,key)"/></p>
+            <p>{{$t('text.players')}}: <span>{{ players[item0+''+key+'i']?.player||"0" }}</span>&nbsp;&nbsp;{{$t('text.totalFund')}}:{{ players[item0+''+key+'i']?.fund||"0" }}&nbsp;&nbsp;&nbsp;<van-icon name="replay" @click="getCurrentPlayers(item0,key)"/></p>
           </div>
       </van-col>
       </van-row>
@@ -65,9 +65,9 @@ function getCurrentPlayers(round,pool){
     useOrigin:true
   }
   loadingHelper.show();
-  metaMask.queryRoundByethers(data).then((res) => {
+  metaMask.getRoundDifferentWallet(data).then((res) => {
     loadingHelper.hide()
-    players.value[round+pool+"i"] = {
+    players.value[round+''+pool+"i"] = {
       fund: Number(res.totalFund)/Math.pow(10,18),
       player: Number(res.totalPlayers)
     }

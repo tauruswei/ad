@@ -15,7 +15,7 @@ let option = {
 }
 const MMSDK = new MetaMaskSDK(option);
 const ethereum = MMSDK.getProvider();
-const web3 = new Web3(ethereum);
+let web3 = new Web3(ethereum);
 console.log(web3)
 function toHex(num) {
   let hex = '0x' + num.toString(16);
@@ -481,6 +481,7 @@ export class MetaMask {
   async queryRoundByethers(param) {
     const contract = this.getEthersContract(param);
     let ret = await contract[param.funcName](param.pool,param.amount);
+    console.log("round",ret)
     return ret
   }
   //tp只支持web3查询
