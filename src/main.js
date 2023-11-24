@@ -5,6 +5,7 @@ import { createApp } from "vue";
 import 'vant/lib/index.css';
 import {i18n, vantLocales} from './lang'
 import { MetaMask } from "./utils/meta-mask";
+import Directives from './utils/directives/index'
 //require("../mock/index.js");
 import { Tab, Tabs, NavBar, Button, Col, Row, Image as VanImage, Tag, NumberKeyboard, Field, CellGroup, Dialog, Icon, Grid, GridItem, Popup, List, Cell, Empty, PullRefresh, TextEllipsis,Picker,Switch,Popover,Form } from 'vant';
 const app = createApp(App);
@@ -23,7 +24,7 @@ app.use(Tab).use(Tabs).use(NavBar).use(Button).use(Col).use(Row)
     .use(Popover).use(Form);
 app.use(i18n);    
 app.config.globalProperties.metaMask = new MetaMask();
-app.use(store).use(router).mount("#app");
+app.use(store).use(router).use(Directives).mount("#app");
 
 app.config.errorHandler = (err, vm, info) => {
     console.log(err, vm, info)

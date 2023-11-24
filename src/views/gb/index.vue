@@ -20,15 +20,15 @@
         <div class="bg">
           <metamask-connect></metamask-connect>
           <div style="padding:5px 10px;display:flex;justify-content: space-between;">
-            <p>BUSD {{$t('text.balance')}}: <b>{{ $store.state.balance.busd }}</b></p>
+            <p><van-icon name="balance-o" :size="18" /> BUSD {{$t('text.balance')}}: <b v-number="$store.state.balance.busd"></b></p>
             <van-button size="mini" type="primary" @click="open('evic_exchange-approve')">&nbsp;&nbsp;EVIC <van-icon name="exchange" /> BUSD&nbsp;&nbsp;</van-button>
           </div>
           <div style="padding:5px 10px;display:flex;justify-content: space-between;">
-            <p>EVIC {{$t('text.balance')}}: <b>{{ $store.state.balance.evic }}</b></p>
+            <p><van-icon name="balance-o" :size="18"/> EVIC {{$t('text.balance')}}: <b v-number="$store.state.balance.evic"></b></p>
             <van-button size="mini" type="primary" @click="open('busd_exchange-approve')">&nbsp;&nbsp;BUSD <van-icon name="exchange" /> EVIC&nbsp;&nbsp;</van-button>
           </div>
           <div style="padding:5px 10px;display:flex;justify-content: space-between;">
-            <p>EVIC {{$t('text.earned')}}: <b>{{ $store.state.fund }}</b></p>
+            <p><van-icon name="award-o" :size="18" /> EVIC {{$t('text.earned')}}: <b v-number="$store.state.fund"></b></p>
             <van-button size="mini" type="primary" :disabled="$store.state.fund?false:true" @click="open('evic_withdraw')">&nbsp;&nbsp;{{$t('btn.withdraw')}}&nbsp;&nbsp;</van-button>
           </div>
           <!--<van-grid :column-num="2">
