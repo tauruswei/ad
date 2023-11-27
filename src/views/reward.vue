@@ -27,7 +27,7 @@
               <van-grid-item>
                 <van-icon name="gem" size="48" />
                 <h3>{{ reward }}</h3>
-                {{$t('text.reward')}}
+                {{$t('text.reward')}} | Evic
               </van-grid-item>
             </van-grid>
             <div style="padding:0 10px 10px;text-align: center;">
