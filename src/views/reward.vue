@@ -72,7 +72,7 @@
   import Bus from "@/utils/event-bus";
   const store = useStore();
   const round = ref(1);
-  const amount = ref("20000")
+  const amount = ref("1000")
   getABI();
   const abis = ref({ aacFundPool: "" })
   const visible = ref(false)
@@ -111,21 +111,12 @@
       }
     })
   }
-  function isEmpty() {
+  function check() {
     let ret = true;
-    /*if (!amount.value) {
-      errorMsg.value = proxy.$t("error.required")
-      return false;
-    }*/
-    if(reward.value < 0.01){
-      showToast(proxy.$t("error.min") + " 20000");
+    if(reward.value < 1000){
+      showToast(proxy.$t("error.min") + " 1000");
       return false
-    } 
-    /*if(reward.value < (gasFee.value/Math.pow(10,18))){ 
-      ret = false;
-      console.log(reward.value,)
-      errorMsg.value = proxy.$t("error.exceed") 
-    }*/
+    }
     return ret;
   }
   function getInviteNumber() {
@@ -179,7 +170,7 @@
     gasFee.value = Number(gas.value.gasPrice) * Number(gas.value.gasLimit) * 2;
   }
   async function withdraw() {
-    if(!isEmpty()) return;
+    if(!check()) return;
     loadingHelper.show();
     await getFee('aacFundPool');
     if(!store.state.user?.id) return;

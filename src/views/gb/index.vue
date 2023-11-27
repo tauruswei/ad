@@ -65,7 +65,7 @@
     </div>
     <side-bar v-model:visible="sidebarVisible"></side-bar>
     <level :title="$t('text.level')" v-model:visible="levelVisible" @select="selectLevel"></level>
-    <exchange-pop v-model:visible="visible" :title="action.title" :type="action.type" :error="errorMsg" @do="handleTransferOperate" @refresh="refreshAllowance" @reset="resetMsg">
+    <exchange-pop v-model:visible="visible" :title="action.title" :type="action.type" @do="handleTransferOperate" @refresh="refreshAllowance">
     </exchange-pop>
   </div>
 </template>
@@ -123,9 +123,6 @@ function getABI() {
       }
     }
   })
-}
-function resetMsg(){
-  errorMsg.value = { msg1: "", msg2: "" }
 }
 function selectLevel(){
   levelVisible.value = false;
@@ -233,10 +230,8 @@ function handleTransferOperate(value) {
 function checkValue(amount,min) {
   let ret = true;
   if (amount < min) {
-    errorMsg.value.msg2 = proxy.$t("error.min") + " " + min;
+    showToast(`${proxy.$t("error.min")} ${min}`);
     ret = false;
-  }else{
-    errorMsg.value.msg2 = ''
   }
   return ret;
 }
@@ -257,7 +252,6 @@ function approve(value) {
   if (!checkValue(data.amount,min.value)) return;
   loadingHelper.show();
   metaMask.approveByEthers(data).then(async(res) => {
-    
     await getAllowance('evic','play')
     loadingHelper.hide();
     //refresh()
@@ -377,6 +371,7 @@ function withdraw(key) {
     abi: abis.value[key],
     funcName: "withdraw"
   }
+  if (!checkValue(store.state.fund,1000)) return;
   loadingHelper.show();
   metaMask.withdrawUseEthers(data).then((res) => {
     loadingHelper.hide()
