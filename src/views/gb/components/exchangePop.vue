@@ -3,9 +3,9 @@
     <van-form ref="formRef" style="padding:10px 15px 20px;font-size:17px">
       <h3>{{ title }}</h3>
       <van-cell-group inset style="margin-bottom:15px;">
-        <van-field v-if="type == 'evic_play'" v-model="action.amount1" name="amount1" label="EVIC:" type="number" required :error-message="error.msg2" @input="evicChange" :placeholder="$t('text.amount')" clickable />
-        <van-field v-if="type != 'evic_play'" v-model="action.amount" name="amount" label="BUSD:" type="number" required :error-message="error.msg1" @input="busdChange" :placeholder="$t('text.amount')" clickable />
-        <van-field v-if="type != 'evic_play'" v-model="action.amount1" name="amount1" label="EVIC:" type="number" required :error-message="error.msg2" @input="evicChange" :placeholder="$t('text.amount')" clickable />
+        <van-field v-if="type == 'evic_play'" v-model="action.amount1" name="amount1" label="EVIC:" type="number" required  @input="evicChange" :placeholder="$t('text.amount')" clickable />
+        <van-field v-if="type != 'evic_play'" v-model="action.amount" name="amount" label="BUSD:" type="number" required  @input="busdChange" :placeholder="$t('text.amount')" clickable />
+        <van-field v-if="type != 'evic_play'" v-model="action.amount1" name="amount1" label="EVIC:" type="number" required  @input="evicChange" :placeholder="$t('text.amount')" clickable />
       </van-cell-group>
       <div>
         {{type.split('_')[0].toUpperCase()+' '+$t('text.allowance')+": " }}<b>{{ $store.state.allowance[type] }}</b>&nbsp;&nbsp;
