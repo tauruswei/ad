@@ -9,7 +9,8 @@ import Directives from './utils/directives/index'
 //require("../mock/index.js");
 import { Tab, Tabs, NavBar, Button, Col, Row, Image as VanImage, Tag, NumberKeyboard, Field, CellGroup, Dialog, Icon, Grid, GridItem, Popup, List, Cell, Empty, PullRefresh, TextEllipsis,Picker,Switch,Popover,Form } from 'vant';
 const app = createApp(App);
-vantLocales(i18n.locale)
+vantLocales(localStorage.getItem('language'))
+console.log(i18n.locale)
 import VConsole from 'vconsole';
 console.log(process.env.NODE_ENV)
 // if (process.env.NODE_ENV == "development") {

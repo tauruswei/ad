@@ -31,13 +31,9 @@ const lang = (navigator.language || 'en').toLocaleLowerCase()
 const language = localStorage.getItem('language') || lang.split('-')[0] || 'zh';
 localStorage.setItem('language', language)
 const i18n = createI18n({
-  //Not available in legacy mode 解决报错问题的配置项！！！
   legacy: false,
-  // 全局注册 $t方法
   globalInjection: true, 
-  //设置初始化语言
   locale: language, 
-  // 设置备用语言
   fallbackLocale: 'en', 
   messages, 
 })
