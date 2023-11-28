@@ -3,7 +3,7 @@
     <van-form ref="formRef" style="padding:10px 15px 20px;font-size:17px">
       <h3>{{ title }}</h3>
       <van-cell-group inset style="margin-bottom:15px;">
-        <van-field v-if="type == 'evic_play'" v-model="action.amount1" name="amount1" label="EVIC:" type="number" required  @input="evicChange" :placeholder="$t('text.amount')" clickable />
+        <van-field v-if="type == 'evic_play'" v-model="action.amount1" name="amount1" label="EVIC:" type="number" required  @input="evicChange" :disabled="disabled" :placeholder="$t('text.amount')" clickable />
         <van-field v-if="type != 'evic_play'" v-model="action.amount" name="amount" label="BUSD:" type="number" required  @input="busdChange" :placeholder="$t('text.amount')" clickable />
         <van-field v-if="type != 'evic_play'" v-model="action.amount1" name="amount1" label="EVIC:" type="number" required  @input="evicChange" :placeholder="$t('text.amount')" clickable />
       </van-cell-group>
@@ -30,6 +30,7 @@
 import { showFailToast } from "vant";
 import { ref, watch, getCurrentInstance, toRaw } from "vue";
 import { useStore } from "vuex";
+const disabled = ref(false)
 const { proxy } = getCurrentInstance();
 const store = useStore()
 const formRef = ref()
@@ -61,6 +62,11 @@ watch(() => props.visible, (val) => {
   if (!val) {
     formRef.value.resetValidation();
     reset();
+  }else{
+    if(props.type == "evic_play"){
+      action.value.amount1 = store.state.pools[store.state.pool+''];
+      disabled.value = true;
+    }
   }
 })
 function check(type) {
@@ -100,6 +106,7 @@ const reset = () => {
     amount1: "",
     command: ""
   }
+  disabled.value = false
 }
 const submit = (command) => {
   action.value.command = command;
