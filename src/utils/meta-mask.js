@@ -563,8 +563,6 @@ export class MetaMask {
           else tx = await contract[param.funcName]();
           let receipt = await tx.wait();
           console.log(receipt)
-          //resolve(receipt)
-          //reject(receipt)
         }
         func().then((res)=>{
           resolve(res)
@@ -588,10 +586,12 @@ export class MetaMask {
           else tx = await contract[param.funcName]();
           let receipt = await tx.wait();
           console.log(receipt)
-          resolve(receipt)
-          reject(receipt)
         }
-        func();
+        func().then((res)=>{
+          resolve(res)
+        }).catch((err)=>{
+          reject(err)
+        });
       } catch (error) {
         console.log(error)
         reject(error)
@@ -609,10 +609,12 @@ export class MetaMask {
           else tx = await contract[param.funcName]();
           let receipt = await tx.wait();
           console.log(receipt)
-          resolve(receipt)
-          reject(receipt)
         }
-        func();
+        func().then((res)=>{
+          resolve(res)
+        }).catch((err)=>{
+          reject(err)
+        });
       } catch (error) {
         console.log(error)
         reject(error)
@@ -630,8 +632,6 @@ export class MetaMask {
           else tx = await contract[param.funcName]();
           let receipt = await tx.wait();
           console.log(receipt)
-          resolve(receipt)
-          reject(receipt)
         }
         func().then((res)=>{
           resolve(res)

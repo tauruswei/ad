@@ -14,8 +14,8 @@
   const store = useStore()
   const show = ref(false)
   const columns = [
-      { text: 1000, value: 0 },
-      { text: 2000, value: 1 },
+      { text: 500, value: 0 },
+      { text: 1000, value: 1 },
     ];
   const props = defineProps({
     visible: {

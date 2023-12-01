@@ -18,7 +18,7 @@ const store = createStore({
             inviteCode:"",
             mycode:"",
             pool: 0,
-            pools: {"0":1000,"1":2000,"2":2000},
+            pools: {"0":500,"1":1000,"2":2000},
             cancelTokenArr: []
         }
     },
