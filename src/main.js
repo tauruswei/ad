@@ -11,7 +11,7 @@ import { Tab, Tabs, NavBar, Button, Col, Row, Image as VanImage, Tag, NumberKeyb
 const app = createApp(App);
 vantLocales(localStorage.getItem('language'))
 import VConsole from 'vconsole';
-console.log(process.env.NODE_ENV)
+//console.log(process.env.NODE_ENV)
 // if (process.env.NODE_ENV == "development") {
     //手机端调试
     const vConsole = new VConsole();

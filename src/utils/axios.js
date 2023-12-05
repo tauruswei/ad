@@ -82,7 +82,6 @@ axios.interceptors.response.use(
     //removePending(res.config);
     //HTTP响应码是200，后端自己定义了500
     if([500601, 500602, 500603, 500604].indexOf(res.data.code)>-1){
-      console.log("code="+res.data.code);
       //router.replace({path: "/login" });
       return
     }

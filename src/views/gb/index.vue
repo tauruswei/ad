@@ -136,7 +136,6 @@ function getBalance(key) {
     from: store.state.metaMask?.account,
     funcName: "balanceOf"
   }//getDataByContract
-  console.log("balance of")
   metaMask.getBalanceOfDifferentWallet(data).then(res => {
     let balance = Number(res) / Math.pow(10, 18);
     let obj={};
@@ -152,7 +151,6 @@ function getAllowance(key,type) {
     to: type=='play'? store.state.config?.contract.aacFundPool.proxyAddress:store.state.config?.contract.exchangeEvic.proxyAddress,
     funcName: "allowance"
   }
-  console.log("search allowance")
   metaMask.getAllowanceDifferentWallet(data).then(res => {
     let allowance = Number(res) / Math.pow(10, 18);
     let obj={};
@@ -169,7 +167,6 @@ function getReward(key) {
     from: store.state.metaMask?.account,
     funcName: "userRewards"
   }//queryByethers
-  console.log("rewards")
   metaMask.getBalanceOfDifferentWallet(data).then(res => {
     let reward = Number(res) / Math.pow(10, 18);
     store.commit("setFund", Math.round(reward * 1000) / 1000);
@@ -223,7 +220,6 @@ const transferHandler = {
   evic_withdraw: withdraw.bind(this, 'aacFundPool')
 }
 function handleTransferOperate(value) {
-  console.log(value)
   let key = (value && value.command)?value.command:action.value.command
   transferHandler[key](value);
 }
@@ -296,7 +292,6 @@ function exchangeBusd(value) {
     abi: abis.value[key],
     funcName: "sellToken"
   }
-  console.log(data)
   if(data.amount > store.state.allowance[value.command]) {
     showToast(`${proxy.$t('error.allowance')}`)
     return
@@ -387,7 +382,6 @@ function copy(val) {
 }
 function openSidebar() {
   sidebarVisible.value = true;
-  console.log(sidebarVisible.value)
 }
 function refresh() {
   if (!hasConfig.value) return;

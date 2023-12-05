@@ -166,7 +166,6 @@
       amount: reward.value + ""
     }
     gas.value = await metaMask.getGasByEthers(param);
-    console.log(reward.value,gas.value)
     gasFee.value = Number(gas.value.gasPrice) * Number(gas.value.gasLimit) * 2;
   }
   async function withdraw() {

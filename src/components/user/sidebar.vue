@@ -41,7 +41,6 @@ let show = ref(false);
 let inviteUrl = ref('');
 watch(() => props.visible, (val) => {
   show.value = val;
-  console.log('11131', show.value)
 })
 function copy(val) {
     if (!store.state.mycode) return;

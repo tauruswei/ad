@@ -63,11 +63,9 @@ if (provider) {
     func()
   }
   provider.on('connect', async (info) => {
-    console.log('connect', info)
     if (!store.state.metaMask) metaMask.connectMetaMask();
   })
   provider.on('accountsChanged', (accounts) => {
-    console.log('accountsChanged', accounts);
     if (!accounts.length) {
       metaMask.disconnect();
     } else {
@@ -121,7 +119,6 @@ function update(hascode) {
       return
     }
   }
-  console.log(code.value)
   let data = {
     walletAddress: store.state.metaMask?.account,
     inviterId: code.value ? decodeURIComponent(code.value) : null

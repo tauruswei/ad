@@ -16,7 +16,6 @@ let option = {
 const MMSDK = new MetaMaskSDK(option);
 const ethereum = MMSDK.getProvider();
 let web3 = new Web3(ethereum);
-console.log(web3)
 function toHex(num) {
   let hex = '0x' + num.toString(16);
   return hex
@@ -47,10 +46,8 @@ export class MetaMask {
     if(!web3) web3 = new Web3(ethereum);
     try {
       if (!ethereum.ready) {
-        console.log("request method get accounts")
         accounts = await ethereum.request({ method: 'eth_requestAccounts' })
       } else {
-        console.log("web3 method get accounts")
         accounts = await web3.eth.getAccounts()
       }
     } catch (error) {
@@ -86,31 +83,20 @@ export class MetaMask {
     }
     let provider = await this.getProvider()
     if (provider !== ethereum) {
-      console.log("provider", provider)
-      console.log("ethereum", provider)
       console.error('Do you have multiple wallets installed?');
     }
     this.provider = ethereum;
 
     try {
-      console.log("store.state.config:");
-      console.log(store.state.config);
-      console.log("*******************chainid")
-      console.log("ethereum+++++",ethereum)
       const CHAINID = toHex(store.state.config?.chainId)
       
       this.chainId = await ethereum.request({ method: 'eth_chainId' })
-      console.log("eth_chainid",this.chainId)
-      console.log("CHAINID",CHAINID)
       if (this.chainId !== CHAINID) {
         let isChecked = await this.checkNetwork();
-        console.log("checkednetwork", isChecked)
-        console.log(parseInt(CHAINID), this.chainId);
         showFailToast(globals.$t('message.chain.error') + parseInt(CHAINID) + '[' + this.chainId + ']).');
         if (!isChecked) return;
         this.chainId = this.toHex(store.state.config?.chainId)
       }
-      console.log("ready", ethereum.ready)
       await this.getAccount();
       //const accounts = await web3.eth.getAccounts();
       //console.log(accounts)
@@ -139,11 +125,9 @@ export class MetaMask {
   async checkNetwork() {
     let isAdd = false;
     let isSwitch = await this.switchNetwork();
-    console.log('isSwitch', isSwitch)
     if (isSwitch == 4902) {
       isAdd = await this.addNetwork();
     }
-    console.log('isAdd', isAdd)
     return isSwitch === true ? true : false
   }
   async switchNetwork() {
@@ -192,7 +176,6 @@ export class MetaMask {
       return true
     } catch (error) {
       console.log(error)
-      console.log("cancel")
       errorHandlerOfMetaMaskRequest(error)
       return false
     }
@@ -290,15 +273,13 @@ export class MetaMask {
         }]
       })
         .then((res) => {
-          console.log(res)
           resolve(res)
         })
         .catch((error) => { console.error(error); reject(error) });
     })
   }
   async sendTransactionToWithdraw(param) {
-    let enable = await window.ethereum.request({ method: 'eth_requestAccounts' });
-    console.log(enable)
+    //let enable = await window.ethereum.request({ method: 'eth_requestAccounts' });
     let price = await this.getGasPrice();
     let gas = await this.estimateGas();
     const myContract = this.getContract(param.abi, param.address);
@@ -358,7 +339,6 @@ export class MetaMask {
       })
       .then((success) => {
         if (success) {
-          console.log(success)
           console.log(param.symbol + ' successfully added to wallet!');
         } else {
           throw new Error(`${globals.$t('error.wentWrong')}`);
@@ -400,7 +380,6 @@ export class MetaMask {
       myContract.methods[param.funcName](param.addressParam,this.toHex(param.amount)).send({
         from: param.from
       }).then(res => {
-        console.log("approve",res)
         resolve(res)
       }).catch(err => {
         reject(err);
@@ -456,32 +435,27 @@ export class MetaMask {
     const myContract = this.getContract(param.abi, param.address);
     if (!myContract) return;
     let ret = await myContract.methods[param.funcName](param.from).call();
-    console.log("current round", ret)
     return ret;
   }
   async queryByethers(param) {
     const contract = this.getEthersContract(param);
     let ret = await contract[param.funcName](param.from);
-    console.log("current balance", Number(ret))
     return ret
   }
   async queryAllowanceByethers(param) {
     const contract = this.getEthersContract(param);
     let ret = await contract[param.funcName](param.from,param.to);
-    console.log("current allowance", Number(ret))
     return ret
   }
   //rewards
   async queryByethersNoParam(param) {
     const contract = this.getEthersContract(param);
     let ret = await contract[param.funcName](store.state.pool);
-    console.log("current reward invite", Number(ret))
     return ret
   }
   async queryRoundByethers(param) {
     const contract = this.getEthersContract(param);
     let ret = await contract[param.funcName](param.pool,param.amount);
-    console.log("round",ret)
     return ret
   }
   //tp只支持web3查询
@@ -515,23 +489,19 @@ export class MetaMask {
   async getDataByContract(param) {
     const myContract = this.getContract(param.abi, param.address);
     if (!myContract) return;
-    console.log(myContract.methods);
     let ret = await myContract.methods[param.funcName](param.from).call();
-    console.log("balanceof",ret)
     return ret;
   }
   async getAllowanceByContract(param) {
     const myContract = this.getContract(param.abi, param.address);
     if (!myContract) return;
     let ret = await myContract.methods[param.funcName](param.from,param.to).call();
-    console.log("allowance",ret)
     return ret;
   }
   async getRoundByContract(param) {
     const myContract = this.getContract(param.abi, param.address);
     if (!myContract) return;
     let ret = await myContract.methods[param.funcName](param.pool,param.amount).call();
-    console.log("round",ret)
     return ret;
   }
   async getGasByEthers(param) {
@@ -562,7 +532,6 @@ export class MetaMask {
           if (value) tx = await contract[param.funcName](param.addressParam,value);
           else tx = await contract[param.funcName]();
           let receipt = await tx.wait();
-          console.log(receipt)
         }
         func().then((res)=>{
           resolve(res)
@@ -570,7 +539,6 @@ export class MetaMask {
           reject(err)
         });
       } catch (error) {
-        console.log(error)
         reject(error)
       }
     })
@@ -585,7 +553,6 @@ export class MetaMask {
           if (value) tx = await contract[param.funcName](store.state.pool,value);
           else tx = await contract[param.funcName]();
           let receipt = await tx.wait();
-          console.log(receipt)
         }
         func().then((res)=>{
           resolve(res)
@@ -593,7 +560,6 @@ export class MetaMask {
           reject(err)
         });
       } catch (error) {
-        console.log(error)
         reject(error)
       }
     })
@@ -608,7 +574,6 @@ export class MetaMask {
           if (value) tx = await contract[param.funcName](value);
           else tx = await contract[param.funcName]();
           let receipt = await tx.wait();
-          console.log(receipt)
         }
         func().then((res)=>{
           resolve(res)
@@ -616,7 +581,6 @@ export class MetaMask {
           reject(err)
         });
       } catch (error) {
-        console.log(error)
         reject(error)
       }
     })
@@ -631,7 +595,6 @@ export class MetaMask {
           if (value) tx = await contract[param.funcName]();
           else tx = await contract[param.funcName]();
           let receipt = await tx.wait();
-          console.log(receipt)
         }
         func().then((res)=>{
           resolve(res)
@@ -639,7 +602,6 @@ export class MetaMask {
           reject(err)
         });
       } catch (error) {
-        console.log(error)
         reject(error)
       }
     })
