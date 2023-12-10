@@ -10,13 +10,13 @@ import Directives from './utils/directives/index'
 import { Tab, Tabs, NavBar, Button, Col, Row, Image as VanImage, Tag, NumberKeyboard, Field, CellGroup, Dialog, Icon, Grid, GridItem, Popup, List, Cell, Empty, PullRefresh, TextEllipsis,Picker,Switch,Popover,Form } from 'vant';
 const app = createApp(App);
 vantLocales(localStorage.getItem('language'))
-import VConsole from 'vconsole';
+
 //console.log(process.env.NODE_ENV)
-// if (process.env.NODE_ENV == "development") {
+/* if (process.env.NODE_ENV == "development") {
     //手机端调试
+    import VConsole from 'vconsole';
     const vConsole = new VConsole();
-    //app.use(vConsole)
-// }
+// }*/
 app.use(Tab).use(Tabs).use(NavBar).use(Button).use(Col).use(Row)
     .use(VanImage).use(Tag).use(NumberKeyboard).use(Field).use(CellGroup)
     .use(Dialog).use(Icon).use(Grid).use(GridItem).use(Popup).use(List)
