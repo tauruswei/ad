@@ -8,7 +8,7 @@
         <van-field v-if="type != 'evic_play'" v-model="action.amount1" name="amount1" label="EVIC:" type="number" required  @input="evicChange" :placeholder="$t('text.amount')" clickable />
       </van-cell-group>
       <div>
-        {{(type.indexOf('busd')?"USDT":type.split('_')[0].toUpperCase())+' '+$t('text.allowance')+": " }}<b>{{ $store.state.allowance[type] }}</b>&nbsp;&nbsp;
+        {{(type.indexOf('busd')>-1?"USDT":type.split('_')[0].toUpperCase())+' '+$t('text.allowance')+": " }}<b>{{ $store.state.allowance[type] }}</b>&nbsp;&nbsp;
         <van-icon name="replay" @click="refresh" />
       </div>
       <van-button @click="submit('')" native-type="button" style="width:100%;margin-bottom: 10px;">
