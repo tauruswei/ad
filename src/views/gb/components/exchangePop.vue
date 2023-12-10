@@ -4,7 +4,7 @@
       <h3>{{ title }}</h3>
       <van-cell-group inset style="margin-bottom:15px;">
         <van-field v-if="type == 'evic_play'" v-model="action.amount1" name="amount1" label="EVIC:" type="number" required  @input="evicChange" :disabled="disabled" :placeholder="$t('text.amount')" clickable />
-        <van-field v-if="type != 'evic_play'" v-model="action.amount" name="amount" label="BUSD:" type="number" required  @input="busdChange" :placeholder="$t('text.amount')" clickable />
+        <van-field v-if="type != 'evic_play'" v-model="action.amount" name="amount" label="USDT:" type="number" required  @input="busdChange" :placeholder="$t('text.amount')" clickable />
         <van-field v-if="type != 'evic_play'" v-model="action.amount1" name="amount1" label="EVIC:" type="number" required  @input="evicChange" :placeholder="$t('text.amount')" clickable />
       </van-cell-group>
       <div>
@@ -18,10 +18,10 @@
         {{$t('btn.buy')}}
       </van-button>
       <van-button v-if="type=='busd_exchange'" native-type="button" type="primary" @click="submit('busd_exchange')" style="width:100%">
-        BUSD <van-icon name="exchange" /> EVIC
+        USDT <van-icon name="exchange" /> EVIC
       </van-button>
       <van-button v-if="type=='evic_exchange'" native-type="button" type="primary" @click="submit('evic_exchange')" style="width:100%">
-        EVIC <van-icon name="exchange" /> BUSD
+        EVIC <van-icon name="exchange" /> USDT
       </van-button>
     </van-form>
   </van-popup>

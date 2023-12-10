@@ -20,12 +20,12 @@
         <div class="bg">
           <metamask-connect></metamask-connect>
           <div style="padding:5px 10px;display:flex;justify-content: space-between;">
-            <p><van-icon name="balance-o" :size="18" /> BUSD {{$t('text.balance')}}: <b v-number="$store.state.balance.busd"></b></p>
-            <van-button size="mini" type="primary" @click="open('evic_exchange-approve')">&nbsp;&nbsp;EVIC <van-icon name="exchange" /> BUSD&nbsp;&nbsp;</van-button>
+            <p><van-icon name="balance-o" :size="18" /> USDT {{$t('text.balance')}}: <b v-number="$store.state.balance.busd"></b></p>
+            <van-button size="mini" type="primary" @click="open('evic_exchange-approve')">&nbsp;&nbsp;EVIC <van-icon name="exchange" /> USDT&nbsp;&nbsp;</van-button>
           </div>
           <div style="padding:5px 10px;display:flex;justify-content: space-between;">
             <p><van-icon name="balance-o" :size="18"/> EVIC {{$t('text.balance')}}: <b v-number="$store.state.balance.evic"></b></p>
-            <van-button size="mini" type="primary" @click="open('busd_exchange-approve')">&nbsp;&nbsp;BUSD <van-icon name="exchange" /> EVIC&nbsp;&nbsp;</van-button>
+            <van-button size="mini" type="primary" @click="open('busd_exchange-approve')">&nbsp;&nbsp;USDT <van-icon name="exchange" /> EVIC&nbsp;&nbsp;</van-button>
           </div>
           <div style="padding:5px 10px;display:flex;justify-content: space-between;">
             <p><van-icon name="award-o" :size="18" /> EVIC {{$t('text.earned')}}: <b v-number="$store.state.fund"></b></p>
