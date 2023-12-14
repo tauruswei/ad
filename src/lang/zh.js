@@ -42,7 +42,8 @@ export default {
         wallet:"錢包",
         point:"積分",
         rank:"排名",
-        norank:"尚未參加遊戲！"
+        norank:"尚未參加遊戲！",
+        invitead:"參與遊戲或邀請好友以提高排名"
     },
     message: {
         play: {
