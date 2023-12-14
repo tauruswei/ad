@@ -42,6 +42,7 @@ export default {
         wallet:"錢包",
         point:"積分",
         rank:"排名",
+        norank:"尚未參加遊戲！"
     },
     message: {
         play: {

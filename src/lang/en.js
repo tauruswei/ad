@@ -42,6 +42,7 @@ export default {
         wallet:"Wallet",
         point:"Point",
         rank:"Rank",
+        norank:"Not yet playing the game"
     },
     message:{
         play:{

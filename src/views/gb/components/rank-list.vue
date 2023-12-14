@@ -11,15 +11,16 @@
         <span class="rank-title">{{ $t('text.point') }}</span>
       </van-col>
       <van-col :span="3" style="text-align: center;">
-        <span class="rank-num self">{{ data.rank }}</span>
+        <span v-if="data" class="rank-num self">{{ data.rank }}</span>
       </van-col>
       <van-col :span="14">
-        <a style="color:var(--van-gray-9);" :href="`${$store.state.config?.explorer}/address/${data.walletAddress}`">
+        <a v-if="data.walletAddress" style="color:var(--van-gray-9);" :href="`${$store.state.config?.explorer}/address/${data.walletAddress}`">
           <van-text-ellipsis :content="data.walletAddress" />
         </a>
+        <p style="text-align: center;color:#999">{{ $t('text.norank') }}</p>
       </van-col>
       <van-col :span="6" style="text-align: right;">
-        <b>{{ data.point }}</b>
+        <b v-if="data">{{ data.point }}</b>
       </van-col>
     </van-row>
     <van-pull-refresh v-model="loading" @refresh="onRefresh" :loosing-text="$t('text.loosingText')" :loading-text="$t('text.loadingText')" :pulling-text="$t('text.pullingText')">
@@ -54,13 +55,14 @@ const loading = ref(false);
 const finished = ref(false);
 const page = ref(1);
 const data = ref({
-  rank: 1,
-  walletAddress: "--",
-  point: "--"
+  rank: "",
+  walletAddress: "",
+  point: ""
 });
 onMounted(() => {
   page.value = 1;
   query()
+  queryRank()
 })
 function query() {
   /*let data = {
