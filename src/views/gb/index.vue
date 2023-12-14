@@ -59,6 +59,9 @@
             <van-tab :title="$t('text.history')" name="history">
               <buy-list v-if="activeName =='history'"></buy-list>
             </van-tab>
+            <van-tab :title="$t('text.airdropPoints')" name="airdrop">
+              <rank-list v-if="activeName =='airdrop'"></rank-list>
+            </van-tab>
           </van-tabs>
         </div>
       </div>
@@ -81,6 +84,7 @@ import ExchangePop from "./components/exchangePop.vue";
 import Level from "./components/level.vue";
 import BuyList from "./components/trans-list.vue";
 import BuyingList from "./components/transing-list.vue";
+import RankList from "./components/rank-list.vue";
 import MetamaskConnect from "@/components/user/metamask.vue";
 import SideBar from "@/components/user/sidebar.vue";
 import Bus from "@/utils/event-bus";

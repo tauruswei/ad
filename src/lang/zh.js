@@ -37,7 +37,11 @@ export default {
         allowance: "授權金額",
         exchangeTo: "轉換成",
         totalFund: "質押總數",
-        level: "等級"
+        level: "等級",
+        airdropPoints:"空投積分",
+        wallet:"錢包",
+        point:"積分",
+        rank:"排名",
     },
     message: {
         play: {

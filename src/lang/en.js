@@ -37,7 +37,11 @@ export default {
         allowance: "Allowance",
         exchangeTo: "Exchange to",
         totalFund: "total Fund",
-        level: "level"
+        level: "level",
+        airdropPoints:"Airdrop Points",
+        wallet:"Wallet",
+        point:"Point",
+        rank:"Rank",
     },
     message:{
         play:{
