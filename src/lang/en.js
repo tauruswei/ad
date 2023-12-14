@@ -42,7 +42,8 @@ export default {
         wallet:"Wallet",
         point:"Point",
         rank:"Rank",
-        norank:"Not yet playing the game"
+        norank:"Not yet playing the game",
+        invitead:"Playing the game or inviting for more points !"
     },
     message:{
         play:{
