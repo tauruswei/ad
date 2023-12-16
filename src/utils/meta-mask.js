@@ -95,7 +95,7 @@ export class MetaMask {
         let isChecked = await this.checkNetwork();
         showFailToast(globals.$t('message.chain.error') + parseInt(CHAINID) + '[' + this.chainId + ']).');
         if (!isChecked) return;
-        this.chainId = this.toHex(store.state.config?.chainId)
+        this.chainId = toHex(store.state.config?.chainId)
       }
       await this.getAccount();
       //const accounts = await web3.eth.getAccounts();

@@ -16,7 +16,7 @@ const { locale } = useI18n();
 const result = ref(localStorage.getItem("language"));
 const showPopover = ref(false);
 const columns = [
-  { text: '繁体中文', value: 'zh' },
+  { text: '繁體中文', value: 'zh' },
   { text: 'English', value: 'en' },
 ];
 const onChange = (action) => {
