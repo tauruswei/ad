@@ -60,7 +60,8 @@
               <buy-list v-if="activeName =='history'"></buy-list>
             </van-tab>
             <van-tab :title="$t('text.airdropPoints')" name="airdrop">
-              <rank-list v-if="activeName =='airdrop'"></rank-list>
+              <!--<rank-list v-if="activeName =='airdrop'"></rank-list>-->
+              <yestoday-list v-if="activeName =='airdrop'"></yestoday-list>
             </van-tab>
           </van-tabs>
         </div>
@@ -85,6 +86,7 @@ import Level from "./components/level.vue";
 import BuyList from "./components/trans-list.vue";
 import BuyingList from "./components/transing-list.vue";
 import RankList from "./components/rank-list.vue";
+import YestodayList from "./components/rank-listb.vue";
 import MetamaskConnect from "@/components/user/metamask.vue";
 import SideBar from "@/components/user/sidebar.vue";
 import Bus from "@/utils/event-bus";

@@ -73,7 +73,8 @@ export const dashboardApi = {
 export const bscApi = {
   playingList: (data) => post("/aac/roundsListPending", data),
   playList: (data) => post("/aac/roundsListFinished", data),
-  rankList: (data) => post("/point/queryPointRankLimit?limit="+data),
+  rankList: (data) => post("/point/queryDailyPointRankLimit?limit="+data),
+  rankYestodayList: (data) => post("/point/queryHistoryWinners?limit="+data),
   rank:(data) => post("/point/queryPointByUserId?userId="+data),
   checkAccount: (data)=>post("/user/queryUserByWalletAddress",data),
   updateAccount:(data)=>post("/user/register",data)
