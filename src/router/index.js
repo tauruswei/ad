@@ -4,7 +4,7 @@ import Notfound from "@/components/page/404.vue";
 const routes = [
   {
     path: "/",
-    name: "gb",
+    name: "nft",
     component: () => import("@/views/gb/index.vue"),
   },
   {

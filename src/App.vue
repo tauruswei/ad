@@ -34,6 +34,7 @@ export default {
 </script>
 <style>
 #app {
+  font-size:12px;
   font-family: sans-serif, "Hiragino Sans GB", "PingFang SC", "Helvetica Neue",
     Helvetica, "Microsoft YaHei", "微软雅黑", Arial;
   -webkit-font-smoothing: antialiased;

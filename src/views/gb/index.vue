@@ -1,22 +1,13 @@
 <template>
   <div>
-    <!--<van-nav-bar safe-area-inset-top>
-      <template #title>
-        <img :src="require('../../assets/logo.png')" style="height:28px"/>
-      </template>
-    </van-nav-bar>-->
     <div class="content-container">
-      <div class="border-bg">
-        <div>
-          <span style="display:inline-block;font-size:16px;margin:15px 10px 10px;line-height:24px;padding:2px 8px;color:var(--van-primary-color);background-color:#4d4159;border-radius:4px;" @click="openSidebar">
+      <div style="position:relative;text-align: center;padding:10px 0;">
+          <span style="position:absolute;left:0;top:0;display:inline-block;font-size:16px;margin:10px 10px 10px 0;line-height:24px;padding:2px 8px;color:var(--van-primary-color);" @click="openSidebar">
             <van-icon name="wap-nav" />
           </span>
-        </div>
-        <div></div>
-        <div></div>
+          <img :src="require('../../assets/logo.png')" style="height:28px"/>
       </div>
       <div class="ui-content">
-        <div class="wallet"></div>
         <div class="bg">
           <metamask-connect></metamask-connect>
           <div style="padding:5px 10px;display:flex;justify-content: space-between;">
@@ -31,18 +22,6 @@
             <p><van-icon name="award-o" :size="18" /> EVIC {{$t('text.earned')}}: <b v-number="$store.state.fund"></b></p>
             <van-button size="mini" type="primary" :disabled="$store.state.fund?false:true" @click="open('evic_withdraw')">&nbsp;&nbsp;{{$t('btn.withdraw')}}&nbsp;&nbsp;</van-button>
           </div>
-          <!--<van-grid :column-num="2">
-            <van-grid-item>
-              <h3>{{ $store.state.balance.evic }}</h3>
-              <p><small>EVIC {{$t('text.balance')}}</small></p>
-              <van-button size="mini" type="primary" @click="open('busd_exchange-approve')">&nbsp;&nbsp;{{$t('text.exchange')}}&nbsp;&nbsp;</van-button>
-            </van-grid-item>
-            <van-grid-item>
-              <h3>{{ $store.state.fund }}</h3>
-              <p><small>{{$t('text.earned')}}</small></p>
-              <van-button size="mini" type="primary" :disabled="$store.state.fund?false:true" @click="open('evic_withdraw')">&nbsp;&nbsp;{{$t('btn.withdraw')}}&nbsp;&nbsp;</van-button>
-            </van-grid-item>
-          </van-grid>-->
           <van-tabs v-model:active="activeName">
             <van-tab :title="$t('text.play')" name="trans">
               <div style="padding:15px 10px 25px;text-align: center;">
@@ -58,10 +37,6 @@
             </van-tab>
             <van-tab :title="$t('text.history')" name="history">
               <buy-list v-if="activeName =='history'"></buy-list>
-            </van-tab>
-            <van-tab :title="$t('text.airdropPoints')" name="airdrop">
-              <!--<rank-list v-if="activeName =='airdrop'"></rank-list>-->
-              <yestoday-list v-if="activeName =='airdrop'"></yestoday-list>
             </van-tab>
           </van-tabs>
         </div>
@@ -85,8 +60,6 @@ import ExchangePop from "./components/exchangePop.vue";
 import Level from "./components/level.vue";
 import BuyList from "./components/trans-list.vue";
 import BuyingList from "./components/transing-list.vue";
-import RankList from "./components/rank-list.vue";
-import YestodayList from "./components/rank-listb.vue";
 import MetamaskConnect from "@/components/user/metamask.vue";
 import SideBar from "@/components/user/sidebar.vue";
 import Bus from "@/utils/event-bus";
