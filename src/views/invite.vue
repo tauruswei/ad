@@ -27,10 +27,10 @@ function getQueryParamByKey(key) {
 onMounted(() => {
   invideCode.value = getQueryParamByKey('inviteCode');
   if(invideCode.value){
-    store.commit("setInviteCode",invideCode.value);
-    store.commit("setMetaMask",null);
-    store.commit("setMyCode",null);
-    router.push({ path: "/" });
+    store.commit("setInviteCode",invideCode.value); 
   } 
+  store.commit("setMetaMask",null);
+  store.commit("setMyCode",null);
+  router.push({ path: "/" });
 })
 </script>

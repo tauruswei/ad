@@ -6,7 +6,9 @@ export default {
         buy: "購買",
         invite: "分享邀請",
         accept: "接受邀請",
-        approve: "授權"
+        approve: "授權",
+        sure:"確定",
+        cancel:"取消"
     },
     text: {
         home: "主頁",
@@ -43,12 +45,14 @@ export default {
         point:"積分",
         rank:"排名",
         norank:"尚未參加遊戲！",
-        invitead:"參與遊戲或邀請好友以提高排名"
+        invitead:"參與遊戲或邀請好友以提高排名",
+        blindbox:"盲盒"
     },
     message: {
         play: {
-            title: "参与8人对战",
-            sub: "在遊戲中勝出將會贏得獎勵"
+            title: "购买盲盒获取NFT",
+            sub: "開啟盲盒，暢玩遊戲",
+            buy:"鑄造NFT"
         },
         wallet: {
             install: "請點擊鏈接下載Metamask錢包",

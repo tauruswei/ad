@@ -6,7 +6,9 @@ export default {
       buy: "Buy",
       invite:"Share to invite",
       accept:"Accept Invitation",
-      approve:"Approve"
+      approve:"Approve",
+      sure:"Sure",
+      cancel:"Cancel"
     },
     text:{
         home:"Home",
@@ -43,12 +45,14 @@ export default {
         point:"Point",
         rank:"Rank",
         norank:"Not yet playing the game",
-        invitead:"Playing the game or inviting for more points !"
+        invitead:"Playing the game or inviting for more points !",
+        blindbox:"blind box"
     },
     message:{
         play:{
-            title:"Spend EVIC for a 8-players game",
-            sub:"You will get paid if you win the game."
+            title:"Get a NFT in the blind box",
+            sub:"Open the blind box to enjoy the game！",
+            buy:"Mint NFT"
         },
         wallet:{
             install:"Please install Metamask Wallet at",

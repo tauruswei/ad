@@ -5,7 +5,7 @@ const routes = [
   {
     path: "/",
     name: "nft",
-    component: () => import("@/views/gb/index.vue"),
+    component: () => import("@/views/home/index.vue"),
   },
   {
     path: "/404",
