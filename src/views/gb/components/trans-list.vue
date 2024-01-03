@@ -2,29 +2,26 @@
   <div style="height:calc(100vh - 300px);overflow-y: auto;">
     <van-pull-refresh v-model="loading" @refresh="onRefresh" :loosing-text="$t('text.loosingText')" :loading-text="$t('text.loadingText')" :pulling-text="$t('text.pullingText')">
       <van-list :finished="finished" :finished-text="$t('text.finishedText')" @load="query">
-        <van-row v-for="item in listData" :key="item" :title="item.id" style="margin-bottom:10px;margin-top:10px">
+        <van-row v-for="item in listData" :key="item" :title="item.id" style="margin-bottom:10px;margin-top:10px;align-items:center">
           <van-col :span="6">
             <div style="height:100%;box-sizing:border-box;padding:8px 0;border-radius:12px 0 0 12px;text-align: center;">
-              <h3><small>{{ item.roundIndex }}</small></h3>
+              <h3 style="font-size:30px">{{ item.roundIndex }}</h3>
               {{$t('text.round')}}
-              <h3><small>{{ item.totalPlayers }}</small></h3>
+              <h3 style="font-size:30px">{{ item.totalPlayers }}</h3>
               {{$t('text.players')}}
             </div>
           </van-col>
           <van-col :span="18" style="height:100%;padding-left:10px">
             <span :class="`level level${item.poolIndex||0}`">{{ $store.state.pools[(item.poolIndex||0)+''] }}</span>
             <p>{{ item.updateTime }}</p>
-            <div style="padding:7px 0 3px;">
-              <van-tag type="primary">1</van-tag>
-              <small :title="item.firstWinner">&nbsp;&nbsp;{{ item.firstWinner?.substr(12)+"..." }}</small>
-            </div>
-            <div style="padding:7px 0 3px;">
-              <van-tag type="warning">2</van-tag>
-              <small :title="item.secondWinner">&nbsp;&nbsp;{{ item.secondWinner?.substr(12)+"..." }}</small>
-            </div>
-            <div style="padding:7px 0 3px;">
-              <van-tag type="success">3</van-tag>
-              <small :title="item.thirdWinner">&nbsp;&nbsp;{{ item.thirdWinner?.substr(12)+"..." }}</small>
+            <div style="padding:3px 0;" v-for="item0 in item.rewards" :key="item0.position">
+              <van-tag type="primary" style="background-color:#d93f68;" v-if="item0.position==1">{{ item0.position }}</van-tag>
+              <van-tag type="primary" style="background-color:#7146cd;" v-if="item0.position==2">{{ item0.position }}</van-tag>
+              <van-tag type="primary" v-if="item0.position==3">{{ item0.position }}</van-tag>
+              <van-tag type="primary" style="background-color:#545cd0;" v-if="item0.position==4">{{ item0.position }}</van-tag>
+              <van-tag type="primary" style="background-color:#548bd0;" v-if="item0.position==5">{{ item0.position }}</van-tag>
+              <van-tag type="primary" style="background-color:#6dd054;" v-if="item0.position==6">{{ item0.position }}</van-tag>
+              <small :title="item0.address">&nbsp;&nbsp;{{ item0.address?.substr(12)+"..." }}</small>
             </div>
           </van-col>
         </van-row>
