@@ -1,12 +1,12 @@
 <template>
   <div style="height:calc(100vh - 300px);overflow-y: auto;">
     <template v-if="data.length">
-      <van-row v-for="item in data" :key="item[3]">
+      <van-row v-for="item in data" :key="Number(item.time)">
         <van-col :span="6"></van-col>
         <van-col :span="18">
-          <p>TokenID {{ data[0] }}</p>
-          <p>Rank {{ data[1] }}</p>
-          <p>{{ data[2] }} COSD</p>
+          <p>TokenID {{ Number(item.tokenId) }}</p>
+          <p>Rank {{ Number(item.chances) }}</p>
+          <p>{{ Number(item.number) }} COSD</p>
         </van-col>
       </van-row>
     </template>

@@ -127,7 +127,9 @@ function getNFTs() {
     funcName: "getNftsByOwner"
   }
   metaMask.getBalanceOfDifferentWallet(data).then(res => {
-    nftList.value = res
+    console.log(res)
+    nftList.value = Array.from(res);
+    console.log(nftList.value)
   });
 }
 function open(command) {
@@ -187,7 +189,7 @@ function transfer(value,event) {
     return
   }
   loadingHelper.show();//sendTransactionByContract
-  metaMask.sendTransactionUseEthers(data).then((res) => {
+  metaMask.sendTransactionUseEthersNoPool(data).then((res) => {
     visible.value = false;
     loadingHelper.hide()
     animation(event, true)

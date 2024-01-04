@@ -10,7 +10,7 @@
         {{ 'USDT '+$t('text.allowance')+": " }}<b>{{ $store.state.allowance.busd }}</b>&nbsp;&nbsp;
         <van-icon name="replay" @click="refresh" />
       </div>
-      <van-button @click="submit('approve')" native-type="button" style="width:100%;margin-bottom: 10px;">
+      <van-button @click="submit($event,'approve')" native-type="button" style="width:100%;margin-bottom: 10px;">
         {{$t('btn.approve')}}
       </van-button>
       <van-button native-type="button" type="primary" @click="submit($event,'buy')" style="width:100%">
