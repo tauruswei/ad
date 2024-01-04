@@ -63,7 +63,7 @@ const data = ref({
 });
 onMounted(() => {
   page.value = 1;
-  query()
+  //query()
   queryRank()
 })
 function query() {
@@ -78,7 +78,7 @@ function query() {
     if (res.code == 0) {
       if (res.data) {
         listData.value = res.data;
-        finished.value = true;
+        if(res.data.total) finished.value = true;
       }
       loading.value = false;
       //pegeHanlder();

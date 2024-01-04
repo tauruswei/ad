@@ -61,7 +61,6 @@
             </van-tab>
             <van-tab :title="$t('text.airdropPoints')" name="airdrop">
               <rank-list v-if="activeName =='airdrop'"></rank-list>
-              <!--<yestoday-list v-if="activeName =='airdrop'"></yestoday-list>-->
             </van-tab>
           </van-tabs>
         </div>

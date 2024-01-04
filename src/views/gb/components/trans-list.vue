@@ -42,7 +42,7 @@ const finished = ref(false);
 const page = ref(1);
 onMounted(()=>{
   page.value = 1;
-  query()
+  //query()
 })
 function query() {
   let data = {
@@ -63,7 +63,7 @@ function query() {
     }
       loading.value = false;
       page.value++;
-      if((page.value * 20 - 20) > res.data.total) finished.value = true; 
+      if((page.value * 20 - 20) > res.data.total && res.data.total) finished.value = true; 
     }
   })
 }
