@@ -1,12 +1,14 @@
 <template>
   <div style="height:calc(100vh - 300px);overflow-y: auto;">
     <template v-if="data.length">
-      <van-row v-for="item in data" :key="Number(item.time)">
-        <van-col :span="6"></van-col>
-        <van-col :span="18">
-          <p>TokenID {{ Number(item.tokenId) }}</p>
-          <p>Rank {{ Number(item.chances) }}</p>
-          <p>{{ Number(item.number) }} COSD</p>
+      <van-row :gutter="6" style="margin:5px 0" v-for="item in data" :key="Number(item.time)">
+        <van-col :span="10">
+          <img style="width:100%" :src="require(`@/assets/nft/${Number(item[2])}.gif`)"/>
+        </van-col>
+        <van-col :span="14" style="line-height:1.5">
+          <b style="font-size:16px;line-height:2">{{Number(item[2]) }}</b> <small>COSD</small><br>
+          <span>TokenID: {{ Number(item[0]) }}</span><br>
+          <span>{{$t('text.rank')+': '+ (Number(item[1]) + 1)}}</span>
         </van-col>
       </van-row>
     </template>
@@ -18,4 +20,7 @@ import { onMounted, ref } from "vue";
 import { useStore } from "vuex"
 import { DateHelper } from "@/utils/helper";
 const props = defineProps({ data: Array })
+function formateDate(time){
+  return DateHelper.toString(time,"yyyy-MM-dd hh:mm:ss")
+}
 </script>

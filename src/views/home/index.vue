@@ -190,11 +190,13 @@ function transfer(value,event) {
   }
   loadingHelper.show();//sendTransactionByContract
   metaMask.sendTransactionUseEthersNoPool(data).then((res) => {
+    console.log(res)
     visible.value = false;
     loadingHelper.hide()
     animation(event, true)
     refresh()
   }).catch(err => {
+    alert(err)
     loadingHelper.hide();
   })
 }

@@ -577,6 +577,7 @@ export class MetaMask {
         }
         func().then((res)=>{
           resolve(res)
+          console.log("nft*****",res)
         }).catch((err)=>{
           reject(err)
         });
