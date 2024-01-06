@@ -42,7 +42,6 @@ const finished = ref(false);
 const page = ref(1);
 onMounted(()=>{
   page.value = 1;
-  //query()
 })
 function query() {
   let data = {
