@@ -34,10 +34,20 @@
     <side-bar v-model:visible="sidebarVisible"></side-bar>
     <exchange-pop v-model:visible="visible" :title="action.title" @do="handleTransferOperate" @refresh="refreshAllowance">
     </exchange-pop>
+    <van-dialog v-model:show="visibleDetail" theme="round-button" showConfirmButton confirmButtonColor="var(--van-primary-color)" @close="stop">
+      <div style="text-align: center;position:relative">
+        <div style="position:absolute;top:5px;right:5px;">
+          <audio :src="require(`@/assets/music/${Number(nftDetail[0])>3?2:1}.mp3`)" autoplay="autoplay" loop ref="audioRef"></audio>
+          <van-icon name="music" size="24" :class="isPlay?'rotate':''" @click="handlePlay"/>
+        </div>
+        <img style="width:100%" :src="`https://s3.ap-northeast-1.amazonaws.com/www.chessofstars.io/assets-blindboxcos/git/${Number(nftDetail[1])+1}.gif`" />
+        <p style="margin:5px"><b>{{$t('text.rank')+': '+ (Number(nftDetail[1])+1)}} - {{Number(nftDetail[2])}} COSD</b></p>
+      </div>
+    </van-dialog>
   </div>
 </template>
 <script setup>
-import { ref, onMounted, getCurrentInstance, onUnmounted } from "vue"
+import { ref, onMounted, getCurrentInstance, onUnmounted, nextTick } from "vue"
 import { useStore } from "vuex"
 import { DateHelper } from "@/utils/helper";
 import { loadingHelper } from "@/utils/loading";
@@ -68,7 +78,11 @@ const activeName = ref("trans")
 const hasConfig = ref(false)
 const errorMsg = ref({ msg1: "", msg2: "" });
 const sidebarVisible = ref(false);
-const nftList=ref([])
+const visibleDetail = ref(false);
+const nftDetail = ref([0, 800]);
+const isPlay=ref(true)
+const audioRef=ref()
+const nftList = ref([])
 //config
 function getABI() {
   let data = {
@@ -127,9 +141,7 @@ function getNFTs() {
     funcName: "getNftsByOwner"
   }
   metaMask.getBalanceOfDifferentWallet(data).then(res => {
-    console.log(res)
     nftList.value = Array.from(res);
-    console.log(nftList.value)
   });
 }
 function open(command) {
@@ -148,9 +160,8 @@ const transferHandler = {
   "approve": approve.bind(this),//to evic
   "buy": transfer.bind(this),
 }
-function handleTransferOperate(value,event) {
-  console.log(value)
-  transferHandler[value.command](value,event);
+function handleTransferOperate(value, event) {
+  transferHandler[value.command](value, event);
 }
 function approve(value) {
   if (!hasConfig.value) return;
@@ -174,7 +185,7 @@ function approve(value) {
 
 }
 //盲盒：blindBoxNFTCosd proxyAddress drawCard
-function transfer(value,event) {
+function transfer(value, event) {
   if (!hasConfig.value) return;
   if (!metaMask.isAvailable()) return;
   let data = {
@@ -190,15 +201,48 @@ function transfer(value,event) {
   }
   loadingHelper.show();//sendTransactionByContract
   metaMask.sendTransactionUseEthersNoPool(data).then((res) => {
-    console.log(res)
+    let id = Number(res.events[4].args[2]);
     visible.value = false;
     loadingHelper.hide()
     animation(event, true)
+    getNFTnfoFromChain(id)
     refresh()
   }).catch(err => {
     alert(err)
     loadingHelper.hide();
   })
+}
+function getNFTnfoFromChain(id) {
+  if (!metaMask.isAvailable()) return;
+  let param = {
+    abi: abis.value.nft,
+    from: store.state.metaMask?.account,
+    address: store.state.config?.contract.NFTCosd.proxyAddress,
+    tokenId: id,
+    funcName: "getNFT"
+  }
+  metaMask.queryNFTInfoByethers(param).then(res => {
+    visibleDetail.value = true;
+    nftDetail.value = res;
+    nextTick(()=>{
+      play()
+    })
+    
+  })
+}
+function handlePlay(){
+  if(isPlay.value) stop()
+  else play()
+  isPlay.value = !isPlay.value
+}
+//播放
+function play() {
+  audioRef.value.play();
+}
+//音频暂停
+function stop() {
+  audioRef.value.pause();
+  audioRef.value.currentTime = 0;
 }
 function copy(val) {
   if (!store.state.mycode) return;
@@ -248,3 +292,17 @@ onUnmounted(() => {
   Bus.$off('refresh')
 })
 </script>
+<style scoped>
+.rotate{
+  animation-name: rotate; /* 指定要应用的动画名称 */
+  animation-duration: 2s; /* 设置动画持续时间 */
+  animation-iteration-count: infinite; /* 无限次重复动画 */
+  animation-timing-function: linear; /* 线性变化速度函数 */
+}
+/* 定义旋转动画 */
+@keyframes rotate {
+  0% { transform: rotate(0deg); } /* 初始状态为不旋转 */
+  100% { transform: rotate(360deg); } /* 结束状态为完全旋转一周（360度）*/
+}
+ 
+</style>

@@ -458,6 +458,11 @@ export class MetaMask {
     let ret = await contract[param.funcName](param.pool,param.amount);
     return ret
   }
+  async queryNFTInfoByethers(param) {
+    const contract = this.getEthersContract(param);
+    let ret = await contract[param.funcName](param.tokenId);
+    return ret
+  }
   //tp只支持web3查询
   async getBalanceOfDifferentWallet(param){
     let ret;
@@ -532,6 +537,7 @@ export class MetaMask {
           if (value) tx = await contract[param.funcName](param.addressParam,value);
           else tx = await contract[param.funcName]();
           let receipt = await tx.wait();
+          return receipt;
         }
         func().then((res)=>{
           resolve(res)
@@ -553,6 +559,7 @@ export class MetaMask {
           if (value) tx = await contract[param.funcName](store.state.pool,value);
           else tx = await contract[param.funcName]();
           let receipt = await tx.wait();
+          return receipt;
         }
         func().then((res)=>{
           resolve(res)
@@ -574,6 +581,7 @@ export class MetaMask {
           if (value) tx = await contract[param.funcName](value);
           else tx = await contract[param.funcName]();
           let receipt = await tx.wait();
+          return receipt;
         }
         func().then((res)=>{
           resolve(res)
@@ -596,6 +604,7 @@ export class MetaMask {
           if (value) tx = await contract[param.funcName]();
           else tx = await contract[param.funcName]();
           let receipt = await tx.wait();
+          return receipt;
         }
         func().then((res)=>{
           resolve(res)
