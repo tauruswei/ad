@@ -8,7 +8,7 @@
         <van-col :span="14" style="line-height:1.5">
           <b style="font-size:16px;line-height:2">{{Number(item[2]) }}</b> <small>COSD</small><br>
           <span>TokenID: {{ Number(item[0]) }}</span><br>
-          <span>{{$t('text.rank')+': '+ (Number(item[1]))}}</span>
+          <span>{{$t('text.rank')+': '+ (Number(item[1])+1)}}</span>
         </van-col>
       </van-row>
     </template>
