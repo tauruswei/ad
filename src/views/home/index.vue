@@ -41,7 +41,7 @@
           <van-icon name="music" size="24" :class="isPlay?'rotate':''" @click="handlePlay"/>
         </div>
         <img style="width:100%" :src="`https://s3.ap-northeast-1.amazonaws.com/www.chessofstars.io/assets-blindboxcos/git/${Number(nftDetail[1])}.gif`" />
-        <p style="margin:5px"><b>{{$t('text.rank')+': '+ (Number(nftDetail[1])+1)}} - {{Number(nftDetail[2])}} COSD</b></p>
+        <p style="margin:5px"><b>{{(Number(nftDetail[1]))+' '+$t('text.prize')}} - {{Number(nftDetail[2])}} COSD</b></p>
       </div>
     </van-dialog>
   </div>

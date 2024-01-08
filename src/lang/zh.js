@@ -46,7 +46,8 @@ export default {
         rank:"排名",
         norank:"尚未參加遊戲！",
         invitead:"參與遊戲或邀請好友以提高排名",
-        blindbox:"盲盒"
+        blindbox:"盲盒",
+        prize:"等獎"
     },
     message: {
         play: {

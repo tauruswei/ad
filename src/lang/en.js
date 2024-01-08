@@ -46,7 +46,8 @@ export default {
         rank:"Rank",
         norank:"Not yet playing the game",
         invitead:"Playing the game or inviting for more points !",
-        blindbox:"blind box"
+        blindbox:"blind box",
+        prize:"Prize"
     },
     message:{
         play:{

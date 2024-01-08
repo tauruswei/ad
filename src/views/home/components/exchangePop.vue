@@ -76,9 +76,9 @@ const close = () => {
 }
 const reset = () => {
   action.value = {
-    amount: "",
-    amount1: "",
-    command:""
+    amount: "1",
+    amount1: "10",
+    command:"approve"
   }
   disabled.value = false
 }
