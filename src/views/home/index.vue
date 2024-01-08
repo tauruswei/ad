@@ -40,8 +40,8 @@
           <audio :src="require(`@/assets/music/${Number(nftDetail[0])>3?2:1}.mp3`)" autoplay="autoplay" loop ref="audioRef"></audio>
           <van-icon name="music" size="24" :class="isPlay?'rotate':''" @click="handlePlay"/>
         </div>
-        <img style="width:100%" :src="`https://s3.ap-northeast-1.amazonaws.com/www.chessofstars.io/assets-blindboxcos/git/${Number(nftDetail[1])+1}.gif`" />
-        <p style="margin:5px"><b>{{$t('text.rank')+': '+ (Number(nftDetail[1])+1)}} - {{Number(nftDetail[2])}} COSD</b></p>
+        <img style="width:100%" :src="`https://s3.ap-northeast-1.amazonaws.com/www.chessofstars.io/assets-blindboxcos/git/${Number(nftDetail[1])}.gif`" />
+        <p style="margin:5px"><b>{{$t('text.rank')+': '+ (Number(nftDetail[1]))}} - {{Number(nftDetail[2])}} COSD</b></p>
       </div>
     </van-dialog>
   </div>
