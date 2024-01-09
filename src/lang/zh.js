@@ -9,6 +9,7 @@ export default {
         approve: "授權"
     },
     text: {
+        current:"當前",
         home: "主頁",
         connected: "已連接",
         balance: "餘額",
@@ -20,7 +21,7 @@ export default {
         history: "歷史",
         amount: "數量",
         copy: "已複製",
-        round: "輪數",
+        round: "輪",
         players: "玩家",
         date: "日期",
         loosingText: "下拉刷新",

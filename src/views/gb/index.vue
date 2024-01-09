@@ -47,7 +47,9 @@
             <van-tab :title="$t('text.play')" name="trans">
               <div style="padding:15px 10px 25px;text-align: center;">
                 <van-image width="240px" height="180px" fill="contain" :src="require('@/assets/hero_attack.gif')"></van-image>
-                <h3 style="margin:-30px 0 15px;" :class="`leveltext level${$store.state.pool}`">{{$store.state.pools[$store.state.pool+'']}} EVIC</h3>
+                <h3 style="margin:-30px 0 15px;" :class="`leveltext level${$store.state.pool}`">{{$store.state.pools[$store.state.pool+'']}} EVIC
+                  <small style="font-size:12px">{{ $t('text.current')+' '+round+' '+$t('text.round') }}</small>
+                </h3>
                 <div style="font-weight: bold;font-size: 15px;">{{$t('message.play.title')}}</div>
                 <p style="color:var(--van-gray-5);margin-bottom:15px;">{{$t('message.play.sub')}}</p>
                 <van-button class="action-btn" size="small" type="primary" @click="open('evic_play-approve')"></van-button>
@@ -133,6 +135,7 @@ function getABI() {
 function selectLevel(){
   levelVisible.value = false;
   visible.value = true;
+  getRound("aacFundPool")
 }
 //余额
 function getBalance(key) {
@@ -182,12 +185,12 @@ function getRound(key) {
   if (!hasConfig.value) return;
   let data = {
     abi: abis.value[key],
-    address: store.state.config?.contract[key].address,
+    address: store.state.config?.contract[key].proxyAddress,
     from: store.state.metaMask?.account,
-    funcName: "roundsCount"
+    funcName: "pools"
   }
   metaMask.queryByethersNoParam(data).then(res => {
-    round.value = res;
+    round.value = Number(res.roundsCount);
   });
 }
 function open(command) {
@@ -397,7 +400,7 @@ function refresh() {
   getAllowance('evic','exchange')
   getAllowance('evic','play')
   getReward("aacFundPool")
-  //getRound("aacFundPool");
+  getRound("aacFundPool");
 }
 function refreshAllowance(){
   getAllowance('busd','exchange')

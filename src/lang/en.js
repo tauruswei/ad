@@ -9,6 +9,7 @@ export default {
       approve:"Approve"
     },
     text:{
+        current:"Current",
         home:"Home",
         connected:"Conected",
         balance:"Balance",
