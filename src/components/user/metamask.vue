@@ -19,7 +19,7 @@
       <div style="padding:10px 15px 20px;font-size:17px">
         <h3>Evic</h3>
         <van-cell-group inset style="margin-bottom:15px;">
-          <van-field v-model="code" :label="`${$t('text.inviteLabel')}:`" type="text" required :error-message="errorMsg" placeholder="code" clickable />
+          <van-field v-model="code" :label="`${$t('text.inviteLabel')}:`" type="text" :error-message="errorMsg" placeholder="code" clickable />
         </van-cell-group>
         <van-row :gutter="8">
           <van-col :span="12"><van-button type="success" @click="update(false)" style="width:100%">{{$t('btn.cancel')}}</van-button></van-col>
