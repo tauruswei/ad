@@ -21,7 +21,10 @@
         <van-cell-group inset style="margin-bottom:15px;">
           <van-field v-model="code" :label="`${$t('text.inviteLabel')}:`" type="text" required :error-message="errorMsg" placeholder="code" clickable />
         </van-cell-group>
-        <van-button type="success" @click="update(true)" style="width:100%">sure</van-button>
+        <van-row :gutter="8">
+          <van-col :span="12"><van-button type="success" @click="update(false)" style="width:100%">{{$t('btn.cancel')}}</van-button></van-col>
+          <van-col :span="12"><van-button type="success" @click="update(true)" style="width:100%">{{$t('btn.sure')}}</van-button></van-col>
+        </van-row>
       </div>
     </van-popup>
   </div>

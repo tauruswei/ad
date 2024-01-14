@@ -6,7 +6,9 @@ export default {
         buy: "購買",
         invite: "分享邀請",
         accept: "接受邀請",
-        approve: "授權"
+        approve: "授權",
+        cancel:"取消",
+        sure:"確定"
     },
     text: {
         current:"當前",

@@ -6,7 +6,9 @@ export default {
       buy: "Buy",
       invite:"Share to invite",
       accept:"Accept Invitation",
-      approve:"Approve"
+      approve:"Approve",
+      cancel:"Cancel",
+      sure:"Sure"
     },
     text:{
         current:"Current",
